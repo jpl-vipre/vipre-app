@@ -1,0 +1,30 @@
+div.data-container {
+  display: flex;
+  color: white;
+
+  margin-top: 15px;
+
+  padding: 0 15px;
+
+  section.filters {
+    flex: 2;
+  }
+
+  section.visualizations {
+    flex: 8;
+
+    .tabs {
+      color: white;
+
+      div div button {
+        color: white !important;
+
+        &.Mui-selected {
+          background-color: #202e46 !important;
+          border-top-right-radius: 5px;
+          border-top-left-radius: 5px;
+        }
+      }
+    }
+  }
+}
