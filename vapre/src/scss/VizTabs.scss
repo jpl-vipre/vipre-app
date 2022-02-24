@@ -11,4 +11,22 @@ div.viz-tab-container {
   span.MuiTabs-indicator {
     background-color: #202e46;
   }
+
+  .tabs {
+    background-color: #151e2f;
+  }
+
+  .viz-tab {
+    width: fit-content;
+    padding: 5px 30px;
+  }
+
+  .viz-tab.active {
+    background-color: #202e46;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+  }
+
+  .tabs {
+  }
 }
