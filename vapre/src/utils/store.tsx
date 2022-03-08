@@ -18,6 +18,7 @@ export type Store = {
   setActiveTab: (activeTab: number) => void;
   tabs: VizTab[];
   setTabs: (tabs: VizTab[]) => void;
+  setTab: (tab: VizTab) => void;
 };
 
 const useStore = create<Store>(
@@ -32,7 +33,17 @@ const useStore = create<Store>(
         bottomRow: [],
       },
     ],
-    setTabs: (tabs: VizTab[]) => set(() => ({ tabs })),
+    setTabs: (tabs: VizTab[]) => set({ tabs }),
+    setTab: (tab: VizTab) => {
+      let tabs = get().tabs;
+      let tabIndex = tabs.findIndex((existingTab) => existingTab.id === tab.id);
+      if (tabIndex === -1) {
+        set({ tabs: [...tabs, tab] });
+      } else {
+        tabs[tabIndex] = tab;
+        set({ tabs });
+      }
+    },
   })
 );
 

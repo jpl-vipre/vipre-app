@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
@@ -12,6 +12,7 @@ import TextField from "@mui/material/TextField";
 
 import IconButton from "@mui/material/IconButton";
 import EditIcon from "@mui/icons-material/Edit";
+import AddIcon from "@mui/icons-material/Add";
 
 import "../scss/VizTabs.scss";
 import useStore, { VizTab } from "../utils/store";
@@ -44,6 +45,23 @@ interface VizTabButtonProps {
 const VizTabButton: FC<VizTabButtonProps> = ({ tab }) => {
   const [open, setOpen] = useState(false);
   const [activeTab, setActiveTab] = useStore((state) => [state.activeTab, state.setActiveTab]);
+  const setTab = useStore((state) => state.setTab);
+  const [label, setLabel] = useState<string>(tab.label);
+
+  useEffect(() => {
+    const keypressListener = (evt: any) => {
+      if (evt.code === "Enter" || evt.code === "NumpadEnter") {
+        evt.preventDefault();
+        setOpen(false);
+        setTab({ ...tab, label: label });
+      }
+    };
+    document.addEventListener("keydown", keypressListener);
+    return () => {
+      document.removeEventListener("keydown", keypressListener);
+    };
+  }, [label, tab, setTab, setOpen]);
+
   return (
     <>
       <div className={`viz-tab ${activeTab === tab.id ? "active" : ""}`}>
@@ -52,19 +70,47 @@ const VizTabButton: FC<VizTabButtonProps> = ({ tab }) => {
             <EditIcon />
           </IconButton>
           <h5 style={{ margin: "0 5px", cursor: "pointer" }} onClick={() => setActiveTab(tab.id)}>
-            {tab.label}
+            {label}
           </h5>
         </span>
       </div>
 
-      <Dialog open={open} onClose={() => setOpen(false)}>
-        <DialogTitle>Tab Title</DialogTitle>
-        <DialogContent>
-          <TextField autoFocus id="title" label="title" type="text" fullWidth variant="standard" value={tab.label} />
+      <Dialog open={open} onClose={() => setOpen(false)} className="tab-dialog">
+        <DialogTitle className="dialog-title">Tab Title</DialogTitle>
+        <DialogContent className="tab-content">
+          <TextField
+            autoFocus
+            className="tab-title-text"
+            label="title"
+            type="text"
+            fullWidth
+            variant="standard"
+            value={label}
+            onChange={(evt) => {
+              setLabel(evt.target.value);
+            }}
+          />
         </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpen(false)}>Cancel</Button>
-          <Button onClick={() => setOpen(false)}>Done</Button>
+        <DialogActions className="dialog-actions">
+          <Button
+            style={{ color: "white" }}
+            onClick={() => {
+              setOpen(false);
+              setLabel(tab.label);
+            }}
+          >
+            Cancel
+          </Button>
+          <Button
+            type="submit"
+            style={{ color: "white" }}
+            onClick={() => {
+              setOpen(false);
+              setTab({ ...tab, label: label });
+            }}
+          >
+            Done
+          </Button>
         </DialogActions>
       </Dialog>
     </>
@@ -82,6 +128,9 @@ const VizTabs: FC = () => {
           {tabs.map((tab) => (
             <VizTabButton key={`${tab.id}-tab-button`} tab={tab} />
           ))}
+          <IconButton style={{ padding: 0, color: "white", cursor: "pointer", marginLeft: "5px" }}>
+            <AddIcon />
+          </IconButton>
         </div>
       </div>
       <div>

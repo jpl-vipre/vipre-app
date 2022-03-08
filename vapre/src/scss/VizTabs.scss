@@ -14,6 +14,7 @@ div.viz-tab-container {
 
   .tabs {
     background-color: #151e2f;
+    display: flex;
   }
 
   .viz-tab {
@@ -26,7 +27,34 @@ div.viz-tab-container {
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
   }
+}
 
-  .tabs {
+.tab-dialog {
+  div.MuiDialog-container div.MuiPaper-root {
+    background-color: #202e46;
+    color: white;
+
+    .tab-content {
+      color: white;
+
+      .tab-title-text {
+        color: white;
+
+        label,
+        input {
+          color: white;
+        }
+
+        div.MuiInput-root {
+          &::before,
+          &:hover {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.42);
+          }
+          &::after {
+            border-bottom: 2px solid #ffffff;
+          }
+        }
+      }
+    }
   }
 }
