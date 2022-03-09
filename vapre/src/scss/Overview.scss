@@ -1,0 +1,21 @@
+div.overview-container {
+  display: flex;
+  flex-direction: column;
+  color: white;
+  background-color: #202e46;
+  border-radius: 5px;
+  margin-bottom: 15px;
+
+  div.top {
+    padding: 5px;
+    h1 {
+      margin: 0;
+      margin-left: 15px;
+      font-size: 16px;
+    }
+  }
+
+  .overview-list {
+    min-height: 100px;
+  }
+}

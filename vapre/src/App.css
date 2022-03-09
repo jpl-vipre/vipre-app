@@ -1,6 +1,10 @@
+body {
+  background: #090F1A;
+}
+
 .App {
   text-align: center;
-  background: #202D46;
+  background: #090F1A;
 }
 
 .App-logo {

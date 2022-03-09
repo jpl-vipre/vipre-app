@@ -2,11 +2,13 @@ header {
   top: 0;
   display: flex;
   align-items: center;
+  justify-content: center;
   width: 100%;
-  height: 50px;
+  height: 70px;
   -webkit-app-region: drag;
   background: #202d46;
-  font-family: "Roboto Mono", monospace;
+  font-family: "Roboto", monospace;
+  position: relative;
 
   h1 {
     display: flex;
@@ -17,9 +19,54 @@ header {
     padding: 0;
     color: #fff;
     width: 100%;
-    font-size: 22px;
+    font-size: 24px;
     user-select: none;
-    font-family: "Roboto Mono", monospace;
+    font-family: "Roboto", monospace;
     font-weight: 700;
+  }
+
+  h5 {
+    margin: 0;
+    color: white;
+    font-family: "Roboto", monospace;
+    font-weight: 200;
+    font-size: 16px;
+  }
+
+  span.target-select {
+    position: absolute;
+    left: 75px;
+    display: flex;
+    align-items: center;
+
+    img {
+      width: 50px;
+    }
+
+    div.MuiFormControl-root {
+      top: 5px;
+    }
+
+    #target-body-select-label {
+      color: white;
+    }
+    #target-body-select {
+      min-width: 200px;
+      color: white;
+      text-align: left;
+    }
+
+    svg.MuiSvgIcon-root {
+      color: white !important;
+    }
+
+    .css-1480iag-MuiInputBase-root-MuiInput-root:before {
+      border-bottom: 1px solid white;
+      transition: border-width 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+    }
+
+    .css-1480iag-MuiInputBase-root-MuiInput-root:hover {
+      border-bottom: 2px solid white;
+    }
   }
 }

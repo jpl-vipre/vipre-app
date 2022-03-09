@@ -1,0 +1,67 @@
+div.viz-tab-container {
+  display: flex;
+  flex-direction: column;
+  color: white;
+
+  .tab-panel {
+    background-color: #202e46;
+    height: calc(100vh - 70px - 30px - 50px - 142px);
+  }
+
+  span.MuiTabs-indicator {
+    background-color: #202e46;
+  }
+
+  .tabs {
+    background-color: #151e2f;
+    display: flex;
+  }
+
+  .viz-tab {
+    width: fit-content;
+    padding: 5px 30px;
+  }
+
+  .viz-tab.active {
+    background-color: #202e46;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+  }
+}
+
+.tab-dialog {
+  div.MuiDialog-container div.MuiPaper-root {
+    background-color: #202e46;
+    color: white;
+
+    .tab-content {
+      color: white;
+      min-width: 400px;
+
+      .tab-title-text {
+        color: white;
+
+        label,
+        input {
+          color: white;
+        }
+
+        div.MuiInput-root {
+          &::before,
+          &:hover {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.42);
+          }
+          &::after {
+            border-bottom: 2px solid #ffffff;
+          }
+        }
+      }
+    }
+
+    .dialog-actions {
+      .Mui-disabled {
+        color: rgba(255, 255, 255, 0.26);
+      }
+    }
+  }
+}
