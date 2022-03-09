@@ -80,6 +80,7 @@ const useStore = create<Store>(
       {
         label: "Launch Date Range",
         type: "date-range",
+        defaultValue: [new Date(), new Date()],
       },
       {
         label: "Flight Path Angle",
