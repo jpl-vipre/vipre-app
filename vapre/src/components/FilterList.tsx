@@ -1,11 +1,26 @@
 import { FC } from "react";
 
+import useStore from "../utils/store";
+import SelectFilter from "./Filters/SelectFilter";
+
 import "../scss/FilterList.scss";
 
 const FilterList: FC = () => {
+  const filterList = useStore((state) => state.filterList);
+
   return (
     <div className="filter-container">
       <h5>Filters</h5>
+      <div style={{ padding: "10px", display: "flex", flexDirection: "column" }}>
+        {filterList.map((filter) => {
+          switch (filter.type) {
+            case "select":
+              return <SelectFilter filter={filter} />;
+            default:
+              return null;
+          }
+        })}
+      </div>
     </div>
   );
 };

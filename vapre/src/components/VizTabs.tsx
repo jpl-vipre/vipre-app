@@ -158,7 +158,6 @@ const VizTabButton: FC<VizTabButtonProps> = ({ tab, defaultOpen = false }) => {
 const VizTabs: FC = () => {
   const tabs = useStore((state) => state.tabs);
   const setTab = useStore((state) => state.setTab);
-  const [activeTab, setActiveTab] = useStore((state) => [state.activeTab, state.setActiveTab]);
   const [newTabID, setNewTabID] = useState<number>(-1);
   return (
     <div className="viz-tab-container">

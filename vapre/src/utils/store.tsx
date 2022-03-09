@@ -13,12 +13,26 @@ export type VizTab = {
   bottomRow: GraphConfig[];
 };
 
+export type FilterItem = {
+  label: string;
+  type: string;
+  options: any[];
+  value?: any;
+  defaultValue?: any;
+  units?: string;
+  min?: number;
+  max?: number;
+};
+
 export type Store = {
   activeTab: number;
   setActiveTab: (activeTab: number) => void;
   tabs: VizTab[];
   setTabs: (tabs: VizTab[]) => void;
   setTab: (tab: VizTab) => void;
+  filterList: FilterItem[];
+  setFilterList: (filterList: FilterItem[]) => void;
+  setFilter: (filter: FilterItem) => void;
 };
 
 const useStore = create<Store>(
@@ -42,6 +56,33 @@ const useStore = create<Store>(
       } else {
         tabs[tabIndex] = tab;
         set({ tabs });
+      }
+    },
+    filterList: [
+      {
+        label: "Entry Altitude",
+        type: "select",
+        options: [700, 750, 800],
+        defaultValue: 700,
+        units: "km",
+      },
+      {
+        label: "Entry Latitude",
+        type: "select",
+        options: [60, 70, 80],
+        defaultValue: 60,
+        units: "deg",
+      },
+    ],
+    setFilterList: (filterList: FilterItem[]) => set({ filterList }),
+    setFilter: (filter: FilterItem) => {
+      let filterList = get().filterList;
+      let filterIndex = filterList.findIndex((existingFilter) => existingFilter.label === filter.label);
+      if (filterIndex === -1) {
+        set({ filterList: [...filterList, filter] });
+      } else {
+        filterList[filterIndex] = filter;
+        set({ filterList });
       }
     },
   })

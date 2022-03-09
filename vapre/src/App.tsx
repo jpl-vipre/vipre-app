@@ -19,7 +19,7 @@ declare module "@mui/material/styles" {
 }
 
 let theme = createTheme({
-  palette: {},
+  palette: { mode: "dark" },
 });
 
 const App: FC = () => {
