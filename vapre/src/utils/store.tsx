@@ -54,8 +54,7 @@ const useStore = create<Store>(
       if (tabIndex === -1) {
         set({ tabs: [...tabs, tab] });
       } else {
-        tabs[tabIndex] = tab;
-        set({ tabs });
+        set({ tabs: [...tabs.slice(0, tabIndex), tab, ...tabs.slice(tabIndex + 1)] });
       }
     },
     filterList: [
@@ -81,8 +80,7 @@ const useStore = create<Store>(
       if (filterIndex === -1) {
         set({ filterList: [...filterList, filter] });
       } else {
-        filterList[filterIndex] = filter;
-        set({ filterList });
+        set({ filterList: [...filterList.slice(0, filterIndex), filter, ...filterList.slice(filterIndex + 1)] });
       }
     },
   })

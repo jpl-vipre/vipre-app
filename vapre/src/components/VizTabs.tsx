@@ -11,8 +11,11 @@ import IconButton from "@mui/material/IconButton";
 import EditIcon from "@mui/icons-material/Edit";
 import AddIcon from "@mui/icons-material/Add";
 
-import "../scss/VizTabs.scss";
 import useStore, { VizTab } from "../utils/store";
+
+import VizContent from "./VizContent";
+
+import "../scss/VizTabs.scss";
 
 interface TabPanelProps {
   index: number;
@@ -119,7 +122,7 @@ const VizTabButton: FC<VizTabButtonProps> = ({ tab, defaultOpen = false }) => {
   const [open, setOpen] = useState(defaultOpen);
   const [activeTab, setActiveTab] = useStore((state) => [state.activeTab, state.setActiveTab]);
   const setTab = useStore((state) => state.setTab);
-  const [modifiedTab, setModifiedTab] = useState<VizTab>(tab);
+  const [modifiedTab, setModifiedTab] = useState<VizTab>({ ...tab });
 
   useEffect(() => {
     if (open) {
@@ -159,6 +162,7 @@ const VizTabs: FC = () => {
   const tabs = useStore((state) => state.tabs);
   const setTab = useStore((state) => state.setTab);
   const [newTabID, setNewTabID] = useState<number>(-1);
+
   return (
     <div className="viz-tab-container">
       <div>
@@ -184,11 +188,13 @@ const VizTabs: FC = () => {
         </div>
       </div>
       <div>
-        {tabs.map((tab) => (
-          <TabPanel key={`${tab.id}-tabpanel`} index={tab.id}>
-            {tab.label}
-          </TabPanel>
-        ))}
+        {tabs.map((tab) => {
+          return (
+            <TabPanel key={`${tab.id}-tabpanel`} index={tab.id}>
+              <VizContent tab={tab} />
+            </TabPanel>
+          );
+        })}
       </div>
     </div>
   );
