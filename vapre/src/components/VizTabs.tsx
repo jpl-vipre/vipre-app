@@ -170,21 +170,30 @@ const VizTabs: FC = () => {
           {tabs.map((tab) => (
             <VizTabButton key={`${tab.id}-tab-button`} tab={tab} defaultOpen={newTabID === tab.id} />
           ))}
-          <IconButton
-            style={{ padding: 0, color: "white", cursor: "pointer", marginLeft: "5px" }}
-            onClick={() => {
-              let tabID = tabs.length;
-              setTab({
-                id: tabID,
-                label: "",
-                topRow: [],
-                bottomRow: [],
-              });
-              setNewTabID(tabID);
+          <div
+            style={{
+              padding: 0,
+              color: "white",
+              cursor: "pointer",
+              paddingLeft: "5px",
+              borderLeft: "1px solid rgba(255,255,255,0.23)",
             }}
           >
-            <AddIcon />
-          </IconButton>
+            <IconButton
+              onClick={() => {
+                let tabID = tabs.length;
+                setTab({
+                  id: tabID,
+                  label: "",
+                  topRow: [],
+                  bottomRow: [],
+                });
+                setNewTabID(tabID);
+              }}
+            >
+              <AddIcon />
+            </IconButton>
+          </div>
         </div>
       </div>
       <div>
