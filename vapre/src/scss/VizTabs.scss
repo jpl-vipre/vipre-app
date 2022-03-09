@@ -36,6 +36,7 @@ div.viz-tab-container {
 
     .tab-content {
       color: white;
+      min-width: 400px;
 
       .tab-title-text {
         color: white;
@@ -54,6 +55,12 @@ div.viz-tab-container {
             border-bottom: 2px solid #ffffff;
           }
         }
+      }
+    }
+
+    .dialog-actions {
+      .Mui-disabled {
+        color: rgba(255, 255, 255, 0.26);
       }
     }
   }

@@ -1,11 +1,8 @@
 import { FC, useEffect, useState } from "react";
 
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
 import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
@@ -46,12 +43,13 @@ interface NewTabDialogProps {
 }
 
 const NewTabDialog: FC<NewTabDialogProps> = ({ open, setOpen, modifiedTab, setModifiedTab }) => {
-  const tabs = useStore((state) => state.tabs);
+  const [tabs, setTabs] = useStore((state) => [state.tabs, state.setTabs]);
   const setTab = useStore((state) => state.setTab);
+  const setActiveTab = useStore((state) => state.setActiveTab);
 
   return (
     <Dialog open={open} onClose={() => setOpen(false)} className="tab-dialog">
-      <DialogTitle className="dialog-title">Tab Title</DialogTitle>
+      <DialogTitle className="dialog-title">Tab {modifiedTab.id}</DialogTitle>
       <DialogContent className="tab-content">
         <TextField
           autoFocus
@@ -68,10 +66,31 @@ const NewTabDialog: FC<NewTabDialogProps> = ({ open, setOpen, modifiedTab, setMo
       </DialogContent>
       <DialogActions className="dialog-actions">
         <Button
+          style={{ marginRight: "auto" }}
+          color="error"
+          variant="contained"
+          disabled={tabs.length === 1}
+          onClick={() => {
+            setOpen(false);
+            let filteredTabs = tabs.filter((tab) => tab.id !== modifiedTab.id);
+            setTabs(filteredTabs);
+            if (filteredTabs.length > 0) {
+              setActiveTab(filteredTabs[0].id);
+            }
+          }}
+        >
+          Delete
+        </Button>
+        <Button
           style={{ color: "white" }}
           onClick={() => {
             setOpen(false);
-            setModifiedTab(tabs.filter((tab) => tab.id === modifiedTab.id)[0]);
+            let existingTab = tabs.filter((tab) => tab.id === modifiedTab.id)[0];
+            if (existingTab.label !== "") {
+              setModifiedTab(existingTab);
+            } else {
+              setTabs(tabs.filter((tab) => tab.id !== modifiedTab.id));
+            }
           }}
         >
           Cancel
