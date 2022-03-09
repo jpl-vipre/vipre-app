@@ -22,7 +22,7 @@ const SelectFilter: FC<SelectFilterProps> = ({ filter }) => {
           setFilter({ ...filter, value: evt.target.value });
         }}
       >
-        {filter.options.map((option: any) => (
+        {filter.options!.map((option: any) => (
           <MenuItem value={option}>
             {option} {filter.units}
           </MenuItem>

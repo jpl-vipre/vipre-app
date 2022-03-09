@@ -16,7 +16,7 @@ export type VizTab = {
 export type FilterItem = {
   label: string;
   type: string;
-  options: any[];
+  options?: any[];
   value?: any;
   defaultValue?: any;
   units?: string;
@@ -71,6 +71,31 @@ const useStore = create<Store>(
         options: [60, 70, 80],
         defaultValue: 60,
         units: "deg",
+      },
+      {
+        label: "Flyby Architecture",
+        type: "multi-select",
+        options: ["A", "B", "C"],
+      },
+      {
+        label: "Launch Date Range",
+        type: "date-range",
+      },
+      {
+        label: "Flight Path Angle",
+        type: "slider-range",
+        min: 0,
+        max: 360,
+        defaultValue: [60, 120],
+        units: "deg",
+      },
+      {
+        label: "Entry Speed",
+        type: "slider-range",
+        min: 0,
+        max: 10000,
+        defaultValue: [60, 120],
+        units: "km/s",
       },
     ],
     setFilterList: (filterList: FilterItem[]) => set({ filterList }),

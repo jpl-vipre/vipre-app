@@ -2,6 +2,7 @@ import { FC } from "react";
 
 import useStore from "../utils/store";
 import SelectFilter from "./Filters/SelectFilter";
+import MultiSelectFilter from "./Filters/MultiSelectFilter";
 
 import "../scss/FilterList.scss";
 
@@ -16,6 +17,8 @@ const FilterList: FC = () => {
           switch (filter.type) {
             case "select":
               return <SelectFilter filter={filter} />;
+            case "multi-select":
+              return <MultiSelectFilter filter={filter} />;
             default:
               return null;
           }
