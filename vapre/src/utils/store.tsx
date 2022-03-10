@@ -1,4 +1,5 @@
 import create from "zustand";
+import constants from "./constants";
 
 export type GraphConfig = {
   type: string;
@@ -40,14 +41,7 @@ const useStore = create<Store>(
   (set, get): Store => ({
     activeTab: 0,
     setActiveTab: (activeTab: number) => set(() => ({ activeTab })),
-    tabs: [
-      {
-        id: 0,
-        label: "Dashboard",
-        topRow: [],
-        bottomRow: [],
-      },
-    ],
+    tabs: constants.DEFAULT_TABS,
     setTabs: (tabs: VizTab[]) => set({ tabs }),
     setTab: (tab: VizTab) => {
       let tabs = get().tabs;
@@ -58,59 +52,7 @@ const useStore = create<Store>(
         set({ tabs: [...tabs.slice(0, tabIndex), tab, ...tabs.slice(tabIndex + 1)] });
       }
     },
-    filterList: [
-      {
-        label: "Entry Altitude",
-        type: "select",
-        options: [700, 750, 800],
-        defaultValue: 700,
-        units: "km",
-      },
-      {
-        label: "Entry Latitude",
-        type: "select",
-        options: [60, 70, 80],
-        defaultValue: 60,
-        units: "deg",
-      },
-      {
-        label: "Flyby Architecture",
-        type: "multi-select",
-        options: ["A", "B", "C"],
-      },
-      {
-        label: "Launch Date Range",
-        type: "date-range",
-        defaultValue: [new Date(), new Date(new Date().setFullYear(new Date().getFullYear() + 1))],
-      },
-      {
-        label: "Flight Path Angle",
-        type: "slider-range",
-        min: 0,
-        max: 360,
-        step: 1,
-        defaultValue: [0, 360],
-        units: "deg",
-      },
-      {
-        label: "Entry Speed",
-        type: "slider-range",
-        min: 0,
-        max: 10000,
-        step: 1,
-        defaultValue: [0, 10000],
-        units: "km/s",
-      },
-      {
-        label: "Time visible from Earth",
-        type: "slider-range",
-        min: 0,
-        max: 10000,
-        step: 1,
-        defaultValue: [0, 10000],
-        units: "mins",
-      },
-    ],
+    filterList: constants.FILTERS,
     setFilterList: (filterList: FilterItem[]) => set({ filterList }),
     setFilter: (filter: FilterItem) => {
       let filterList = get().filterList;
