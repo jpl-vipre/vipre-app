@@ -5,6 +5,7 @@ export type GraphConfig = {
   type: string;
   xAxis: string;
   yAxis: string;
+  color?: string;
 };
 
 export type VizTab = {

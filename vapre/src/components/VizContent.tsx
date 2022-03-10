@@ -1,11 +1,53 @@
 import { FC } from "react";
 import { VizTab } from "../utils/store";
+import Visualization from "./Visualizations/Visualization";
 
 interface VizContentProps {
   tab: VizTab;
 }
 const VizContent: FC<VizContentProps> = ({ tab }) => {
-  return <div>{tab.label}</div>;
+  return (
+    <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+      <div style={{ display: "flex", flex: 1, alignItems: "center", margin: "5px", marginTop: "10px" }}>
+        {tab.topRow.map((graphConfig) => {
+          return (
+            <div
+              style={{
+                display: "flex",
+                flex: 1,
+                alignItems: "center",
+                justifyContent: "center",
+                margin: "5px",
+                background: "#465062",
+                height: "100%",
+              }}
+            >
+              <Visualization config={graphConfig} />
+            </div>
+          );
+        })}
+      </div>
+      <div style={{ display: "flex", flex: 1, alignItems: "center", margin: "5px", marginBottom: "10px" }}>
+        {tab.bottomRow.map((graphConfig) => {
+          return (
+            <div
+              style={{
+                display: "flex",
+                flex: 1,
+                alignItems: "center",
+                justifyContent: "center",
+                margin: "5px",
+                background: "#465062",
+                height: "100%",
+              }}
+            >
+              <Visualization config={graphConfig} />
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
 };
 
 export default VizContent;

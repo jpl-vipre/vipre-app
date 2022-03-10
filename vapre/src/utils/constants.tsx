@@ -1,9 +1,33 @@
+export const GRAPH_TYPES = {
+  scatterplot: {
+    label: "Scatterplot",
+    xAxis: true,
+    yAxis: true,
+    color: true,
+  },
+  globe: {
+    label: "Globe",
+    xAxis: true,
+    yAxis: true,
+    color: true,
+  },
+};
+
 export const DEFAULT_TABS = [
   {
     id: 0,
     label: "Dashboard",
-    topRow: [],
-    bottomRow: [],
+    topRow: [
+      { type: "scatterplot", xAxis: "", yAxis: "", color: "" },
+      { type: "scatterplot", xAxis: "", yAxis: "", color: "" },
+      { type: "scatterplot", xAxis: "", yAxis: "", color: "" },
+    ],
+    bottomRow: [
+      { type: "globe", xAxis: "", yAxis: "", color: "" },
+      { type: "globe", xAxis: "", yAxis: "", color: "" },
+      { type: "globe", xAxis: "", yAxis: "", color: "" },
+      { type: "globe", xAxis: "", yAxis: "", color: "" },
+    ],
   },
 ];
 
@@ -86,5 +110,5 @@ export const FILTERS = [
   },
 ];
 
-const constants = { DEFAULT_TABS, FILTERS };
+const constants = { DEFAULT_TABS, FILTERS, GRAPH_TYPES };
 export default constants;
