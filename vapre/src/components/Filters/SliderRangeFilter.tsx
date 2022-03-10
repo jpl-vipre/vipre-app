@@ -1,7 +1,9 @@
 import { FC } from "react";
-import { FormControl, FormLabel, Select, MenuItem, Slider, Input } from "@mui/material";
+import { FormControl, FormLabel, Slider, Input } from "@mui/material";
 
 import useStore, { FilterItem } from "../../utils/store";
+
+import "../../scss/SliderRangeFilter.scss";
 
 interface SliderRangeFilterProps {
   filter: FilterItem;
@@ -11,14 +13,14 @@ const SliderRangeFilter: FC<SliderRangeFilterProps> = ({ filter }) => {
   const setFilter = useStore((state) => state.setFilter);
 
   return (
-    <div style={{ marginBottom: "15px", textAlign: "left" }}>
+    <div style={{ marginBottom: "15px", textAlign: "left" }} className="slider-range">
       <FormLabel style={{ textAlign: "left", paddingLeft: "5px" }} id={`${filter.label}-slider-label`}>
         {filter.label} {filter.units ? `(${filter.units})` : ""}
       </FormLabel>
       <div style={{ display: "flex" }}>
         <FormControl>
           <Input
-            style={{ minWidth: "50px", textAlign: "center", marginRight: "5px" }}
+            style={{ minWidth: "62px", textAlign: "center", marginRight: "10px" }}
             value={filter.value ? filter.value[0] : filter.defaultValue[0]}
             size="small"
             onChange={(evt: any) => {
@@ -58,7 +60,7 @@ const SliderRangeFilter: FC<SliderRangeFilterProps> = ({ filter }) => {
         </FormControl>
         <FormControl>
           <Input
-            style={{ minWidth: "50px", textAlign: "center", marginLeft: "5px" }}
+            style={{ minWidth: "62px", textAlign: "center", marginLeft: "10px" }}
             value={filter.value ? filter.value[1] : filter.defaultValue[1]}
             size="small"
             onChange={(evt: any) => {
