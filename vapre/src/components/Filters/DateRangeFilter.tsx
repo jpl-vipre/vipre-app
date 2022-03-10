@@ -18,7 +18,7 @@ const DateRangeFilter: FC<DateRangeFilterProps> = ({ filter }) => {
     <FormControl fullWidth style={{ marginBottom: "15px" }} className="date-range-filter">
       <FormLabel
         style={{ textAlign: "left", paddingLeft: "5px", marginBottom: "5px" }}
-        id={`${filter.label}-date-range-label`}
+        id={`${filter.label.replace(/ /g, "-").toLowerCase()}-date-range-label`}
       >
         {filter.label}
       </FormLabel>

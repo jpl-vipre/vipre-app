@@ -14,7 +14,10 @@ const SliderRangeFilter: FC<SliderRangeFilterProps> = ({ filter }) => {
 
   return (
     <div style={{ marginBottom: "25px", textAlign: "left" }} className="slider-range">
-      <FormLabel style={{ textAlign: "left", paddingLeft: "5px" }} id={`${filter.label}-slider-label`}>
+      <FormLabel
+        style={{ textAlign: "left", paddingLeft: "5px" }}
+        id={`${filter.label.replace(/ /g, "-").toLowerCase()}-slider-label`}
+      >
         {filter.label} {filter.units ? `(${filter.units})` : ""}
       </FormLabel>
       <div style={{ display: "flex", flexDirection: "column" }}>

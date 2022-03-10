@@ -1,16 +1,18 @@
-import { FC } from "react";
+import { FC, CSSProperties } from "react";
 import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 
 import useStore, { FilterItem } from "../../utils/store";
 
 interface SelectFilterProps {
   filter: FilterItem;
+  style?: CSSProperties;
+  className?: string;
 }
-const SelectFilter: FC<SelectFilterProps> = ({ filter }) => {
+const SelectFilter: FC<SelectFilterProps> = ({ filter, style, className }) => {
   const setFilter = useStore((state) => state.setFilter);
   return (
-    <FormControl fullWidth style={{ marginBottom: "15px" }}>
-      <InputLabel id={`${filter.label}-select-label`}>{filter.label}</InputLabel>
+    <FormControl fullWidth style={{ marginBottom: "15px", ...style }} className={className}>
+      <InputLabel id={`${filter.label.replace(/ /g, "-").toLowerCase()}-select-label`}>{filter.label}</InputLabel>
       <Select
         variant="standard"
         style={{ textAlign: "left", paddingLeft: "5px" }}

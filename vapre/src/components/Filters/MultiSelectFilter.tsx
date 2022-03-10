@@ -16,7 +16,7 @@ const MultiSelectFilter: FC<MultiSelectFilterProps> = ({ filter }) => {
     <FormControl fullWidth style={{ marginBottom: "15px" }}>
       <Autocomplete
         multiple
-        id={`${filter.label}-multi-select`}
+        id={`${filter.label.replace(/ /g, "-").toLowerCase()}-multi-select`}
         options={filter.options!}
         getOptionLabel={(option) => option}
         filterSelectedOptions
@@ -28,7 +28,7 @@ const MultiSelectFilter: FC<MultiSelectFilterProps> = ({ filter }) => {
           return (
             <Reorder
               className="tag-order"
-              reorderId={`tag-order-${filter.label}`}
+              reorderId={`tag-order-${filter.label.replace(/ /g, "-").toLowerCase()}`}
               onReorder={(event: any, previousIndex: number, nextIndex: number) => {
                 let newTagOrder = reorder([...tags], previousIndex, nextIndex);
                 setFilter({ ...filter, value: newTagOrder });

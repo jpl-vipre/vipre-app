@@ -24,6 +24,7 @@ export type FilterItem = {
   step?: number;
   min?: number;
   max?: number;
+  hidden?: boolean;
 };
 
 export type Store = {

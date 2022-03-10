@@ -15,20 +15,22 @@ const FilterList: FC = () => {
     <div className="filter-container">
       <h5>Filters</h5>
       <div style={{ padding: "10px", display: "flex", flexDirection: "column" }}>
-        {filterList.map((filter) => {
-          switch (filter.type) {
-            case "select":
-              return <SelectFilter filter={filter} />;
-            case "multi-select":
-              return <MultiSelectFilter filter={filter} />;
-            case "date-range":
-              return <DateRangeFilter filter={filter} />;
-            case "slider-range":
-              return <SliderRangeFilter filter={filter} />;
-            default:
-              return null;
-          }
-        })}
+        {filterList
+          .filter((filter) => !filter.hidden)
+          .map((filter) => {
+            switch (filter.type) {
+              case "select":
+                return <SelectFilter filter={filter} />;
+              case "multi-select":
+                return <MultiSelectFilter filter={filter} />;
+              case "date-range":
+                return <DateRangeFilter filter={filter} />;
+              case "slider-range":
+                return <SliderRangeFilter filter={filter} />;
+              default:
+                return null;
+            }
+          })}
       </div>
     </div>
   );

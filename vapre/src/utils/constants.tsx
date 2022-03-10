@@ -9,6 +9,13 @@ export const DEFAULT_TABS = [
 
 export const FILTERS = [
   {
+    label: "Target Body",
+    type: "select",
+    options: ["Saturn", "Uranus", "Neptune"],
+    defaultValue: "Saturn",
+    hidden: true,
+  },
+  {
     label: "Entry Altitude",
     type: "select",
     options: [700, 750, 800],
