@@ -20,6 +20,7 @@ export type FilterItem = {
   value?: any;
   defaultValue?: any;
   units?: string;
+  step?: number;
   min?: number;
   max?: number;
 };
@@ -80,13 +81,14 @@ const useStore = create<Store>(
       {
         label: "Launch Date Range",
         type: "date-range",
-        defaultValue: [new Date(), new Date()],
+        defaultValue: [new Date(), new Date(new Date().setFullYear(new Date().getFullYear() + 1))],
       },
       {
         label: "Flight Path Angle",
         type: "slider-range",
         min: 0,
         max: 360,
+        step: 1,
         defaultValue: [60, 120],
         units: "deg",
       },
@@ -95,6 +97,7 @@ const useStore = create<Store>(
         type: "slider-range",
         min: 0,
         max: 10000,
+        step: 1,
         defaultValue: [60, 120],
         units: "km/s",
       },
