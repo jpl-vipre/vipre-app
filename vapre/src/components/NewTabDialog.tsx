@@ -35,7 +35,7 @@ const GraphRow: FC<GraphRowProps> = ({ modifiedTab, setModifiedTab, rowLabel, ro
           marginBottom: "10px",
           marginTop: "-17.5px",
           marginLeft: "10px",
-          background: "#445063",
+          background: "#202e46",
           width: "fit-content",
           padding: "0 5px",
         }}
@@ -63,7 +63,7 @@ const GraphRow: FC<GraphRowProps> = ({ modifiedTab, setModifiedTab, rowLabel, ro
                     marginBottom: "10px",
                     marginTop: "-17.5px",
                     marginLeft: "10px",
-                    background: "#445063",
+                    background: "#202e46",
                     width: "fit-content",
                     padding: "0 5px",
                   }}
@@ -137,7 +137,7 @@ const GraphRow: FC<GraphRowProps> = ({ modifiedTab, setModifiedTab, rowLabel, ro
                     newTab[rowName] = row;
                     setModifiedTab(newTab);
                   }}
-                  style={{ margin: "auto" }}
+                  style={{ marginLeft: "auto" }}
                 >
                   <RemoveCircleOutlineIcon color="error" />
                 </IconButton>

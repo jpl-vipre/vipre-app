@@ -17,6 +17,7 @@ export type VizTab = {
 
 export type FilterItem = {
   label: string;
+  dataField: string;
   type: string;
   options?: any[];
   value?: any;

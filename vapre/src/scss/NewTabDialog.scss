@@ -8,5 +8,39 @@
 .tab-dialog {
   div.MuiDialog-container div.MuiPaper-root {
     max-width: 100vw;
+    width: 100vw;
+    background-color: #202e46;
+    background-image: none;
+    color: white;
+
+    .tab-content {
+      color: white;
+      min-width: 400px;
+
+      .tab-title-text {
+        color: white;
+
+        label,
+        input {
+          color: white;
+        }
+
+        div.MuiInput-root {
+          &::before,
+          &:hover {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.42);
+          }
+          &::after {
+            border-bottom: 2px solid #ffffff;
+          }
+        }
+      }
+    }
+
+    .dialog-actions {
+      .Mui-disabled {
+        color: rgba(255, 255, 255, 0.26);
+      }
+    }
   }
 }
