@@ -1,4 +1,5 @@
 import create from "zustand";
+import constants from "./constants";
 
 export type GraphConfig = {
   type: string;
@@ -16,12 +17,14 @@ export type VizTab = {
 export type FilterItem = {
   label: string;
   type: string;
-  options: any[];
+  options?: any[];
   value?: any;
   defaultValue?: any;
   units?: string;
+  step?: number;
   min?: number;
   max?: number;
+  hidden?: boolean;
 };
 
 export type Store = {
@@ -39,14 +42,7 @@ const useStore = create<Store>(
   (set, get): Store => ({
     activeTab: 0,
     setActiveTab: (activeTab: number) => set(() => ({ activeTab })),
-    tabs: [
-      {
-        id: 0,
-        label: "Dashboard",
-        topRow: [],
-        bottomRow: [],
-      },
-    ],
+    tabs: constants.DEFAULT_TABS,
     setTabs: (tabs: VizTab[]) => set({ tabs }),
     setTab: (tab: VizTab) => {
       let tabs = get().tabs;
@@ -54,26 +50,10 @@ const useStore = create<Store>(
       if (tabIndex === -1) {
         set({ tabs: [...tabs, tab] });
       } else {
-        tabs[tabIndex] = tab;
-        set({ tabs });
+        set({ tabs: [...tabs.slice(0, tabIndex), tab, ...tabs.slice(tabIndex + 1)] });
       }
     },
-    filterList: [
-      {
-        label: "Entry Altitude",
-        type: "select",
-        options: [700, 750, 800],
-        defaultValue: 700,
-        units: "km",
-      },
-      {
-        label: "Entry Latitude",
-        type: "select",
-        options: [60, 70, 80],
-        defaultValue: 60,
-        units: "deg",
-      },
-    ],
+    filterList: constants.FILTERS,
     setFilterList: (filterList: FilterItem[]) => set({ filterList }),
     setFilter: (filter: FilterItem) => {
       let filterList = get().filterList;
@@ -81,8 +61,7 @@ const useStore = create<Store>(
       if (filterIndex === -1) {
         set({ filterList: [...filterList, filter] });
       } else {
-        filterList[filterIndex] = filter;
-        set({ filterList });
+        set({ filterList: [...filterList.slice(0, filterIndex), filter, ...filterList.slice(filterIndex + 1)] });
       }
     },
   })

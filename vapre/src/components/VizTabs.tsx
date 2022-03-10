@@ -11,8 +11,11 @@ import IconButton from "@mui/material/IconButton";
 import EditIcon from "@mui/icons-material/Edit";
 import AddIcon from "@mui/icons-material/Add";
 
-import "../scss/VizTabs.scss";
 import useStore, { VizTab } from "../utils/store";
+
+import VizContent from "./VizContent";
+
+import "../scss/VizTabs.scss";
 
 interface TabPanelProps {
   index: number;
@@ -119,7 +122,7 @@ const VizTabButton: FC<VizTabButtonProps> = ({ tab, defaultOpen = false }) => {
   const [open, setOpen] = useState(defaultOpen);
   const [activeTab, setActiveTab] = useStore((state) => [state.activeTab, state.setActiveTab]);
   const setTab = useStore((state) => state.setTab);
-  const [modifiedTab, setModifiedTab] = useState<VizTab>(tab);
+  const [modifiedTab, setModifiedTab] = useState<VizTab>({ ...tab });
 
   useEffect(() => {
     if (open) {
@@ -159,6 +162,7 @@ const VizTabs: FC = () => {
   const tabs = useStore((state) => state.tabs);
   const setTab = useStore((state) => state.setTab);
   const [newTabID, setNewTabID] = useState<number>(-1);
+
   return (
     <div className="viz-tab-container">
       <div>
@@ -166,29 +170,40 @@ const VizTabs: FC = () => {
           {tabs.map((tab) => (
             <VizTabButton key={`${tab.id}-tab-button`} tab={tab} defaultOpen={newTabID === tab.id} />
           ))}
-          <IconButton
-            style={{ padding: 0, color: "white", cursor: "pointer", marginLeft: "5px" }}
-            onClick={() => {
-              let tabID = tabs.length;
-              setTab({
-                id: tabID,
-                label: "",
-                topRow: [],
-                bottomRow: [],
-              });
-              setNewTabID(tabID);
+          <div
+            style={{
+              padding: 0,
+              color: "white",
+              cursor: "pointer",
+              paddingLeft: "5px",
+              borderLeft: "1px solid rgba(255,255,255,0.23)",
             }}
           >
-            <AddIcon />
-          </IconButton>
+            <IconButton
+              onClick={() => {
+                let tabID = tabs.length;
+                setTab({
+                  id: tabID,
+                  label: "",
+                  topRow: [],
+                  bottomRow: [],
+                });
+                setNewTabID(tabID);
+              }}
+            >
+              <AddIcon />
+            </IconButton>
+          </div>
         </div>
       </div>
       <div>
-        {tabs.map((tab) => (
-          <TabPanel key={`${tab.id}-tabpanel`} index={tab.id}>
-            {tab.label}
-          </TabPanel>
-        ))}
+        {tabs.map((tab) => {
+          return (
+            <TabPanel key={`${tab.id}-tabpanel`} index={tab.id}>
+              <VizContent tab={tab} />
+            </TabPanel>
+          );
+        })}
       </div>
     </div>
   );

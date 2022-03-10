@@ -39,7 +39,8 @@ header {
     display: flex;
     align-items: center;
 
-    img {
+    img,
+    .img-placeholder {
       width: 50px;
     }
 
@@ -48,9 +49,9 @@ header {
     }
 
     #target-body-select-label {
-      color: white;
+      left: -10px;
     }
-    #target-body-select {
+    .target-body-select {
       min-width: 200px;
       color: white;
       text-align: left;
