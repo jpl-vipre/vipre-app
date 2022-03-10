@@ -146,26 +146,28 @@ const GraphRow: FC<GraphRowProps> = ({ modifiedTab, setModifiedTab, rowLabel, ro
           })}
         </div>
         {(modifiedTab[rowName] as GraphConfig[]).length < 5 && (
-          <IconButton
-            onClick={() => {
-              let row = [
-                ...(modifiedTab[rowName] as GraphConfig[]),
-                {
-                  type: "scatterplot",
-                  xAxis: "",
-                  yAxis: "",
-                  color: "",
-                },
-              ];
-              let newTab = { ...modifiedTab };
-              // @ts-ignore
-              newTab[rowName] = row;
-              setModifiedTab(newTab);
-            }}
-            style={{ margin: "auto" }}
-          >
-            <AddIcon />
-          </IconButton>
+          <div style={{ display: "flex" }}>
+            <IconButton
+              onClick={() => {
+                let row = [
+                  ...(modifiedTab[rowName] as GraphConfig[]),
+                  {
+                    type: "scatterplot",
+                    xAxis: "",
+                    yAxis: "",
+                    color: "",
+                  },
+                ];
+                let newTab = { ...modifiedTab };
+                // @ts-ignore
+                newTab[rowName] = row;
+                setModifiedTab(newTab);
+              }}
+              style={{ margin: "auto" }}
+            >
+              <AddIcon />
+            </IconButton>
+          </div>
         )}
       </div>
     </FormGroup>
