@@ -65,8 +65,8 @@ const Header: FC = () => {
           }
         }}
       >
-        <h1>VAPRE</h1>
-        <h5>Visualization of Atmospheric Probe Entry conditions for different bodies and trajectories</h5>
+        <h1>VIPRE</h1>
+        <h5>Visualization of the Impact of PRobe Entry conditions on the science, mission and spacecraft design</h5>
       </span>
     </header>
   );
