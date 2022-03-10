@@ -1,0 +1,48 @@
+.graph-edit-group {
+  margin-top: 15px;
+  .MuiInput-root {
+    margin-top: 5px;
+  }
+}
+
+.filters-dialog {
+  div.MuiDialog-container div.MuiPaper-root {
+    max-width: 100vw;
+    // width: 100vw;
+    overflow: scroll;
+    background-color: #202e46;
+    background-image: none;
+    color: white;
+
+    .filters-content {
+      color: white;
+      min-width: 400px;
+      padding: 5px;
+
+      .filters-title-text {
+        color: white;
+
+        label,
+        input {
+          color: white;
+        }
+
+        div.MuiInput-root {
+          &::before,
+          &:hover {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.42);
+          }
+          &::after {
+            border-bottom: 2px solid #ffffff;
+          }
+        }
+      }
+    }
+
+    .dialog-actions {
+      .Mui-disabled {
+        color: rgba(255, 255, 255, 0.26);
+      }
+    }
+  }
+}

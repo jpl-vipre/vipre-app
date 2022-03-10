@@ -7,7 +7,7 @@ import AddIcon from "@mui/icons-material/Add";
 import useStore, { VizTab } from "../utils/store";
 
 import VizContent from "./VizContent";
-import NewTabDialog from "./NewTabDialog";
+import EditTabDialog from "./EditTabDialog";
 
 import "../scss/VizTabs.scss";
 
@@ -72,7 +72,7 @@ const VizTabButton: FC<VizTabButtonProps> = ({ tab, defaultOpen = false }) => {
         </span>
       </div>
 
-      <NewTabDialog open={open} setOpen={setOpen} modifiedTab={modifiedTab} setModifiedTab={setModifiedTab} />
+      <EditTabDialog open={open} setOpen={setOpen} modifiedTab={modifiedTab} setModifiedTab={setModifiedTab} />
     </>
   );
 };

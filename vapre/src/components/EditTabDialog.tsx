@@ -7,16 +7,16 @@ import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import useStore, { VizTab } from "../utils/store";
 
-import "../scss/NewTabDialog.scss";
+import "../scss/EditTabDialog.scss";
 import DialogGraphRow from "./DialogGraphRow";
 
-interface NewTabDialogProps {
+interface EditTabDialogProps {
   open: boolean;
   setOpen: (open: boolean) => void;
   modifiedTab: VizTab;
   setModifiedTab: (modifiedTab: VizTab) => void;
 }
-const NewTabDialog: FC<NewTabDialogProps> = ({ open, setOpen, modifiedTab, setModifiedTab }) => {
+const EditTabDialog: FC<EditTabDialogProps> = ({ open, setOpen, modifiedTab, setModifiedTab }) => {
   const [tabs, setTabs] = useStore((state) => [state.tabs, state.setTabs]);
   const setTab = useStore((state) => state.setTab);
   const setActiveTab = useStore((state) => state.setActiveTab);
@@ -102,4 +102,4 @@ const NewTabDialog: FC<NewTabDialogProps> = ({ open, setOpen, modifiedTab, setMo
   );
 };
 
-export default NewTabDialog;
+export default EditTabDialog;
