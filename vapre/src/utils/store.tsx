@@ -16,6 +16,7 @@ export type VizTab = {
 };
 
 export type FilterItem = {
+  id: number;
   label: string;
   dataField: string;
   type: string;
@@ -55,7 +56,7 @@ const useStore = create<Store>(
         set({ tabs: [...tabs.slice(0, tabIndex), tab, ...tabs.slice(tabIndex + 1)] });
       }
     },
-    filterList: constants.FILTERS,
+    filterList: constants.FILTERS.map((filter, i) => ({ ...filter, id: i })),
     setFilterList: (filterList: FilterItem[]) => set({ filterList }),
     setFilter: (filter: FilterItem) => {
       let filterList = get().filterList;

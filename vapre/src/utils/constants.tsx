@@ -31,10 +31,37 @@ export const DEFAULT_TABS = [
   },
 ];
 
+export const FILTER_TYPES = {
+  select: {
+    label: "Select",
+    units: true,
+    range: false,
+    step: false,
+  },
+  "multi-select": {
+    label: "Multi Select",
+    units: false,
+    range: false,
+    step: false,
+  },
+  "date-range": {
+    label: "Date Range",
+    units: false,
+    range: false,
+    step: false,
+  },
+  "slider-range": {
+    label: "Slider Range",
+    units: true,
+    range: true,
+    step: true,
+  },
+};
+
 export const FILTERS = [
   {
     label: "Target Body",
-    dataField: "Target Body",
+    dataField: "targetBody",
     type: "select",
     options: ["Saturn", "Uranus", "Neptune"],
     defaultValue: "Saturn",
@@ -42,7 +69,7 @@ export const FILTERS = [
   },
   {
     label: "Entry Altitude",
-    dataField: "Entry Altitude",
+    dataField: "entryAltitude",
     type: "select",
     options: [700, 750, 800],
     defaultValue: 700,
@@ -50,7 +77,7 @@ export const FILTERS = [
   },
   {
     label: "Entry Latitude",
-    dataField: "Entry Latitude",
+    dataField: "entryLatitude",
     type: "select",
     options: [60, 70, 80],
     defaultValue: 60,
@@ -58,19 +85,19 @@ export const FILTERS = [
   },
   {
     label: "Flyby Architecture",
-    dataField: "Flyby Architecture",
+    dataField: "flybyArchitecture",
     type: "multi-select",
     options: ["A", "B", "C"],
   },
   {
     label: "Launch Date Range",
-    dataField: "Launch Date Range",
+    dataField: "launchDateRnage",
     type: "date-range",
     defaultValue: [new Date(), new Date(new Date().setFullYear(new Date().getFullYear() + 1))],
   },
   {
     label: "Flight Path Angle",
-    dataField: "Flight Path Angle",
+    dataField: "flightPathAngle",
     type: "slider-range",
     min: 0,
     max: 360,
@@ -80,7 +107,7 @@ export const FILTERS = [
   },
   {
     label: "Entry Speed",
-    dataField: "Entry Speed",
+    dataField: "entrySpeed",
     type: "slider-range",
     min: 0,
     max: 10000,
@@ -90,7 +117,7 @@ export const FILTERS = [
   },
   {
     label: "Time visible from Earth",
-    dataField: "Time visible from Earth",
+    dataField: "timeVisibleFromEarth",
     type: "slider-range",
     min: 0,
     max: 10000,
@@ -100,7 +127,7 @@ export const FILTERS = [
   },
   {
     label: "Data Volume Returned",
-    dataField: "Data Volume Returned",
+    dataField: "dataVolumeReturned",
     type: "slider-range",
     min: 0,
     max: 10000,
@@ -110,7 +137,7 @@ export const FILTERS = [
   },
   {
     label: "Solar Phase",
-    dataField: "Solar Phase",
+    dataField: "solarPhase",
     type: "slider-range",
     min: 0,
     max: 11,
@@ -120,5 +147,5 @@ export const FILTERS = [
   },
 ];
 
-const constants = { DEFAULT_TABS, FILTERS, GRAPH_TYPES };
+const constants = { DEFAULT_TABS, FILTERS, GRAPH_TYPES, FILTER_TYPES };
 export default constants;

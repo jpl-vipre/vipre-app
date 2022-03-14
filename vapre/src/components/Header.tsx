@@ -11,7 +11,7 @@ const Header: FC = () => {
   const [windowMaximized, setWindowMaximized] = useState(false);
 
   const targetBodyFilter = useStore((state) => {
-    const targetBody = state.filterList.filter((filter) => filter.label === "Target Body");
+    const targetBody = state.filterList.filter((filter) => filter.id === 0);
     if (targetBody.length === 0) {
       return null;
     } else {
