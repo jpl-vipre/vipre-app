@@ -6,7 +6,6 @@ interface OutlinedContainerProps {
   style?: CSSProperties;
   labelStyle?: CSSProperties;
   className?: string;
-  children?: JSX.Element | JSX.Element[];
 }
 
 const OutlinedContainer: FC<OutlinedContainerProps> = ({

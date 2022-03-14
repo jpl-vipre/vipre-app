@@ -33,7 +33,7 @@ const FilterList: FC = () => {
         </IconButton>
         <h5>Filters</h5>
       </div>
-      <div style={{ padding: "10px", display: "flex", flexDirection: "column" }}>
+      <div style={{ padding: "10px", display: "flex", flexDirection: "column", overflow: "scroll" }}>
         {filterList
           .filter((filter) => !filter.hidden)
           .map((filter) => {

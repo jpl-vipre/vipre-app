@@ -5,7 +5,9 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
-import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import { FormControl, InputLabel, MenuItem, Select, IconButton } from "@mui/material";
+
+import AddIcon from "@mui/icons-material/Add";
 
 import useStore, { FilterItem } from "../utils/store";
 import constants from "../utils/constants";
@@ -168,6 +170,33 @@ const EditFiltersDialog: FC<EditFiltersDialogProps> = ({ open, setOpen }) => {
               </OutlinedContainer>
             );
           })}
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <IconButton
+              onClick={() => {
+                let newFilters = [
+                  ...modifiedFilters,
+                  {
+                    id: modifiedFilters.length,
+                    label: "",
+                    dataField: "",
+                    type: "",
+                    options: [],
+                    value: "",
+                    defaultValue: "",
+                    units: "",
+                    step: 0,
+                    min: 0,
+                    max: 0,
+                    hidden: false,
+                  },
+                ];
+                setModifiedFilters(newFilters);
+              }}
+              style={{ margin: "auto" }}
+            >
+              <AddIcon />
+            </IconButton>
+          </div>
         </OutlinedContainer>
       </DialogContent>
       <DialogActions className="filters-actions">
