@@ -140,7 +140,6 @@ interface EditFiltersDialogProps {
 }
 const EditFiltersDialog: FC<EditFiltersDialogProps> = ({ open, setOpen }) => {
   const [filterList, setFilterList] = useStore((state) => [state.filterList, state.setFilterList]);
-  const setFilter = useStore((state) => state.setFilter);
 
   const [modifiedFilters, setModifiedFilters] = useState(filterList);
 
