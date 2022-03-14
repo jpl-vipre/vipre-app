@@ -20,7 +20,7 @@ const AllFieldsSelect: FC<AllFieldsSelectProps> = ({ value, label, onChange, opt
         variant="standard"
         style={{ textAlign: "left", paddingLeft: "5px" }}
         labelId={`${label.replace(/ /g, "-").toLowerCase()}-graph-type-label`}
-        value={value || ""}
+        value={value && options.includes(value) ? value : ""}
         label={label}
         onChange={(evt: any) => {
           if (onChange) onChange(evt.target.value as string);

@@ -8,6 +8,7 @@ import TextField from "@mui/material/TextField";
 import { FormControl, InputLabel, MenuItem, Select, IconButton } from "@mui/material";
 
 import AddIcon from "@mui/icons-material/Add";
+import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 
 import useStore, { FilterItem } from "../utils/store";
 import constants from "../utils/constants";
@@ -16,7 +17,11 @@ import AllFieldsSelect from "./AllFieldsSelect";
 
 import "../scss/EditFiltersDialog.scss";
 
-const EditFilter: FC<{ filter: FilterItem; setFilter: (filter: FilterItem) => void }> = ({ filter, setFilter }) => {
+const EditFilter: FC<{ filter: FilterItem; setFilter: (filter: FilterItem) => void; deleteFilter: () => void }> = ({
+  filter,
+  setFilter,
+  deleteFilter,
+}) => {
   // @ts-ignore
   const filterOptions: any = (constants.FILTER_TYPES[filter.type] as any) || {};
 
@@ -130,6 +135,16 @@ const EditFilter: FC<{ filter: FilterItem; setFilter: (filter: FilterItem) => vo
           />
         )}
       </div>
+      <div style={{ display: "flex" }}>
+        <IconButton
+          onClick={() => {
+            deleteFilter();
+          }}
+          style={{ marginLeft: "auto" }}
+        >
+          <RemoveCircleOutlineIcon color="error" />
+        </IconButton>
+      </div>
     </div>
   );
 };
@@ -164,6 +179,9 @@ const EditFiltersDialog: FC<EditFiltersDialogProps> = ({ open, setOpen }) => {
                         ...modifiedFilters.slice(filterIndex + 1),
                       ]);
                     }
+                  }}
+                  deleteFilter={() => {
+                    setModifiedFilters(modifiedFilters.filter((filter) => filter.id !== modifiedFilter.id));
                   }}
                 />
               </OutlinedContainer>
