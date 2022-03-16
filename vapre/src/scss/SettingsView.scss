@@ -1,0 +1,13 @@
+div.settings-container {
+  display: flex;
+  flex-direction: column;
+  color: white;
+  background-color: #202e46;
+  border-radius: 5px;
+  margin: 15px;
+  height: calc(100vh - 70px - 38.5px);
+
+  h1 {
+    margin: 0;
+  }
+}
