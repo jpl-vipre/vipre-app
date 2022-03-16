@@ -1,14 +1,13 @@
-div.filter-container {
+div.settings-container {
   display: flex;
   flex-direction: column;
   color: white;
-  height: 100%;
   background-color: #202e46;
   border-radius: 5px;
-  margin-right: 15px;
+  margin: 15px;
+  height: calc(100vh - 70px - 38.5px);
 
-  h5 {
+  h1 {
     margin: 0;
-    font-size: 16px;
   }
 }

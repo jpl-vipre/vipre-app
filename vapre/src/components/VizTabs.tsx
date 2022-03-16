@@ -1,12 +1,5 @@
 import { FC, useEffect, useState } from "react";
 
-import Dialog from "@mui/material/Dialog";
-import DialogTitle from "@mui/material/DialogTitle";
-import DialogContent from "@mui/material/DialogContent";
-import DialogActions from "@mui/material/DialogActions";
-import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
-
 import IconButton from "@mui/material/IconButton";
 import EditIcon from "@mui/icons-material/Edit";
 import AddIcon from "@mui/icons-material/Add";
@@ -14,6 +7,7 @@ import AddIcon from "@mui/icons-material/Add";
 import useStore, { VizTab } from "../utils/store";
 
 import VizContent from "./VizContent";
+import EditTabDialog from "./EditTabDialog";
 
 import "../scss/VizTabs.scss";
 
@@ -33,83 +27,8 @@ const TabPanel: FC<TabPanelProps> = ({ children, index }) => {
       aria-labelledby={`viz-tab-${index}`}
       style={{ borderRadius: "5px", borderTopLeftRadius: index === 0 ? "0" : "5px" }}
     >
-      {activeTab === index && <div>{children}</div>}
+      {activeTab === index && <div style={{ height: "100%" }}>{children}</div>}
     </div>
-  );
-};
-
-interface NewTabDialogProps {
-  open: boolean;
-  setOpen: (open: boolean) => void;
-  modifiedTab: VizTab;
-  setModifiedTab: (modifiedTab: VizTab) => void;
-}
-
-const NewTabDialog: FC<NewTabDialogProps> = ({ open, setOpen, modifiedTab, setModifiedTab }) => {
-  const [tabs, setTabs] = useStore((state) => [state.tabs, state.setTabs]);
-  const setTab = useStore((state) => state.setTab);
-  const setActiveTab = useStore((state) => state.setActiveTab);
-
-  return (
-    <Dialog open={open} onClose={() => setOpen(false)} className="tab-dialog">
-      <DialogTitle className="dialog-title">Tab {modifiedTab.id}</DialogTitle>
-      <DialogContent className="tab-content">
-        <TextField
-          autoFocus
-          className="tab-title-text"
-          label="title"
-          type="text"
-          fullWidth
-          variant="standard"
-          value={modifiedTab.label}
-          onChange={(evt) => {
-            setModifiedTab({ ...modifiedTab, label: evt.target.value });
-          }}
-        />
-      </DialogContent>
-      <DialogActions className="dialog-actions">
-        <Button
-          style={{ marginRight: "auto" }}
-          color="error"
-          variant="contained"
-          disabled={tabs.length === 1}
-          onClick={() => {
-            setOpen(false);
-            let filteredTabs = tabs.filter((tab) => tab.id !== modifiedTab.id);
-            setTabs(filteredTabs);
-            if (filteredTabs.length > 0) {
-              setActiveTab(filteredTabs[0].id);
-            }
-          }}
-        >
-          Delete
-        </Button>
-        <Button
-          style={{ color: "white" }}
-          onClick={() => {
-            setOpen(false);
-            let existingTab = tabs.filter((tab) => tab.id === modifiedTab.id)[0];
-            if (existingTab.label !== "") {
-              setModifiedTab(existingTab);
-            } else {
-              setTabs(tabs.filter((tab) => tab.id !== modifiedTab.id));
-            }
-          }}
-        >
-          Cancel
-        </Button>
-        <Button
-          type="submit"
-          style={{ color: "white" }}
-          onClick={() => {
-            setOpen(false);
-            setTab(modifiedTab);
-          }}
-        >
-          Done
-        </Button>
-      </DialogActions>
-    </Dialog>
   );
 };
 
@@ -153,7 +72,7 @@ const VizTabButton: FC<VizTabButtonProps> = ({ tab, defaultOpen = false }) => {
         </span>
       </div>
 
-      <NewTabDialog open={open} setOpen={setOpen} modifiedTab={modifiedTab} setModifiedTab={setModifiedTab} />
+      <EditTabDialog open={open} setOpen={setOpen} modifiedTab={modifiedTab} setModifiedTab={setModifiedTab} />
     </>
   );
 };

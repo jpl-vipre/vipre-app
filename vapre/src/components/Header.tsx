@@ -1,5 +1,9 @@
 import { FC, useMemo, useState } from "react";
 
+import { IconButton, Tooltip } from "@mui/material";
+import SettingsIcon from "@mui/icons-material/Settings";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+
 import SelectFilter from "./Filters/SelectFilter";
 import useStore from "../utils/store";
 
@@ -7,11 +11,11 @@ import "../scss/Header.scss";
 
 const { ipcRenderer } = window.require("electron");
 
-const Header: FC = () => {
+const Header: FC<{ view: number; setView: (view: number) => void }> = ({ view, setView }) => {
   const [windowMaximized, setWindowMaximized] = useState(false);
 
   const targetBodyFilter = useStore((state) => {
-    const targetBody = state.filterList.filter((filter) => filter.label === "Target Body");
+    const targetBody = state.filterList.filter((filter) => filter.id === 0);
     if (targetBody.length === 0) {
       return null;
     } else {
@@ -65,9 +69,19 @@ const Header: FC = () => {
           }
         }}
       >
-        <h1>VAPRE</h1>
-        <h5>Visualization of Atmospheric Probe Entry conditions for different bodies and trajectories</h5>
+        <h1>VIPRE</h1>
+        <h5>Visualization of the Impact of PRobe Entry conditions on the science, mission and spacecraft design</h5>
       </span>
+      <Tooltip title={view === 0 ? "Settings" : "Dashboard"}>
+        <IconButton
+          style={{ position: "absolute", right: "5px" }}
+          onClick={() => {
+            setView(view === 0 ? 1 : 0);
+          }}
+        >
+          {view === 0 ? <SettingsIcon fontSize="large" /> : <DashboardIcon fontSize="large" />}
+        </IconButton>
+      </Tooltip>
     </header>
   );
 };

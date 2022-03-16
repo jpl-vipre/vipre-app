@@ -1,4 +1,7 @@
-import { FC } from "react";
+import { FC, useState } from "react";
+
+import EditIcon from "@mui/icons-material/Edit";
+import IconButton from "@mui/material/IconButton";
 
 import useStore from "../utils/store";
 import SelectFilter from "./Filters/SelectFilter";
@@ -6,15 +9,31 @@ import MultiSelectFilter from "./Filters/MultiSelectFilter";
 import DateRangeFilter from "./Filters/DateRangeFilter";
 import SliderRangeFilter from "./Filters/SliderRangeFilter";
 
+import EditFiltersDialog from "./EditFiltersDialog";
+
 import "../scss/FilterList.scss";
 
 const FilterList: FC = () => {
   const filterList = useStore((state) => state.filterList);
+  const [openEditFilters, setOpenEditFilters] = useState(false);
 
   return (
     <div className="filter-container">
-      <h5>Filters</h5>
-      <div style={{ padding: "10px", display: "flex", flexDirection: "column" }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          position: "relative",
+          padding: "15px",
+        }}
+      >
+        <IconButton style={{ position: "absolute", left: "5px" }} onClick={() => setOpenEditFilters(true)}>
+          <EditIcon />
+        </IconButton>
+        <h5>Filters</h5>
+      </div>
+      <div style={{ padding: "10px", display: "flex", flexDirection: "column", overflow: "scroll" }}>
         {filterList
           .filter((filter) => !filter.hidden)
           .map((filter) => {
@@ -32,6 +51,7 @@ const FilterList: FC = () => {
             }
           })}
       </div>
+      <EditFiltersDialog open={openEditFilters} setOpen={setOpenEditFilters} />
     </div>
   );
 };
