@@ -1,5 +1,12 @@
 import create from "zustand";
+import { configurePersist } from "zustand-persist";
+
 import constants from "./constants";
+
+const { persist } = configurePersist({
+  storage: localStorage,
+  rootKey: "vipre-app",
+});
 
 export type GraphConfig = {
   type: string;
@@ -42,32 +49,38 @@ export type Store = {
 };
 
 const useStore = create<Store>(
-  (set, get): Store => ({
-    activeTab: 0,
-    setActiveTab: (activeTab: number) => set(() => ({ activeTab })),
-    tabs: constants.DEFAULT_TABS,
-    setTabs: (tabs: VizTab[]) => set({ tabs }),
-    setTab: (tab: VizTab) => {
-      let tabs = get().tabs;
-      let tabIndex = tabs.findIndex((existingTab) => existingTab.id === tab.id);
-      if (tabIndex === -1) {
-        set({ tabs: [...tabs, tab] });
-      } else {
-        set({ tabs: [...tabs.slice(0, tabIndex), tab, ...tabs.slice(tabIndex + 1)] });
-      }
+  persist(
+    {
+      key: "vipre-app",
+      allowlist: ["activeTab", "tabs", "filterList"],
     },
-    filterList: constants.FILTERS.map((filter, i) => ({ ...filter, id: i })),
-    setFilterList: (filterList: FilterItem[]) => set({ filterList }),
-    setFilter: (filter: FilterItem) => {
-      let filterList = get().filterList;
-      let filterIndex = filterList.findIndex((existingFilter) => existingFilter.label === filter.label);
-      if (filterIndex === -1) {
-        set({ filterList: [...filterList, filter] });
-      } else {
-        set({ filterList: [...filterList.slice(0, filterIndex), filter, ...filterList.slice(filterIndex + 1)] });
-      }
-    },
-  })
+    (set, get): Store => ({
+      activeTab: 0,
+      setActiveTab: (activeTab: number) => set(() => ({ activeTab })),
+      tabs: constants.DEFAULT_TABS,
+      setTabs: (tabs: VizTab[]) => set({ tabs }),
+      setTab: (tab: VizTab) => {
+        let tabs = get().tabs;
+        let tabIndex = tabs.findIndex((existingTab) => existingTab.id === tab.id);
+        if (tabIndex === -1) {
+          set({ tabs: [...tabs, tab] });
+        } else {
+          set({ tabs: [...tabs.slice(0, tabIndex), tab, ...tabs.slice(tabIndex + 1)] });
+        }
+      },
+      filterList: constants.FILTERS.map((filter, i) => ({ ...filter, id: i })),
+      setFilterList: (filterList: FilterItem[]) => set({ filterList }),
+      setFilter: (filter: FilterItem) => {
+        let filterList = get().filterList;
+        let filterIndex = filterList.findIndex((existingFilter) => existingFilter.label === filter.label);
+        if (filterIndex === -1) {
+          set({ filterList: [...filterList, filter] });
+        } else {
+          set({ filterList: [...filterList.slice(0, filterIndex), filter, ...filterList.slice(filterIndex + 1)] });
+        }
+      },
+    })
+  )
 );
 
 export default useStore;

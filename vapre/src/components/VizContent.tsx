@@ -19,7 +19,7 @@ const VizContent: FC<VizContentProps> = ({ tab }) => {
                   alignItems: "center",
                   justifyContent: "center",
                   margin: "5px",
-                  background: "#465062",
+                  // background: "#465062",
                   height: "100%",
                 }}
               >
