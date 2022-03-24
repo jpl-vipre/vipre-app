@@ -44,6 +44,10 @@ const VizTabButton: FC<VizTabButtonProps> = ({ tab, defaultOpen = false }) => {
   const [modifiedTab, setModifiedTab] = useState<VizTab>({ ...tab });
 
   useEffect(() => {
+    setModifiedTab({ ...tab });
+  }, [tab]);
+
+  useEffect(() => {
     if (open) {
       const keypressListener = (evt: any) => {
         if (evt.code === "Enter" || evt.code === "NumpadEnter") {
@@ -81,7 +85,6 @@ const VizTabs: FC = () => {
   const tabs = useStore((state) => state.tabs);
   const setTab = useStore((state) => state.setTab);
   const [newTabID, setNewTabID] = useState<number>(-1);
-
   return (
     <div className="viz-tab-container">
       <div>

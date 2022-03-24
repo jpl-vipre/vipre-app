@@ -49,24 +49,26 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, yField, colorField })
               {data.map((entry, index) => (
                 <Cell
                   key={`cell-${index}`}
-                  fill={colorField && entry[colorField] ? colors(normalizeValue(entry[colorField])) : "black"}
+                  fill={colorField && entry[colorField] ? colors(normalizeValue(entry[colorField])) : "white"}
                 />
               ))}
             </Scatter>
           </ScatterChart>
         </ResponsiveContainer>
       </div>
-      <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
-        <span style={{ color: "#a1a1b5" }}>{maxBound}</span>
-        <div
-          style={{
-            height: "90%",
-            width: "25px",
-            background: `linear-gradient(${colors(normalizeValue(maxBound))}, ${colors(normalizeValue(minBound))})`,
-          }}
-        />
-        <span style={{ color: "#a1a1b5" }}>{minBound}</span>
-      </div>
+      {colorField && (
+        <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+          <span style={{ color: "#a1a1b5" }}>{maxBound}</span>
+          <div
+            style={{
+              height: "90%",
+              width: "25px",
+              background: `linear-gradient(${colors(normalizeValue(maxBound))}, ${colors(normalizeValue(minBound))})`,
+            }}
+          />
+          <span style={{ color: "#a1a1b5" }}>{minBound}</span>
+        </div>
+      )}
     </div>
   );
 };

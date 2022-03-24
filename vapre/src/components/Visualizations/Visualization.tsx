@@ -24,7 +24,7 @@ const Visualization: FC<VisualizationProps> = ({ config }) => {
         height: "100%",
         maxHeight: "calc(100% - 15px)",
         padding: "5px",
-        border: "1px solid white",
+        border: "1px solid #a1a1b5",
         borderRadius: "5px",
       }}
     >
