@@ -18,15 +18,15 @@ export const DEFAULT_TABS = [
     id: 0,
     label: "Dashboard",
     topRow: [
-      { type: "scatterplot", xAxis: "", yAxis: "", color: "" },
-      { type: "scatterplot", xAxis: "", yAxis: "", color: "" },
-      { type: "scatterplot", xAxis: "", yAxis: "", color: "" },
+      { type: "scatterplot", xAxis: "", xUnits: "", yAxis: "", yUnits: "", color: "", colorUnits: "" },
+      { type: "scatterplot", xAxis: "", xUnits: "", yAxis: "", yUnits: "", color: "", colorUnits: "" },
+      { type: "scatterplot", xAxis: "", xUnits: "", yAxis: "", yUnits: "", color: "", colorUnits: "" },
     ],
     bottomRow: [
-      { type: "globe", xAxis: "", yAxis: "", color: "" },
-      { type: "globe", xAxis: "", yAxis: "", color: "" },
-      { type: "globe", xAxis: "", yAxis: "", color: "" },
-      { type: "globe", xAxis: "", yAxis: "", color: "" },
+      { type: "globe", xAxis: "", xUnits: "", yAxis: "", yUnits: "", color: "", colorUnits: "" },
+      { type: "globe", xAxis: "", xUnits: "", yAxis: "", yUnits: "", color: "", colorUnits: "" },
+      { type: "globe", xAxis: "", xUnits: "", yAxis: "", yUnits: "", color: "", colorUnits: "" },
+      { type: "globe", xAxis: "", xUnits: "", yAxis: "", yUnits: "", color: "", colorUnits: "" },
     ],
   },
 ];

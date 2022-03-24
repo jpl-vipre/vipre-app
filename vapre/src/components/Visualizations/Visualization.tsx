@@ -29,7 +29,15 @@ const Visualization: FC<VisualizationProps> = ({ config }) => {
       }}
     >
       {config.type === "scatterplot" && (
-        <Scatterplot data={TEST_DATA} xField={config.xAxis} yField={config.yAxis} colorField={config.color} />
+        <Scatterplot
+          data={TEST_DATA}
+          xField={config.xAxis}
+          xUnits={config.xUnits}
+          yField={config.yAxis}
+          yUnits={config.yUnits}
+          colorField={config.color}
+          colorUnits={config.colorUnits}
+        />
       )}
     </div>
   );

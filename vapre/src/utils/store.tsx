@@ -11,8 +11,11 @@ const { persist } = configurePersist({
 export type GraphConfig = {
   type: string;
   xAxis: string;
+  xUnits?: string;
   yAxis: string;
+  yUnits?: string;
   color?: string;
+  colorUnits?: string;
 };
 
 export type VizTab = {

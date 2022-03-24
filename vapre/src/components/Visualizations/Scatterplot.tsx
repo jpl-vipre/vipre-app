@@ -11,10 +11,13 @@ const colors = scaleSequential(interpolateRdBu);
 interface ScatterplotProps {
   data: any[];
   xField: string;
+  xUnits?: string;
   yField: string;
+  yUnits?: string;
   colorField?: string;
+  colorUnits?: string;
 }
-const Scatterplot: FC<ScatterplotProps> = ({ data, xField, yField, colorField }) => {
+const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnits, colorField, colorUnits }) => {
   const [minBound, maxBound] = useMemo(() => {
     if (!colorField || !data.length) {
       return [0, 0];
@@ -38,12 +41,26 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, yField, colorField })
               top: 10,
               right: 30,
               // bottom: 20,
-              left: -15,
+              left: -5,
             }}
           >
             <CartesianGrid />
-            <XAxis type="number" dataKey={xField} name={xField} unit="cm" fill="#ffffff" style={{ fill: "#ffffff" }} />
-            <YAxis type="number" dataKey={yField} name={yField} unit="kg" fill="#ffffff" style={{ fill: "#ffffff" }} />
+            <XAxis
+              type="number"
+              dataKey={xField}
+              name={xField}
+              unit={xUnits || ""}
+              fill="#ffffff"
+              style={{ fill: "#ffffff" }}
+            />
+            <YAxis
+              type="number"
+              dataKey={yField}
+              name={yField}
+              unit={yUnits || ""}
+              fill="#ffffff"
+              style={{ fill: "#ffffff" }}
+            />
             <Tooltip cursor={{ strokeDasharray: "3 3" }} />
             <Scatter data={data} fill="#ffffff">
               {data.map((entry, index) => (
@@ -58,15 +75,19 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, yField, colorField })
       </div>
       {colorField && (
         <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
-          <span style={{ color: "#a1a1b5" }}>{maxBound}</span>
+          <span style={{ color: "#a1a1b5", fontSize: "10px", marginBottom: "5px", whiteSpace: "pre" }}>
+            {maxBound} {colorUnits}
+          </span>
           <div
             style={{
               height: "90%",
-              width: "25px",
+              minWidth: "25px",
               background: `linear-gradient(${colors(normalizeValue(maxBound))}, ${colors(normalizeValue(minBound))})`,
             }}
           />
-          <span style={{ color: "#a1a1b5" }}>{minBound}</span>
+          <span style={{ color: "#a1a1b5", fontSize: "10px", marginTop: "5px", whiteSpace: "pre" }}>
+            {minBound} {colorUnits}
+          </span>
         </div>
       )}
     </div>
