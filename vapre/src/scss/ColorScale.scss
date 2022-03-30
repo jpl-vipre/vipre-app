@@ -1,9 +1,12 @@
 .color-scale {
   .color-scale-bar {
     &:hover {
-      // background-color: #232e44 !important;
       outline: 2px solid white;
-      z-index: 9999;
+      z-index: 99;
+    }
+    &.active {
+      outline: 2px solid black;
+      z-index: 99;
     }
   }
 }

@@ -1,4 +1,4 @@
-import { FC, useMemo } from "react";
+import { FC, useMemo, useState } from "react";
 import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, Cell, ResponsiveContainer } from "recharts";
 import { scaleOrdinal, scaleSequential } from "d3-scale";
 import { schemeCategory10, interpolateSpectral } from "d3-scale-chromatic";
@@ -20,6 +20,8 @@ interface ScatterplotProps {
   colorUnits?: string;
 }
 const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnits, colorField, colorUnits }) => {
+  const [activeValues, setActiveValues] = useState<number[]>([]);
+
   const [minBound, maxBound] = useMemo(() => {
     if (!colorField || !data.length) {
       return [0, 0];
@@ -69,6 +71,13 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnit
                 <Cell
                   key={`cell-${index}`}
                   fill={colorField && entry[colorField] ? colors(normalizeValue(entry[colorField])) : "white"}
+                  onClick={() => {
+                    if (colorField && activeValues.includes(index)) {
+                      setActiveValues(activeValues.filter((value) => value !== index));
+                    } else if (colorField) {
+                      setActiveValues([...activeValues, index]);
+                    }
+                  }}
                 />
               ))}
             </Scatter>
@@ -81,6 +90,9 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnit
           maxBound={maxBound}
           units={colorUnits}
           interpolateColorValue={(value) => colors(normalizeValue(value))}
+          activeValues={activeValues
+            .filter((i) => colorField && data[i] && data[i][colorField] !== undefined)
+            .map((i) => data[i][colorField])}
         />
       )}
     </div>
