@@ -1,12 +1,12 @@
 import { FC, useMemo } from "react";
 import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, Cell, ResponsiveContainer } from "recharts";
 import { scaleOrdinal, scaleSequential } from "d3-scale";
-import { schemeCategory10, interpolateRdBu } from "d3-scale-chromatic";
+import { schemeCategory10, interpolateSpectral } from "d3-scale-chromatic";
 
 import "../../scss/Scatterplot.scss";
 
 // const colors = scaleOrdinal(schemeCategory10).range();
-const colors = scaleSequential(interpolateRdBu);
+const colors = scaleSequential(interpolateSpectral);
 
 interface ScatterplotProps {
   data: any[];
@@ -82,9 +82,19 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnit
             style={{
               height: "90%",
               minWidth: "25px",
-              background: `linear-gradient(${colors(normalizeValue(maxBound))}, ${colors(normalizeValue(minBound))})`,
+              display: "flex",
+              flexDirection: "column",
             }}
-          />
+          >
+            {Array.from(new Array(100)).map((_, i) => (
+              <div
+                style={{
+                  flex: 1,
+                  background: `${colors(normalizeValue(minBound + (i / 100) * (maxBound - minBound)))}`,
+                }}
+              />
+            ))}
+          </div>
           <span style={{ color: "#a1a1b5", fontSize: "10px", marginTop: "5px", whiteSpace: "pre" }}>
             {minBound} {colorUnits}
           </span>
