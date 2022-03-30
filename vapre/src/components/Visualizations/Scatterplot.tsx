@@ -21,6 +21,9 @@ interface ScatterplotProps {
 }
 const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnits, colorField, colorUnits }) => {
   const [activeValues, setActiveValues] = useState<number[]>([]);
+  const [hoverValue, setHoverValue] = useState<number>(-1);
+  const [minSelected, setMinSelected] = useState<number>(-1);
+  const [maxSelected, setMaxSelected] = useState<number>(-1);
 
   const [minBound, maxBound] = useMemo(() => {
     if (!colorField || !data.length) {
@@ -38,13 +41,12 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnit
     <div
       style={{ display: "flex", width: "100%", height: "100%", maxHeight: "calc(100% - 15px)", alignItems: "center" }}
     >
-      <div style={{ width: "100%", height: "100%", flex: 1 }} className="scatterplot-container">
+      <div style={{ width: "calc(100% - 50px)", height: "100%" }} className="scatterplot-container">
         <ResponsiveContainer width="100%" height="100%">
           <ScatterChart
             margin={{
               top: 10,
               right: 30,
-              // bottom: 20,
               left: -5,
             }}
           >
@@ -67,19 +69,31 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnit
             />
             <Tooltip cursor={{ strokeDasharray: "3 3" }} />
             <Scatter data={data} fill="#ffffff">
-              {data.map((entry, index) => (
-                <Cell
-                  key={`cell-${index}`}
-                  fill={colorField && entry[colorField] ? colors(normalizeValue(entry[colorField])) : "white"}
-                  onClick={() => {
-                    if (colorField && activeValues.includes(index)) {
-                      setActiveValues(activeValues.filter((value) => value !== index));
-                    } else if (colorField) {
-                      setActiveValues([...activeValues, index]);
-                    }
-                  }}
-                />
-              ))}
+              {data.map((entry, index) => {
+                let fill = "white";
+                let isWithinThreshold = false;
+                if (colorField && typeof entry[colorField] === "number") {
+                  isWithinThreshold =
+                    (hoverValue >= 0 && Math.abs(entry[colorField] - hoverValue) <= 0.05) ||
+                    (minSelected >= 0 && entry[colorField] >= minSelected && entry[colorField] <= maxSelected);
+                  fill = isWithinThreshold ? "white" : colors(normalizeValue(entry[colorField]));
+                }
+
+                return (
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={fill}
+                    style={{ stroke: isWithinThreshold ? "white" : "", strokeWidth: isWithinThreshold ? 3 : 0 }}
+                    onClick={() => {
+                      if (colorField && activeValues.includes(index)) {
+                        setActiveValues(activeValues.filter((value) => value !== index));
+                      } else if (colorField) {
+                        setActiveValues([...activeValues, index]);
+                      }
+                    }}
+                  />
+                );
+              })}
             </Scatter>
           </ScatterChart>
         </ResponsiveContainer>
@@ -90,6 +104,11 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnit
           maxBound={maxBound}
           units={colorUnits}
           interpolateColorValue={(value) => colors(normalizeValue(value))}
+          setHoverValue={setHoverValue}
+          minSelected={minSelected}
+          setMinSelected={setMinSelected}
+          maxSelected={maxSelected}
+          setMaxSelected={setMaxSelected}
           activeValues={activeValues
             .filter((i) => colorField && data[i] && data[i][colorField] !== undefined)
             .map((i) => data[i][colorField])}
