@@ -71,8 +71,8 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnit
             <Scatter data={data} fill="#ffffff">
               {data.map((entry, index) => {
                 let fill = "white";
-                let isWithinThreshold = false;
-                if (colorField && typeof entry[colorField] === "number") {
+                let isWithinThreshold = activeValues.includes(index);
+                if (colorField && !isWithinThreshold && typeof entry[colorField] === "number") {
                   isWithinThreshold =
                     (hoverValue >= 0 && Math.abs(entry[colorField] - hoverValue) <= 0.05) ||
                     (minSelected >= 0 && entry[colorField] >= minSelected && entry[colorField] <= maxSelected);
