@@ -13,8 +13,9 @@ const TEST_DATA = [
 
 interface VisualizationProps {
   config: GraphConfig;
+  id: string;
 }
-const Visualization: FC<VisualizationProps> = ({ config }) => {
+const Visualization: FC<VisualizationProps> = ({ config, id }) => {
   return (
     <div
       style={{
@@ -27,6 +28,7 @@ const Visualization: FC<VisualizationProps> = ({ config }) => {
         border: "1px solid #a1a1b5",
         borderRadius: "5px",
       }}
+      id={id}
     >
       {config.type === "scatterplot" && (
         <Scatterplot
@@ -37,6 +39,7 @@ const Visualization: FC<VisualizationProps> = ({ config }) => {
           yUnits={config.yUnits}
           colorField={config.color}
           colorUnits={config.colorUnits}
+          id={`${id}-scatterplot`}
         />
       )}
     </div>

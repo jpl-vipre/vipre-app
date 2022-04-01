@@ -1,10 +1,11 @@
-import { FC, useMemo, useState } from "react";
+import { FC, useMemo, useState, useEffect } from "react";
 
 import { Tooltip } from "@mui/material";
 
 import "../../scss/ColorScale.scss";
 
 interface ColorScaleProps {
+  id: string;
   minBound: number;
   maxBound: number;
   interpolateColorValue: (value: number) => string;
@@ -18,6 +19,7 @@ interface ColorScaleProps {
   setMaxSelected?: (value: number) => void;
 }
 const ColorScale: FC<ColorScaleProps> = ({
+  id,
   minBound,
   maxBound,
   interpolateColorValue,
@@ -31,14 +33,16 @@ const ColorScale: FC<ColorScaleProps> = ({
   setMaxSelected,
 }) => {
   const [firstSelectedValue, setFirstSelectedValue] = useState<number>(-1);
+
   const closestMinMax = useMemo(() => {
     if (minSelected === undefined || maxSelected === undefined || minSelected === -1 || maxSelected === -1) {
-      return null;
+      return [-1, -1];
     }
     let selectedRange = [minSelected, maxSelected];
+
     let closestValues = [-1, -1].map((_, i) => {
       let closestValue = -1;
-      Array.from(new Array(steps)).forEach((_, j) => {
+      Array.from(new Array(steps + 1)).forEach((_, j) => {
         let rangeValue = minBound + (j / steps) * (maxBound - minBound);
         if (
           closestValue === -1 ||
@@ -51,6 +55,7 @@ const ColorScale: FC<ColorScaleProps> = ({
     });
     return closestValues;
   }, [minSelected, maxSelected, steps, minBound, maxBound]);
+
   const closestActiveValues = useMemo(() => {
     if (activeValues === undefined) {
       return {};
@@ -74,12 +79,37 @@ const ColorScale: FC<ColorScaleProps> = ({
     return valueMap;
   }, [activeValues, steps, maxBound, minBound]);
 
+  useEffect(() => {
+    window.addEventListener("mouseup", (evt) => {
+      let element = document.querySelector(`#${id}`);
+      if (element && firstSelectedValue !== -1) {
+        let colorScaleBounds = element.getBoundingClientRect();
+        let mouseUpPercentage = Math.max(
+          Math.min((evt.screenY - colorScaleBounds.top) / colorScaleBounds.height, 1),
+          0
+        );
+        let mouseUpValue = minBound + mouseUpPercentage * (maxBound - minBound);
+
+        let minValue = Math.min(firstSelectedValue, mouseUpValue);
+        let maxValue = Math.max(firstSelectedValue, mouseUpValue);
+        setFirstSelectedValue(-1);
+        if (setMinSelected) setMinSelected(minValue);
+        if (setMaxSelected) setMaxSelected(maxValue);
+      }
+
+      return () => {
+        window.removeEventListener("mouseup", () => {});
+      };
+    });
+  }, [firstSelectedValue, maxBound, minBound, setMaxSelected, setMinSelected, id]);
+
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%", width: "50px" }} className="color-scale">
       <span style={{ color: "#a1a1b5", fontSize: "10px", marginBottom: "5px", whiteSpace: "pre" }}>
         {minBound} {units}
       </span>
       <div
+        id={id}
         style={{
           height: "90%",
           minWidth: "25px",
@@ -94,7 +124,9 @@ const ColorScale: FC<ColorScaleProps> = ({
             ? closestActiveValues[value].join(` ${units || "units"}, `) + ` ${units || "units"}`
             : `${Math.round(value * 100) / 100} ${units || "units"}`;
 
+          let hasValidMinMax = closestMinMax && closestMinMax.length === 2 && closestMinMax[0] !== -1 && value !== -1;
           let isWithinRange =
+            hasValidMinMax &&
             typeof minSelected === "number" &&
             typeof maxSelected === "number" &&
             value >= minSelected &&
@@ -126,17 +158,22 @@ const ColorScale: FC<ColorScaleProps> = ({
                   if (setMinSelected) setMinSelected(minValue);
                   if (setMaxSelected) setMaxSelected(maxValue);
                 }}
+                onDoubleClick={() => {
+                  setFirstSelectedValue(-1);
+                  if (setMinSelected) setMinSelected(-1);
+                  if (setMaxSelected) setMaxSelected(-1);
+                  if (setHoverValue) setHoverValue(-1);
+                }}
                 className={`color-scale-bar${closestActiveValues[value] ? " active" : ""}`}
                 style={{
                   flex: 1,
                   background: `${interpolateColorValue(value)}`,
-                  borderTop: closestMinMax && value === closestMinMax[0] ? "2px solid white" : "none",
-                  borderBottom: closestMinMax && value === closestMinMax[1] ? "2px solid white" : "none",
+                  borderTop: hasValidMinMax && value === closestMinMax[0] ? "2px solid white" : "none",
+                  borderBottom: hasValidMinMax && value === closestMinMax[1] ? "2px solid white" : "none",
                   borderRight: isWithinRange ? "2px solid white" : "none",
                   borderLeft: isWithinRange ? "2px solid white" : "none",
                   margin: isWithinRange ? "0 -2px" : 0,
-                  marginTop: closestMinMax && value === closestMinMax[0] ? "-2px" : 0,
-                  // marginBottom: value === closestMinMax[1] ? "-2px" : 0,
+                  marginTop: hasValidMinMax && value === closestMinMax[0] ? "-2px" : 0,
                   outlineWidth: !isWithinRange
                     ? closestActiveValues[value]
                       ? `${closestActiveValues[value].length + 1}px`

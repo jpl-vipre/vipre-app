@@ -1,16 +1,16 @@
 import { FC, useMemo, useState } from "react";
 import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, Cell, ResponsiveContainer } from "recharts";
-import { scaleOrdinal, scaleSequential } from "d3-scale";
-import { schemeCategory10, interpolateSpectral } from "d3-scale-chromatic";
+import { scaleSequential } from "d3-scale";
+import { interpolateSpectral } from "d3-scale-chromatic";
 
 import ColorScale from "./ColorScale";
 
 import "../../scss/Scatterplot.scss";
 
-// const colors = scaleOrdinal(schemeCategory10).range();
 const colors = scaleSequential(interpolateSpectral);
 
 interface ScatterplotProps {
+  id: string;
   data: any[];
   xField: string;
   xUnits?: string;
@@ -19,7 +19,7 @@ interface ScatterplotProps {
   colorField?: string;
   colorUnits?: string;
 }
-const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnits, colorField, colorUnits }) => {
+const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnits, colorField, colorUnits, id }) => {
   const [activeValues, setActiveValues] = useState<number[]>([]);
   const [hoverValue, setHoverValue] = useState<number>(-1);
   const [minSelected, setMinSelected] = useState<number>(-1);
@@ -40,6 +40,7 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnit
   return (
     <div
       style={{ display: "flex", width: "100%", height: "100%", maxHeight: "calc(100% - 15px)", alignItems: "center" }}
+      id={id}
     >
       <div style={{ width: "calc(100% - 50px)", height: "100%" }} className="scatterplot-container">
         <ResponsiveContainer width="100%" height="100%">
@@ -100,6 +101,7 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnit
       </div>
       {colorField && (
         <ColorScale
+          id={`${id}-color-scale`}
           minBound={minBound}
           maxBound={maxBound}
           units={colorUnits}
