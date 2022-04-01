@@ -4,6 +4,9 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 
+import "material-design-icons/iconfont/material-icons.css";
+import "typeface-roboto/index.css";
+
 ReactDOM.render(
   <React.StrictMode>
     <App />
