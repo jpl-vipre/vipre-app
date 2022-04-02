@@ -1,6 +1,8 @@
 import create from "zustand";
 import { configurePersist } from "zustand-persist";
 
+import axios from "axios";
+
 import constants from "./constants";
 
 const { persist } = configurePersist({
@@ -40,6 +42,12 @@ export type FilterItem = {
   hidden?: boolean;
 };
 
+export type FilterField = {
+  display_name: string;
+  field_name: string;
+  category: string;
+};
+
 export type Store = {
   activeTab: number;
   setActiveTab: (activeTab: number) => void;
@@ -49,6 +57,9 @@ export type Store = {
   filterList: FilterItem[];
   setFilterList: (filterList: FilterItem[]) => void;
   setFilter: (filter: FilterItem) => void;
+  trajectoryFields: FilterField[];
+  entryFields: FilterField[];
+  fetchFilterFields: () => void;
 };
 
 const useStore = create<Store>(
@@ -81,6 +92,16 @@ const useStore = create<Store>(
         } else {
           set({ filterList: [...filterList.slice(0, filterIndex), filter, ...filterList.slice(filterIndex + 1)] });
         }
+      },
+      trajectoryFields: [],
+      entryFields: [],
+      fetchFilterFields: () => {
+        axios.get(`${constants.API}/filters`).then((response) => {
+          set({
+            trajectoryFields: response.data.TrajectoryFilters,
+            entryFields: response.data.EntryFilters,
+          });
+        });
       },
     })
   )

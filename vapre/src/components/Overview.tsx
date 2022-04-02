@@ -1,58 +1,38 @@
-import { FC } from "react";
+import { FC, useMemo } from "react";
+
+import useStore from "../utils/store";
 
 import "../scss/Overview.scss";
 
+const exampleValues = [34.63, 42.8, 200.2, 165.32, 84.53, 932.41, 12.54, 67.24];
+
 const Overview: FC = () => {
-  const overviewFields = [
-    {
-      display_name: "Launch Date",
-      field_name: "t_launch",
-      units: "Years Past 2000",
-      value: 34.63,
-    },
-    {
-      display_name: "Arrival Date",
-      field_name: "t_arr",
-      units: "Years Past 2000",
-      value: 42.8,
-    },
-    {
-      display_name: "Arrival Mass",
-      field_name: "m_arr",
-      units: "Years Past 2000",
-      value: 200.2,
-    },
-    {
-      display_name: "Arrival V ∞",
-      field_name: "v_inf_arr_x",
-      units: "Vector X",
-      value: 165.32,
-    },
-    {
-      display_name: "Arrival V ∞",
-      field_name: "v_inf_arr_y",
-      units: "Vector Y",
-      value: 84.53,
-    },
-    {
-      display_name: "Arrival V ∞",
-      field_name: "v_inf_arr_z",
-      units: "Vector Z",
-      value: 932.3,
-    },
-    {
-      display_name: "Launch C3",
-      field_name: "c3",
-      units: "km2/s2",
-      value: 12.54,
-    },
-    {
-      display_name: "Total Cruise ΔV",
-      field_name: "dv_total",
-      units: "km/s",
-      value: 67.24,
-    },
-  ];
+  const trajectoryFields = useStore((state) => state.trajectoryFields);
+
+  const overviewFields = useMemo(() => {
+    return trajectoryFields.map((field, i) => {
+      let units = "";
+      if (field.display_name.toLowerCase().includes("date")) {
+        units = "Years Past 2000";
+      } else if (field.display_name.includes("DeltaV")) {
+        units = "km/s";
+      } else {
+        let unitMatch = field.display_name.match(/(?<units>Vector [XYZ])/);
+        if (unitMatch && unitMatch.groups && unitMatch.groups.units) {
+          units = unitMatch.groups.units;
+        }
+      }
+      return {
+        display_name: field.display_name
+          .replace("Infinity", "∞")
+          .replace("Delta", "Δ")
+          .replace(/Vector [XYZ]/g, ""),
+        field_name: field.field_name,
+        units: units,
+        value: exampleValues[i % exampleValues.length],
+      };
+    });
+  }, [trajectoryFields]);
 
   return (
     <div className="overview-container">

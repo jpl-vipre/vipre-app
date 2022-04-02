@@ -1,6 +1,8 @@
-import { FC, useState } from "react";
+import { FC, useState, useEffect } from "react";
 
 import { createTheme, Palette, PaletteOptions, ThemeProvider } from "@mui/material";
+
+import useStore from "./utils/store";
 
 import Header from "./components/Header";
 
@@ -25,6 +27,12 @@ let theme = createTheme({
 
 const App: FC = () => {
   const [view, setView] = useState(0);
+  const fetchFilterFields = useStore((state) => state.fetchFilterFields);
+
+  useEffect(() => {
+    fetchFilterFields();
+  }, [fetchFilterFields]);
+
   return (
     <ThemeProvider theme={theme}>
       <div className="App">
