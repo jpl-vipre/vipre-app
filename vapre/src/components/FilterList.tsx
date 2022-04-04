@@ -47,16 +47,17 @@ const FilterList: FC = () => {
       <div style={{ padding: "10px", display: "flex", flexDirection: "column", overflow: "scroll" }}>
         {filterList
           .filter((filter) => !filter.hidden)
-          .map((filter) => {
+          .map((filter, i) => {
+            const key = `filter-${filter.id}-${i}`;
             switch (filter.type) {
               case "select":
-                return <SelectFilter filter={filter} />;
+                return <SelectFilter filter={filter} key={key} />;
               case "multi-select":
-                return <MultiSelectFilter filter={filter} />;
+                return <MultiSelectFilter filter={filter} key={key} />;
               case "date-range":
-                return <DateRangeFilter filter={filter} />;
+                return <DateRangeFilter filter={filter} key={key} />;
               case "slider-range":
-                return <SliderRangeFilter filter={filter} />;
+                return <SliderRangeFilter filter={filter} key={key} />;
               default:
                 return null;
             }

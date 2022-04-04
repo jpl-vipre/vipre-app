@@ -39,17 +39,18 @@ const AllFieldsSelect: FC<AllFieldsSelectProps> = ({ value, label, onChange, opt
         }}
       >
         {!options && <ListSubheader>Trajectory Fields</ListSubheader>}
-        {trajectoryOptions.map((option: any) => (
-          <MenuItem value={option}>{option}</MenuItem>
+        {trajectoryOptions.map((option: any, i: number) => (
+          <MenuItem value={option} key={`traj-${label}-${option}-${i}`}>
+            {option}
+          </MenuItem>
         ))}
-        {!options && (
-          <>
-            <ListSubheader>Entry Fields</ListSubheader>
-            {entryOptions.map((option: any) => (
-              <MenuItem value={option}>{option}</MenuItem>
-            ))}
-          </>
-        )}
+        {!options && <ListSubheader>Entry Fields</ListSubheader>}
+        {!options &&
+          entryOptions.map((option: any, i: number) => (
+            <MenuItem key={`entry-${label}-${option}-${i}`} value={option}>
+              {option}
+            </MenuItem>
+          ))}
       </Select>
     </FormControl>
   );

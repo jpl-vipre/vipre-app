@@ -21,6 +21,7 @@ const DialogGraphRow: FC<DialogGraphRowProps> = ({ modifiedTab, setModifiedTab, 
           {(modifiedTab[rowName] as GraphConfig[]).map((graphConfig: GraphConfig, i) => {
             return (
               <OutlinedContainer
+                key={`${rowName}-${i}`}
                 label={`Graph ${i}`}
                 className="graph-edit-group"
                 style={{ minWidth: "300px", maxWidth: "300px" }}
@@ -42,8 +43,10 @@ const DialogGraphRow: FC<DialogGraphRowProps> = ({ modifiedTab, setModifiedTab, 
                       setModifiedTab(newTab);
                     }}
                   >
-                    {Object.entries(constants.GRAPH_TYPES).map(([graphType, options]: [string, any]) => (
-                      <MenuItem value={graphType}>{options.label}</MenuItem>
+                    {Object.entries(constants.GRAPH_TYPES).map(([graphType, options]: [string, any], i: number) => (
+                      <MenuItem key={`${options.label}-${graphType}-${i}`} value={graphType}>
+                        {options.label}
+                      </MenuItem>
                     ))}
                   </Select>
                 </FormControl>
