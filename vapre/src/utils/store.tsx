@@ -68,7 +68,7 @@ const useStore = create<Store>(
   persist(
     {
       key: "vipre-app",
-      allowlist: ["activeTab", "tabs"],
+      allowlist: ["activeTab", "tabs", "filterList"],
     },
     (set, get): Store => ({
       activeTab: 0,
