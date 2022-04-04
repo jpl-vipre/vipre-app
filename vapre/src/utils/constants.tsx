@@ -1,3 +1,5 @@
+export const API = process.env.REACT_APP_API || "http://localhost:8000";
+
 export const GRAPH_TYPES = {
   scatterplot: {
     label: "Scatterplot",
@@ -147,5 +149,5 @@ export const FILTERS = [
   },
 ];
 
-const constants = { DEFAULT_TABS, FILTERS, GRAPH_TYPES, FILTER_TYPES };
+const constants = { API, DEFAULT_TABS, FILTERS, GRAPH_TYPES, FILTER_TYPES };
 export default constants;

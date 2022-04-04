@@ -24,8 +24,8 @@ const SelectFilter: FC<SelectFilterProps> = ({ filter, style, className }) => {
           setFilter({ ...filter, value: evt.target.value });
         }}
       >
-        {filter.options!.map((option: any) => (
-          <MenuItem value={option}>
+        {filter.options!.map((option: any, i) => (
+          <MenuItem value={option} key={`filter-${filter.id}-${option}-${i}`}>
             {option} {filter.units}
           </MenuItem>
         ))}

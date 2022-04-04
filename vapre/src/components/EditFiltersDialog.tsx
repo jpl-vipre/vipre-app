@@ -66,8 +66,12 @@ const EditFilter: FC<{ filter: FilterItem; setFilter: (filter: FilterItem) => vo
             setFilter({ ...filter, type: evt.target.value, value: newValue });
           }}
         >
-          {Object.entries(constants.FILTER_TYPES).map(([filterType, options]: [string, any]) => {
-            return <MenuItem value={filterType}>{options.label}</MenuItem>;
+          {Object.entries(constants.FILTER_TYPES).map(([filterType, options], i) => {
+            return (
+              <MenuItem key={`${filter.id}-${filterType}-${i}`} value={filterType}>
+                {options.label}
+              </MenuItem>
+            );
           })}
         </Select>
       </FormControl>
@@ -163,9 +167,13 @@ const EditFiltersDialog: FC<EditFiltersDialogProps> = ({ open, setOpen }) => {
       <DialogTitle className="filters-title">Filters</DialogTitle>
       <DialogContent className="filters-content">
         <OutlinedContainer label="Filters">
-          {modifiedFilters.slice(1).map((modifiedFilter) => {
+          {modifiedFilters.slice(1).map((modifiedFilter, i) => {
             return (
-              <OutlinedContainer label={modifiedFilter.label || "-"} style={{ marginBottom: "15px" }}>
+              <OutlinedContainer
+                key={`${modifiedFilter.id}-${i}`}
+                label={modifiedFilter.label || "-"}
+                style={{ marginBottom: "15px" }}
+              >
                 <EditFilter
                   filter={modifiedFilter}
                   setFilter={(filter) => {

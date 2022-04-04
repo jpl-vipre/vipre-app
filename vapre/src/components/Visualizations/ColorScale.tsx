@@ -1,4 +1,4 @@
-import { FC, useMemo, useState, useEffect } from "react";
+import { FC, useMemo, useState } from "react";
 
 import { Tooltip } from "@mui/material";
 
@@ -79,30 +79,6 @@ const ColorScale: FC<ColorScaleProps> = ({
     return valueMap;
   }, [activeValues, steps, maxBound, minBound]);
 
-  useEffect(() => {
-    window.addEventListener("mouseup", (evt) => {
-      let element = document.querySelector(`#${id}`);
-      if (element && firstSelectedValue !== -1) {
-        let colorScaleBounds = element.getBoundingClientRect();
-        let mouseUpPercentage = Math.max(
-          Math.min((evt.screenY - colorScaleBounds.top) / colorScaleBounds.height, 1),
-          0
-        );
-        let mouseUpValue = minBound + mouseUpPercentage * (maxBound - minBound);
-
-        let minValue = Math.min(firstSelectedValue, mouseUpValue);
-        let maxValue = Math.max(firstSelectedValue, mouseUpValue);
-        setFirstSelectedValue(-1);
-        if (setMinSelected) setMinSelected(minValue);
-        if (setMaxSelected) setMaxSelected(maxValue);
-      }
-
-      return () => {
-        window.removeEventListener("mouseup", () => {});
-      };
-    });
-  }, [firstSelectedValue, maxBound, minBound, setMaxSelected, setMinSelected, id]);
-
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%", width: "50px" }} className="color-scale">
       <span style={{ color: "#a1a1b5", fontSize: "10px", marginBottom: "5px", whiteSpace: "pre" }}>
@@ -133,7 +109,7 @@ const ColorScale: FC<ColorScaleProps> = ({
             value <= maxSelected;
 
           return (
-            <Tooltip title={hoverText} placement="right">
+            <Tooltip title={hoverText} placement="right" key={`${id}-${i}`}>
               <div
                 onMouseEnter={() => setHoverValue && setHoverValue(value)}
                 onMouseLeave={() => setHoverValue && setHoverValue(-1)}
@@ -172,7 +148,8 @@ const ColorScale: FC<ColorScaleProps> = ({
                   borderBottom: hasValidMinMax && value === closestMinMax[1] ? "2px solid white" : "none",
                   borderRight: isWithinRange ? "2px solid white" : "none",
                   borderLeft: isWithinRange ? "2px solid white" : "none",
-                  margin: isWithinRange ? "0 -2px" : 0,
+                  marginLeft: isWithinRange ? "-2px" : 0,
+                  marginRight: isWithinRange ? "-2px" : 0,
                   marginTop: hasValidMinMax && value === closestMinMax[0] ? "-2px" : 0,
                   outlineWidth: !isWithinRange
                     ? closestActiveValues[value]
