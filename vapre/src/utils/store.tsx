@@ -61,13 +61,14 @@ export type Store = {
   trajectoryFields: FilterField[];
   entryFields: FilterField[];
   fetchFilterFields: () => void;
+  searchTrajectories: () => void;
 };
 
 const useStore = create<Store>(
   persist(
     {
       key: "vipre-app",
-      allowlist: ["activeTab", "tabs", "filterList"],
+      allowlist: ["activeTab", "tabs"],
     },
     (set, get): Store => ({
       activeTab: 0,
@@ -103,6 +104,35 @@ const useStore = create<Store>(
             entryFields: response.data.EntryFilters,
           });
         });
+      },
+      searchTrajectories: () => {
+        const filterList = get().filterList;
+        let query = {
+          filters: filterList
+            .filter(
+              (filterItem) =>
+                (!Array.isArray(filterItem.value) && filterItem.value !== undefined) ||
+                (Array.isArray(filterItem.value) && filterItem.value.length > 0)
+            )
+            .map((filter) => {
+              if (Array.isArray(filter.value)) {
+                const [lower, upper] = filter.value;
+                return { field_name: filter.dataField, category: "slider", lower, upper };
+              } else {
+                return { field_name: filter.dataField, category: "value", value: filter.value };
+              }
+            }),
+          fields: filterList.map((filter) => filter.dataField),
+        };
+
+        axios
+          .post(`${constants.API}/trajectories`, query)
+          .then((response) => {
+            console.log(response, query);
+          })
+          .catch((err) => {
+            console.error(err, query);
+          });
       },
     })
   )

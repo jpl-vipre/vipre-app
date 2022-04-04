@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useMemo } from "react";
 import { FormControl, TextField, FormLabel } from "@mui/material";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
@@ -14,6 +14,26 @@ interface DateRangeFilterProps {
 
 const DateRangeFilter: FC<DateRangeFilterProps> = ({ filter }) => {
   const setFilter = useStore((state) => state.setFilter);
+
+  const dateToSecondsSince2000 = (date: Date): number => {
+    let baseSeconds = new Date("2000-01-01T00:00:00.000Z").getTime() / 1000;
+    return Math.round(date.getTime() / 1000 - baseSeconds);
+  };
+
+  const secondsSince2000ToDate = (seconds: number): Date => {
+    return new Date(seconds * 1000 + new Date("2000-01-01T00:00:00.000Z").getTime());
+  };
+
+  const [startDateSeconds, endDateSeconds] = useMemo(
+    () => [
+      ...filter.defaultValue.map((defaultDate: Date) => dateToSecondsSince2000(defaultDate)),
+      ...(filter.value || []),
+    ],
+    [filter]
+  );
+  const startDate = useMemo(() => secondsSince2000ToDate(startDateSeconds), [startDateSeconds]);
+  const endDate = useMemo(() => secondsSince2000ToDate(endDateSeconds), [endDateSeconds]);
+
   return (
     <FormControl fullWidth style={{ marginBottom: "15px" }} className="date-range-filter">
       <FormLabel
@@ -26,10 +46,9 @@ const DateRangeFilter: FC<DateRangeFilterProps> = ({ filter }) => {
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <DatePicker
             label="Start Date"
-            value={filter.value ? filter.value[0] : filter.defaultValue[0]}
+            value={startDate}
             onChange={(newValue: any) => {
-              let endValue = filter.value ? filter.value[1] : filter.defaultValue[1];
-              setFilter({ ...filter, value: [newValue, endValue] });
+              setFilter({ ...filter, value: [dateToSecondsSince2000(newValue), endDateSeconds] });
             }}
             renderInput={(params: any) => <TextField {...params} />}
           />
@@ -37,10 +56,9 @@ const DateRangeFilter: FC<DateRangeFilterProps> = ({ filter }) => {
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <DatePicker
             label="End Date"
-            value={filter.value ? filter.value[1] : filter.defaultValue[1]}
+            value={endDate}
             onChange={(newValue: any) => {
-              let startValue = filter.value ? filter.value[0] : filter.defaultValue[0];
-              setFilter({ ...filter, value: [startValue, newValue] });
+              setFilter({ ...filter, value: [startDateSeconds, dateToSecondsSince2000(newValue)] });
             }}
             renderInput={(params: any) => <TextField {...params} />}
           />

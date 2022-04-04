@@ -51,6 +51,7 @@
     "recharts": "^2.1.9",
     "typeface-roboto": "^1.1.13",
     "typescript": "^4.4.2",
+    "usehooks-ts": "^2.4.2",
     "web-vitals": "^2.1.0",
     "zustand": "^3.7.0",
     "zustand-persist": "^0.4.0"

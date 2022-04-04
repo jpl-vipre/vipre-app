@@ -31,7 +31,7 @@ const MultiSelectFilter: FC<MultiSelectFilterProps> = ({ filter }) => {
               reorderId={`tag-order-${filter.label.replace(/ /g, "-").toLowerCase()}`}
               onReorder={(event: any, previousIndex: number, nextIndex: number) => {
                 let newTagOrder = reorder([...tags], previousIndex, nextIndex);
-                setFilter({ ...filter, value: newTagOrder });
+                setFilter({ ...filter, value: newTagOrder.join("-") });
               }}
               draggedClassName="dragged"
               placeholderClassName="tag-placeholder"

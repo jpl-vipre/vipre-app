@@ -1,4 +1,6 @@
-import { FC, useState } from "react";
+import { FC, useState, useEffect } from "react";
+
+import { useDebounce } from "usehooks-ts";
 
 import EditIcon from "@mui/icons-material/Edit";
 import IconButton from "@mui/material/IconButton";
@@ -15,7 +17,16 @@ import "../scss/FilterList.scss";
 
 const FilterList: FC = () => {
   const filterList = useStore((state) => state.filterList);
+  const searchTrajectories = useStore((state) => state.searchTrajectories);
   const [openEditFilters, setOpenEditFilters] = useState(false);
+
+  const debouncedFilterList = useDebounce(filterList, 2000);
+
+  useEffect(() => {
+    if (debouncedFilterList.length > 0) {
+      searchTrajectories();
+    }
+  }, [searchTrajectories, debouncedFilterList]);
 
   return (
     <div className="filter-container">
