@@ -46,6 +46,7 @@ export type FilterField = {
   display_name: string;
   field_name: string;
   category: string;
+  units?: string;
 };
 
 export type Store = {

@@ -1,34 +1,35 @@
 import { FC, useMemo } from "react";
 
-import useStore from "../utils/store";
+import useStore, { FilterField } from "../utils/store";
 
 import "../scss/Overview.scss";
 
 const exampleValues = [34.63, 42.8, 200.2, 165.32, 84.53, 932.41, 12.54, 67.24];
+
+const nameRemapping: Record<string, Partial<FilterField>> = {
+  t_launch: { display_name: "Launch Date", units: "Years Past 2000" },
+  t_arr: { display_name: "Arrival Date", units: "Years Past 2000" },
+  m_arr: { display_name: "Arrival Mass", units: "At arrival, kg" },
+  v_inf_arr_x: { display_name: "Arrival V ∞", units: "Vector X" },
+  v_inf_arr_y: { display_name: "Arrival V ∞", units: "Vector Y" },
+  v_inf_arr_z: { display_name: "Arrival V ∞", units: "Vector Z" },
+  c3: { display_name: "Launch C3", units: "km₂/s₂" },
+  dv_total: { display_name: "Total Cruise ΔV", units: "km/s" },
+};
 
 const Overview: FC = () => {
   const trajectoryFields = useStore((state) => state.trajectoryFields);
 
   const overviewFields = useMemo(() => {
     return trajectoryFields.map((field, i) => {
-      let units = "";
-      if (field.display_name.toLowerCase().includes("date")) {
-        units = "Years Past 2000";
-      } else if (field.display_name.includes("DeltaV")) {
-        units = "km/s";
-      } else {
-        let unitMatch = field.display_name.match(/(?<units>Vector [XYZ])/);
-        if (unitMatch && unitMatch.groups && unitMatch.groups.units) {
-          units = unitMatch.groups.units;
-        }
-      }
+      const remappedField: FilterField = {
+        ...field,
+        ...(nameRemapping[field.field_name] || {}),
+      };
       return {
-        display_name: field.display_name
-          .replace("Infinity", "∞")
-          .replace("Delta", "Δ")
-          .replace(/Vector [XYZ]/g, ""),
-        field_name: field.field_name,
-        units: units,
+        display_name: remappedField.display_name,
+        field_name: remappedField.field_name,
+        units: remappedField.units || "",
         value: exampleValues[i % exampleValues.length],
       };
     });
