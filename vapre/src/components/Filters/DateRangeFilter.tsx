@@ -17,11 +17,15 @@ const DateRangeFilter: FC<DateRangeFilterProps> = ({ filter }) => {
 
   const dateToSecondsSince2000 = (date: Date): number => {
     let baseSeconds = new Date("2000-01-01T00:00:00.000Z").getTime() / 1000;
+    if (!(date instanceof Date) || isNaN(Number(date))) {
+      return baseSeconds;
+    }
     return Math.round(date.getTime() / 1000 - baseSeconds);
   };
 
   const secondsSince2000ToDate = (seconds: number): Date => {
-    return new Date(seconds * 1000 + new Date("2000-01-01T00:00:00.000Z").getTime());
+    let safeSeconds = typeof seconds === "number" ? seconds || 0 : 0;
+    return new Date(safeSeconds * 1000 + new Date("2000-01-01T00:00:00.000Z").getTime());
   };
 
   const [startDateSeconds, endDateSeconds] = useMemo(
