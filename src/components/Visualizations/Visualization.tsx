@@ -2,6 +2,8 @@ import { FC } from "react";
 import { GraphConfig } from "../../utils/store";
 import Scatterplot from "./Scatterplot";
 
+import "../../scss/Visualization.scss";
+
 const TEST_DATA = [
   { a: 1, b: 2, c: 1 },
   { a: 2, b: 3, c: 10 },
@@ -18,6 +20,7 @@ interface VisualizationProps {
 const Visualization: FC<VisualizationProps> = ({ config, id }) => {
   return (
     <div
+      className="visualization-card"
       style={{
         display: "flex",
         flex: 1,

@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useState, useEffect } from "react";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
@@ -161,6 +161,10 @@ const EditFiltersDialog: FC<EditFiltersDialogProps> = ({ open, setOpen }) => {
   const [filterList, setFilterList] = useStore((state) => [state.filterList, state.setFilterList]);
 
   const [modifiedFilters, setModifiedFilters] = useState(filterList);
+
+  useEffect(() => {
+    setModifiedFilters(filterList)
+  }, [filterList])
 
   return (
     <Dialog open={open} onClose={() => setOpen(false)} className="filters-dialog">

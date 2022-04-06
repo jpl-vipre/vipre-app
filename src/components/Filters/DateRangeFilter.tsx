@@ -30,7 +30,7 @@ const DateRangeFilter: FC<DateRangeFilterProps> = ({ filter }) => {
 
   const [startDateSeconds, endDateSeconds] = useMemo(
     () => [
-      ...filter.defaultValue.map((defaultDate: Date) => dateToSecondsSince2000(defaultDate)),
+      ...(filter.defaultValue && filter.defaultValue.length && filter.defaultValue.map((defaultDate: Date) => dateToSecondsSince2000(defaultDate))),
       ...(filter.value || []),
     ],
     [filter]
