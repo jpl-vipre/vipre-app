@@ -81,9 +81,11 @@ const ColorScale: FC<ColorScaleProps> = ({
 
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%", width: "50px" }} className="color-scale">
+      <Tooltip title={`${minBound.toExponential()} ${units}`}>
       <span style={{ color: "#a1a1b5", fontSize: "10px", marginBottom: "5px", whiteSpace: "pre" }}>
-        {minBound} {units}
+        {`${minBound.toPrecision(3)}`} {units}
       </span>
+      </Tooltip>
       <div
         id={id}
         style={{
@@ -162,9 +164,11 @@ const ColorScale: FC<ColorScaleProps> = ({
           );
         })}
       </div>
+      <Tooltip title={`${maxBound.toExponential()} ${units}`}>
       <span style={{ color: "#a1a1b5", fontSize: "10px", marginTop: "5px", whiteSpace: "pre" }}>
-        {maxBound} {units}
+        {maxBound.toPrecision(3)} {units}
       </span>
+      </Tooltip>
     </div>
   );
 };

@@ -57,6 +57,8 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnit
               dataKey={xField}
               name={xField}
               unit={xUnits || ""}
+              domain={["auto", "auto"]}
+              tickFormatter={(value) => value.toPrecision(2)}
               fill="#ffffff"
               style={{ fill: "#ffffff" }}
             />
@@ -64,11 +66,13 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnit
               type="number"
               dataKey={yField}
               name={yField}
+              domain={["auto", "auto"]}
+              tickFormatter={(value) => value.toPrecision(2)}
               unit={yUnits || ""}
               fill="#ffffff"
               style={{ fill: "#ffffff" }}
             />
-            <Tooltip cursor={{ strokeDasharray: "3 3" }} />
+            <Tooltip cursor={{ strokeDasharray: "3 3" }} formatter={(value: any) => value.toExponential()} />
             <Scatter data={data} fill="#ffffff">
               {data.map((entry, index) => {
                 let fill = "white";
