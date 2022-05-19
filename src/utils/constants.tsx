@@ -1,5 +1,21 @@
 export const API = process.env.REACT_APP_API || "http://localhost:8000";
 
+// 299 = Venus
+// 499 = Mars
+// 599 = Jupiter
+// 606 = Titan
+// 699 = Saturn
+// 799 = Uranus
+// 899 = Neptune
+export const TARGET_BODIES = {
+  "Saturn": { icon: "/icons/saturn.svg", map: "/maps/Saturn.jpg" },
+  "Neptune": { icon: "/icons/neptune.svg", map: "/maps/899.jpg" },
+  "Uranus": { icon: "/icons/uranus.png", map: "/maps/799.jpg" },
+  "Jupiter": { icon: "", map: "/maps/Jupiter.jpg" },
+  "Titan": { icon: "", map: "/maps/Titan.png" },
+  "Mars": { icon: "", map: "/maps/Mars.png" },
+}
+
 export const GRAPH_TYPES = {
   scatterplot: {
     label: "Scatterplot",
@@ -149,5 +165,5 @@ export const FILTERS = [
   },
 ];
 
-const constants = { API, DEFAULT_TABS, FILTERS, GRAPH_TYPES, FILTER_TYPES };
+const constants = { API, TARGET_BODIES, DEFAULT_TABS, FILTERS, GRAPH_TYPES, FILTER_TYPES };
 export default constants;

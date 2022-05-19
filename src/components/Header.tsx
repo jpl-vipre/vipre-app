@@ -7,6 +7,8 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import SelectFilter from "./Filters/SelectFilter";
 import useStore from "../utils/store";
 
+import { TARGET_BODIES } from "../utils/constants";
+
 import "../scss/Header.scss";
 
 const { ipcRenderer } = window.require("electron");
@@ -27,18 +29,9 @@ const Header: FC<{ view: number; setView: (view: number) => void }> = ({ view, s
     if (!targetBodyFilter) return "";
 
     const targetBodyName = targetBodyFilter.value || targetBodyFilter.defaultValue;
-    if (!targetBodyName) return "";
-
-    switch (targetBodyName) {
-      case "Saturn":
-        return "/icons/saturn.svg";
-      case "Neptune":
-        return "/icons/neptune.svg";
-      case "Uranus":
-        return "/icons/uranus.png";
-      default:
-        return "";
-    }
+    if (!targetBodyName || !Object.keys(TARGET_BODIES).includes(targetBodyName)) return "";
+    // @ts-ignore
+    return TARGET_BODIES[targetBodyName].icon;
   }, [targetBodyFilter]);
 
   return (

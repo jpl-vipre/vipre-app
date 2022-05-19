@@ -6,6 +6,7 @@ import { interpolateSpectral } from "d3-scale-chromatic";
 import ColorScale from "./ColorScale";
 
 import "../../scss/Scatterplot.scss";
+import useStore from "../../utils/store";
 
 const colors = scaleSequential(interpolateSpectral);
 
@@ -18,12 +19,26 @@ interface ScatterplotProps {
   yUnits?: string;
   colorField?: string;
   colorUnits?: string;
+  isTrajectorySelector: boolean;
 }
-const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnits, colorField, colorUnits, id }) => {
-  const [activeValues, setActiveValues] = useState<number[]>([]);
+const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnits, colorField, colorUnits, id, isTrajectorySelector = false }) => {
+  const [selectedActiveValues, setActiveValues] = useState<number[]>([]);
   const [hoverValue, setHoverValue] = useState<number>(-1);
   const [minSelected, setMinSelected] = useState<number>(-1);
   const [maxSelected, setMaxSelected] = useState<number>(-1);
+
+  const confirmedSelectedTrajectory = useStore(state => state.confirmedSelectedTrajectory)
+  const setSelectedTrajectory = useStore(state => state.setSelectedTrajectory)
+  const selectedTrajectory = useStore((state) => state.selectedTrajectory);
+  const selectedTrajectoryIdx = useMemo(() => {
+    if (selectedTrajectory === null) return -1;
+    return data.findIndex((d) => d.id === selectedTrajectory.id);
+  }, [data, selectedTrajectory]);
+
+  const activeValues = useMemo(() => {
+    if (selectedTrajectoryIdx === -1) return selectedActiveValues;
+    return [selectedTrajectoryIdx, ...selectedActiveValues];
+  }, [selectedTrajectoryIdx, selectedActiveValues]);
 
   const [minBound, maxBound] = useMemo(() => {
     if (!colorField || !data.length) {
@@ -77,6 +92,7 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnit
               {data.map((entry, index) => {
                 let fill = "white";
                 let isWithinThreshold = activeValues.includes(index);
+                let isSelectedTrajectory = index === selectedTrajectoryIdx;
                 if (colorField && !isWithinThreshold && typeof entry[colorField] === "number") {
                   isWithinThreshold =
                     (hoverValue >= 0 && Math.abs(entry[colorField] - hoverValue) <= 0.05) ||
@@ -88,12 +104,18 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnit
                   <Cell
                     key={`cell-${index}`}
                     fill={fill}
-                    style={{ stroke: isWithinThreshold ? "white" : "", strokeWidth: isWithinThreshold ? 3 : 0 }}
+                    style={{ stroke: isWithinThreshold ? "white" : "", strokeWidth: isSelectedTrajectory ? 6 : isWithinThreshold ? 3 : 0 }}
                     onClick={() => {
                       if (colorField && activeValues.includes(index)) {
                         setActiveValues(activeValues.filter((value) => value !== index));
+                        if (isTrajectorySelector && !confirmedSelectedTrajectory) {
+                          setSelectedTrajectory(null);
+                        }
                       } else if (colorField) {
                         setActiveValues([...activeValues, index]);
+                        if (isTrajectorySelector && !confirmedSelectedTrajectory) {
+                          setSelectedTrajectory(entry);
+                        }
                       }
                     }}
                   />
