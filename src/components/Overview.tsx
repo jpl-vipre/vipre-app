@@ -4,8 +4,6 @@ import useStore, { FilterField, Trajectory } from "../utils/store";
 
 import "../scss/Overview.scss";
 
-const exampleValues = [34.63, 42.8, 200.2, 165.32, 84.53, 932.41, 12.54, 67.24];
-
 const nameRemapping: Record<string, Partial<FilterField>> = {
   t_launch: { display_name: "Launch Date", units: "Years Past 2000" },
   t_arr: { display_name: "Arrival Date", units: "Years Past 2000" },

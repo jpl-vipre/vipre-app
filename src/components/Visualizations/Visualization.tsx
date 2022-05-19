@@ -1,4 +1,4 @@
-import { FC, useMemo } from "react";
+import { FC } from "react";
 import useStore, { GraphConfig, Store } from "../../utils/store";
 import Scatterplot from "./Scatterplot";
 import Globe from "./Globe";
