@@ -103,7 +103,7 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnit
                 return (
                   <Cell
                     key={`cell-${index}`}
-                    fill={fill}
+                    fill={isSelectedTrajectory ? "blue" : fill}
                     style={{ stroke: isWithinThreshold ? "white" : "", strokeWidth: isSelectedTrajectory ? 6 : isWithinThreshold ? 3 : 0 }}
                     onClick={() => {
                       if (colorField && activeValues.includes(index)) {
