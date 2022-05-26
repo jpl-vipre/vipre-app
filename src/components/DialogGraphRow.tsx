@@ -24,7 +24,7 @@ const DialogGraphRow: FC<DialogGraphRowProps> = ({ modifiedTab, setModifiedTab, 
                 key={`${rowName}-${i}`}
                 label={`Graph ${i}`}
                 className="graph-edit-group"
-                style={{ minWidth: "300px", maxWidth: "300px" }}
+                style={{ minWidth: "300px", maxWidth: "400px" }}
               >
                 <FormControl fullWidth style={{ marginBottom: "5px" }}>
                   <InputLabel id={`top-${i}-graph-type-label`}>Type</InputLabel>
@@ -50,7 +50,7 @@ const DialogGraphRow: FC<DialogGraphRowProps> = ({ modifiedTab, setModifiedTab, 
                     ))}
                   </Select>
                 </FormControl>
-                <div style={{ display: "flex" }}>
+                <div style={{ display: "flex", width: "100%" }}>
                   {[
                     ["xAxis", "X Axis"],
                     ["yAxis", "Y Axis"],
