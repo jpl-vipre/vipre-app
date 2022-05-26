@@ -51,4 +51,11 @@ div.overview-container {
       }
     }
   }
+
+  .close-button {
+    cursor: pointer;
+    &:hover {
+      color: lightgrey;
+    }
+  }
 }

@@ -1,4 +1,4 @@
-export const API = process.env.REACT_APP_API || "http://localhost:8000";
+export const API = process.env.REACT_APP_API || "http://localhost:8001";
 
 // 299 = Venus
 // 499 = Mars

@@ -1,4 +1,4 @@
-import { FC, useMemo, useState } from "react";
+import { FC, useEffect, useMemo, useState } from "react";
 import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, Cell, ResponsiveContainer } from "recharts";
 import { scaleSequential } from "d3-scale";
 import { interpolateSpectral } from "d3-scale-chromatic";
@@ -27,9 +27,10 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnit
   const [minSelected, setMinSelected] = useState<number>(-1);
   const [maxSelected, setMaxSelected] = useState<number>(-1);
 
-  const confirmedSelectedTrajectory = useStore(state => state.confirmedSelectedTrajectory)
-  const setSelectedTrajectory = useStore(state => state.setSelectedTrajectory)
+  const confirmedSelectedTrajectory = useStore(state => state.confirmedSelectedTrajectory);
+  const setSelectedTrajectory = useStore(state => state.setSelectedTrajectory);
   const selectedTrajectory = useStore((state) => state.selectedTrajectory);
+
   const selectedTrajectoryIdx = useMemo(() => {
     if (selectedTrajectory === null) return -1;
     return data.findIndex((d) => d.id === selectedTrajectory.id);
@@ -48,9 +49,17 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnit
     return [Math.min(...colorValues), Math.max(...colorValues)];
   }, [data, colorField]);
 
+  // Convert data point into a bounded value so that a color can be associated with it
   const normalizeValue = (value: number) => {
     return ((value - minBound) / (maxBound - minBound)) * 0.8 + 0.15;
   };
+
+  // Clear selected values when trajectory is removed
+  useEffect(() => {
+    if (!confirmedSelectedTrajectory && isTrajectorySelector) {
+      setActiveValues([])
+    }
+  }, [confirmedSelectedTrajectory, isTrajectorySelector, setActiveValues]);
 
   return (
     <div
@@ -106,15 +115,13 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnit
                     fill={isSelectedTrajectory ? "blue" : fill}
                     style={{ stroke: isWithinThreshold ? "white" : "", strokeWidth: isSelectedTrajectory ? 6 : isWithinThreshold ? 3 : 0 }}
                     onClick={() => {
-                      if (colorField && activeValues.includes(index)) {
+                      if (colorField && activeValues.includes(index) && (!isTrajectorySelector || confirmedSelectedTrajectory)) {
                         setActiveValues(activeValues.filter((value) => value !== index));
-                        if (isTrajectorySelector && !confirmedSelectedTrajectory) {
-                          setSelectedTrajectory(null);
-                        }
                       } else if (colorField) {
-                        setActiveValues([...activeValues, index]);
                         if (isTrajectorySelector && !confirmedSelectedTrajectory) {
                           setSelectedTrajectory(entry);
+                        } else if (!isTrajectorySelector || confirmedSelectedTrajectory) {
+                          setActiveValues([...activeValues, index]);
                         }
                       }
                     }}
