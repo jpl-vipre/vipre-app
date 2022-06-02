@@ -72,6 +72,17 @@ export type Trajectory = {
   pos_target_arr_z: number;
 }
 
+const TARGET_BODIES = Object.keys(constants.TARGET_BODIES);
+export type TargetBodyName = typeof TARGET_BODIES[number];
+
+export type TargetBody = {
+  icon?: string;
+  map?: string;
+  value: string | number;
+}
+
+export type TargetBodies = Record<TargetBodyName, TargetBody>;
+
 export type Store = {
   activeTab: number;
   setActiveTab: (activeTab: number) => void;
@@ -79,6 +90,9 @@ export type Store = {
   setTabs: (tabs: VizTab[]) => void;
   setTab: (tab: VizTab) => void;
   filterList: FilterItem[];
+  targetBodies: TargetBodies;
+  targetBody: TargetBodyName;
+  setTargetBody: (targetBody: TargetBodyName) => void;
   setFilterList: (filterList: FilterItem[]) => void;
   setFilter: (filter: FilterItem) => void;
   trajectoryFields: FilterField[];
@@ -117,6 +131,9 @@ const useStore = create<Store>(
       },
       filterList: constants.FILTERS.map((filter, i) => ({ ...filter, id: i })),
       setFilterList: (filterList: FilterItem[]) => set({ filterList }),
+      targetBodies: constants.TARGET_BODIES,
+      targetBody: constants.DEFAULT_TARGET_BODY as TargetBodyName,
+      setTargetBody: (targetBody) => set({ targetBody }),
       setFilter: (filter: FilterItem) => {
         let filterList = get().filterList;
         let filterIndex = filterList.findIndex((existingFilter) => existingFilter.label === filter.label);
@@ -143,8 +160,8 @@ const useStore = create<Store>(
       trajectories: [],
       setTrajectories: (trajectories) => set({ trajectories }),
       searchTrajectories: () => {
-        set({ trajectories: TEST_DATA })
-        return TEST_DATA;
+        // set({ trajectories: TEST_DATA })
+        // return TEST_DATA;
         const filterList = get().filterList;
         let query = {
           filters: filterList
@@ -164,8 +181,9 @@ const useStore = create<Store>(
           fields: filterList.map((filter) => filter.dataField),
         };
 
+        let targetID = get().targetBodies[get().targetBody].value;
         axios
-          .post(`${constants.API}/trajectories`, query)
+          .post(`${constants.API}/visualizations/trajectory_selection/${targetID}`, query)
           .then((response) => {
             console.log(response, query);
           })

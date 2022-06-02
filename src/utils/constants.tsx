@@ -7,13 +7,15 @@ export const API = process.env.REACT_APP_API || "http://localhost:8001";
 // 699 = Saturn
 // 799 = Uranus
 // 899 = Neptune
+export const DEFAULT_TARGET_BODY = "Saturn";
 export const TARGET_BODIES = {
-  "Saturn": { icon: "/icons/saturn.svg", map: "/maps/Saturn.jpg" },
-  "Neptune": { icon: "/icons/neptune.svg", map: "/maps/899.jpg" },
-  "Uranus": { icon: "/icons/uranus.png", map: "/maps/799.jpg" },
-  "Jupiter": { icon: "", map: "/maps/Jupiter.jpg" },
-  "Titan": { icon: "", map: "/maps/Titan.png" },
-  "Mars": { icon: "", map: "/maps/Mars.png" },
+  "Venus": { icon: "", map: "/maps/299.jpg", value: "299" },
+  "Saturn": { icon: "/icons/saturn.svg", map: "/maps/Saturn.jpg", value: "699" },
+  "Neptune": { icon: "/icons/neptune.svg", map: "/maps/899.jpg", value: "899" },
+  "Uranus": { icon: "/icons/uranus.png", map: "/maps/799.jpg", value: "799" },
+  "Jupiter": { icon: "", map: "/maps/Jupiter.jpg", value: "599" },
+  "Titan": { icon: "", map: "/maps/Titan.png", value: "606" },
+  "Mars": { icon: "", map: "/maps/Mars.png", value: "499" },
 }
 
 export const GRAPH_TYPES = {
@@ -77,14 +79,6 @@ export const FILTER_TYPES = {
 };
 
 export const FILTERS = [
-  {
-    label: "Target Body",
-    dataField: "targetBody",
-    type: "select",
-    options: ["Saturn", "Uranus", "Neptune"],
-    defaultValue: "Saturn",
-    hidden: true,
-  },
   {
     label: "Entry Altitude",
     dataField: "entryAltitude",
@@ -165,5 +159,5 @@ export const FILTERS = [
   },
 ];
 
-const constants = { API, TARGET_BODIES, DEFAULT_TABS, FILTERS, GRAPH_TYPES, FILTER_TYPES };
+const constants = { API, TARGET_BODIES, DEFAULT_TABS, FILTERS, GRAPH_TYPES, FILTER_TYPES, DEFAULT_TARGET_BODY };
 export default constants;

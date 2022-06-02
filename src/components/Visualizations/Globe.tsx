@@ -7,6 +7,7 @@ import ReactGlobe from "react-globe.gl";
 
 
 import "../../scss/Globe.scss";
+import useStore from "../../utils/store";
 
 // const colors = scaleSequential(interpolateSpectral);
 
@@ -30,7 +31,7 @@ interface GlobeProps {
   colorUnits?: string;
 }
 const Globe: FC<GlobeProps> = ({ data, xField, xUnits, yField, yUnits, colorField, colorUnits, id }) => {
-
+  const targetBodyMap = useStore(state => state.targetBodies[state.targetBody].map)
   return (
     <div
       style={{ display: "flex", width: "100%", height: "100%", maxHeight: "calc(100% - 15px)", alignItems: "center", background: "black" }}
@@ -39,7 +40,7 @@ const Globe: FC<GlobeProps> = ({ data, xField, xUnits, yField, yUnits, colorFiel
       <ResponsiveContainer>
         <div style={{ width: "100%", height: "100%", display: "flex", justifyContent: "center" }} className="globe-container">
           <ReactGlobe
-            globeImageUrl={"//unpkg.com/three-globe/example/img/earth-day.jpg"}
+            globeImageUrl={targetBodyMap}
             pointsData={gData}
             pointAltitude="size"
             pointColor="color"

@@ -1,13 +1,13 @@
 import { FC, useMemo, useState } from "react";
 
-import { IconButton, Tooltip } from "@mui/material";
+import { FormControl, InputLabel, Select, MenuItem, IconButton, Tooltip } from "@mui/material";
 import SettingsIcon from "@mui/icons-material/Settings";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 
 import SelectFilter from "./Filters/SelectFilter";
-import useStore from "../utils/store";
+import useStore, { TargetBodyName } from "../utils/store";
 
-import { TARGET_BODIES } from "../utils/constants";
+
 
 import "../scss/Header.scss";
 
@@ -15,39 +15,44 @@ const { ipcRenderer } = window.require("electron");
 
 const Header: FC<{ view: number; setView: (view: number) => void }> = ({ view, setView }) => {
   const [windowMaximized, setWindowMaximized] = useState(false);
+  const targetBodies = useStore((state) => state.targetBodies);
 
-  const targetBodyFilter = useStore((state) => {
-    const targetBody = state.filterList.filter((filter) => filter.id === 0);
-    if (targetBody.length === 0) {
-      return null;
-    } else {
-      return targetBody[0];
-    }
-  });
+  const [targetBody, setTargetBody] = useStore(state => [state.targetBody, state.setTargetBody])
 
-  const targetBodyLogo = useMemo(() => {
-    if (!targetBodyFilter) return "";
-
-    const targetBodyName = targetBodyFilter.value || targetBodyFilter.defaultValue;
-    if (!targetBodyName || !Object.keys(TARGET_BODIES).includes(targetBodyName)) return "";
-    // @ts-ignore
-    return TARGET_BODIES[targetBodyName].icon;
-  }, [targetBodyFilter]);
+  const targetBodyProps = useMemo(() => {
+    if (!targetBody) return { icon: "", map: "", value: "" };
+    return targetBodies[targetBody];
+  }, [targetBody, targetBodies]);
 
   return (
     <header>
       <span className="target-select">
-        {targetBodyFilter && targetBodyLogo ? (
-          <img src={targetBodyLogo} alt={`${targetBodyFilter.value} target`} />
+        {targetBodyProps && targetBodyProps.icon ? (
+          <img src={targetBodyProps.icon} alt={`${targetBodyProps.value} target`} />
         ) : (
           <span className="img-placeholder" />
         )}
-        {targetBodyFilter && (
-          <SelectFilter
-            filter={targetBodyFilter}
-            style={{ minWidth: "200px", marginBottom: 0 }}
-            className="target-body-select"
-          />
+        {targetBodyProps && (
+          <FormControl fullWidth style={{ minWidth: "200px", marginBottom: 0 }} className="target-body-select">
+            <InputLabel id={"target-body-select-label"}>Target Body</InputLabel>
+            <Select
+              variant="standard"
+              style={{ textAlign: "left", paddingLeft: "5px" }}
+              labelId={"target-body-select-label"}
+              id={"target-body-select"}
+              value={targetBody}
+              label="Target Body"
+              onChange={(evt) => {
+                setTargetBody(evt.target.value);
+              }}
+            >
+              {Object.entries(targetBodies).map(([targetBodyName, targetBody]) => (
+                <MenuItem value={targetBodyName} key={`filter-${targetBodyName}-${targetBody.value}`}>
+                  {targetBodyName}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
         )}
       </span>
       <span
