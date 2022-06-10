@@ -67,7 +67,7 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnit
       id={id}
     >
       <div style={{ display: "flex", flexDirection: "column", width: "100%", height: "100%" }}>
-        <h4 style={{ margin: 0, color: "#a1a1b5" }}>{xField} vs {yField}</h4>
+        <h4 style={{ margin: 0, color: "#a1a1b5", fontSize: "12px" }}>{xField} vs {yField}</h4>
         <div style={{ width: "calc(100% - 15px)", height: "100%" }} className="scatterplot-container">
           <ResponsiveContainer width="100%" height="100%">
             <ScatterChart
