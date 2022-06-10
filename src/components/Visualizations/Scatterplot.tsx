@@ -32,7 +32,7 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnit
   const selectedTrajectory = useStore((state) => state.selectedTrajectory);
 
   const selectedTrajectoryIdx = useMemo(() => {
-    if (selectedTrajectory === null) return -1;
+    if (!data || selectedTrajectory === null) return -1;
     return data.findIndex((d) => d.id === selectedTrajectory.id);
   }, [data, selectedTrajectory]);
 
@@ -42,7 +42,7 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnit
   }, [selectedTrajectoryIdx, selectedActiveValues]);
 
   const [minBound, maxBound] = useMemo(() => {
-    if (!colorField || !data.length) {
+    if (!colorField || !data || !data.length) {
       return [0, 0];
     }
     const colorValues = data.map((entry) => entry[colorField]);
@@ -97,8 +97,8 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnit
               style={{ fill: "#ffffff" }}
             />
             <Tooltip cursor={{ strokeDasharray: "3 3" }} formatter={(value: any) => value.toExponential()} />
-            <Scatter data={data} fill="#ffffff">
-              {data.map((entry, index) => {
+            <Scatter data={(data || [])} fill="#ffffff">
+              {(data || []).map((entry, index) => {
                 let fill = "white";
                 let isWithinThreshold = activeValues.includes(index);
                 let isSelectedTrajectory = index === selectedTrajectoryIdx;

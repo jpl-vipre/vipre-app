@@ -12,7 +12,7 @@ interface VisualizationProps {
 const Visualization: FC<VisualizationProps> = ({ config, id }) => {
   const dataSource = (config.source || "trajectories") as keyof Store;
   const data = useStore((state) => state[dataSource]);
-
+  console.log(data)
   return (
     <div
       className="visualization-card"

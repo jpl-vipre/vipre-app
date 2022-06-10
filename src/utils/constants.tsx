@@ -33,6 +33,8 @@ export const GRAPH_TYPES = {
   },
 };
 
+export const GRAPH_SOURCES = ["trajectories", "entries"];
+
 export const DEFAULT_TABS = [
   {
     id: 0,
@@ -159,5 +161,5 @@ export const FILTERS = [
   },
 ];
 
-const constants = { API, TARGET_BODIES, DEFAULT_TABS, FILTERS, GRAPH_TYPES, FILTER_TYPES, DEFAULT_TARGET_BODY };
+const constants = { API, TARGET_BODIES, DEFAULT_TABS, FILTERS, GRAPH_TYPES, FILTER_TYPES, DEFAULT_TARGET_BODY, GRAPH_SOURCES };
 export default constants;

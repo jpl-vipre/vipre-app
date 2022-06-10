@@ -1,3 +1,6 @@
 [submodule "vipre-data"]
 	path = vipre-data
 	url = https://github.jpl.nasa.gov/VIPRE/vipre-data
+[submodule "vipre-schemas"]
+	path = vipre-schemas
+	url = https://github.jpl.nasa.gov/VIPRE/vipre-schemas
