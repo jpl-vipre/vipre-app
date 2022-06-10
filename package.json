@@ -59,6 +59,8 @@
     "zustand-persist": "^0.4.0"
   },
   "scripts": {
+    "install-api": "STARTDIR=`pwd` && cd vipre-data && poetry install",
+    "start-api": "STARTDIR=`pwd` && cd vipre-data/src && poetry run uvicorn --reload --log-level debug app.main:app --port 8000",
     "react-start": "react-scripts start",
     "react-build": "react-scripts build",
     "build": "yarn version && yarn react-build && yarn electron-build",
