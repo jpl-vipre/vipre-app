@@ -150,9 +150,7 @@ const useStore = create<Store>(
       trajectoryFields: [],
       entryFields: [],
       fetchFilterFields: () => {
-        console.log("FETCHING")
         axios.get(`${constants.API}/filters`).then((response) => {
-          console.log("RES", response.data)
           set({
             trajectoryFields: response.data.TrajectoryFilters,
             entryFields: response.data.EntryFilters,
