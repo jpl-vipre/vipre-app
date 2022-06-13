@@ -1,8 +1,12 @@
 import { FC, useMemo, useState } from "react";
+import { scaleSequential } from "d3-scale";
+import { interpolateSpectral } from "d3-scale-chromatic";
 
 import { Tooltip } from "@mui/material";
 
 import "../../scss/ColorScale.scss";
+
+export const colors = scaleSequential(interpolateSpectral);
 
 interface ColorScaleProps {
   id: string;

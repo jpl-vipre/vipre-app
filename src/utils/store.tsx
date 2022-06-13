@@ -87,6 +87,13 @@ export type TargetBody = {
 
 export type TargetBodies = Record<TargetBodyName, TargetBody>;
 
+export type Coordinate = {
+  lat: number;
+  lng: number;
+  size?: number;
+  color?: string;
+}
+
 export type Store = {
   activeTab: number;
   setActiveTab: (activeTab: number) => void;
@@ -113,6 +120,8 @@ export type Store = {
   confirmedSelectedTrajectory: boolean;
   setConfirmedSelectedTrajectory: (confirmedSelectedTrajectory: boolean) => void;
   searchTrajectories: () => void;
+  arcs: Coordinate[];
+  fetchArcs: () => void;
 };
 
 const useStore = create<Store>(
@@ -208,10 +217,49 @@ const useStore = create<Store>(
           .get(`${constants.API}/trajectories/${selectedTrajectory.id}/entries`)
           .then((response) => {
             set({ entries: response.data })
+
+            // Fetch arcs on successful fetch of entries
+            get().fetchArcs();
           })
           .catch((err) => {
             console.error(err);
           });
+      },
+      arcs: [],
+      fetchArcs: () => {
+        // let selectedTrajectory = get().selectedTrajectory;
+        // console.log(selectedTrajectory)
+
+        // const entries = get().entries;
+
+        // const gData = entries.map(() => ({
+        //   startLat: (Math.random() - 0.5) * 180,
+        //   startLng: (Math.random() - 0.5) * 360,
+        //   endLat: (Math.random() - 0.5) * 180,
+        //   endLng: (Math.random() - 0.5) * 360,
+        //   label: `Arc Label`,
+        //   color: [['red', 'white', 'blue', 'green'][Math.round(Math.random() * 3)], ['red', 'white', 'blue', 'green'][Math.round(Math.random() * 3)]]
+        // }));
+        // // @ts-ignore
+        // const gData = entries.map(() => ({
+        //   lat: (Math.random() - 0.5) * 180,
+        //   lng: (Math.random() - 0.5) * 360,
+        //   size: 0.3,
+        //   color: "white"
+        // }));
+
+        set({ arcs: [] });
+
+        return;
+
+        // axios
+        //   .get(`${constants.API}/visualizations/${(selectedTrajectory || {}).id}/arcs`)
+        //   .then((response) => {
+        //     set({ arcs: response.data })
+        //   })
+        //   .catch((err) => {
+        //     console.error(err);
+        //   });
       }
     })
   )

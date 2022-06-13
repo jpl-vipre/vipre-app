@@ -38,13 +38,14 @@ interface VizTabButtonProps {
   defaultOpen?: boolean;
 }
 
-const VizTabButton: FC<VizTabButtonProps> = ({ tab, defaultOpen = false }) => {
+const VizTabButton: FC<VizTabButtonProps> = ({ tab }) => {
   const [editingTab, setEditingTab] = useStore(state => [state.editingTab, state.setEditingTab]);
   const [activeTab, setActiveTab] = useStore((state) => [state.activeTab, state.setActiveTab]);
   const setTab = useStore((state) => state.setTab);
   const [modifiedTab, setModifiedTab] = useState<VizTab>({ ...tab });
 
   const open = useMemo(() => editingTab !== null && editingTab === tab.id, [tab, editingTab]);
+
   const setOpen = useCallback((isOpen) => {
     if (isOpen) {
       setEditingTab(tab.id);
@@ -104,13 +105,13 @@ const VizTabButton: FC<VizTabButtonProps> = ({ tab, defaultOpen = false }) => {
 const VizTabs: FC = () => {
   const tabs = useStore((state) => state.tabs);
   const setTab = useStore((state) => state.setTab);
-  const [newTabID, setNewTabID] = useState<number>(-1);
+  const setEditingTab = useStore(state => state.setEditingTab);
   return (
     <div className="viz-tab-container">
       <div>
         <div className="tabs">
           {tabs.map((tab) => (
-            <VizTabButton key={`${tab.id}-tab-button`} tab={tab} defaultOpen={newTabID === tab.id} />
+            <VizTabButton key={`${tab.id}-tab-button`} tab={tab} />
           ))}
           <div
             style={{
@@ -130,7 +131,7 @@ const VizTabs: FC = () => {
                   topRow: [],
                   bottomRow: [],
                 });
-                setNewTabID(tabID);
+                setEditingTab(tabID)
               }}
             >
               <AddIcon />

@@ -1,20 +1,12 @@
-import { FC } from "react";
+import { FC, useCallback, useMemo } from "react";
 import { ResponsiveContainer } from "recharts";
 
 import ReactGlobe from "react-globe.gl";
 
-
-import "../../scss/Globe.scss";
+import { colors } from "./ColorScale";
 import useStore from "../../utils/store";
 
-const N = 100;
-// @ts-ignore
-const gData = [...Array(N).keys()].map(() => ({
-  lat: (Math.random() - 0.5) * 180,
-  lng: (Math.random() - 0.5) * 360,
-  size: Math.random() / 3,
-  color: ['red', 'white', 'blue', 'green'][Math.round(Math.random() * 3)]
-}));
+import "../../scss/Globe.scss";
 
 interface GlobeProps {
   id: string;
@@ -29,6 +21,34 @@ interface GlobeProps {
 const Globe: FC<GlobeProps> = ({ data, xField, xUnits, yField, yUnits, colorField, colorUnits, id }) => {
   const targetBodyMap = useStore(state => state.targetBodies[state.targetBody].map)
   const isEditing = useStore(state => state.editingTab !== null);
+  const arcs = useStore(state => state.arcs);
+
+  // const [minBound, maxBound] = useMemo(() => {
+  //   if (!colorField || !data || !data.length) {
+  //     return [0, 0];
+  //   }
+  //   const colorValues = data.map((entry) => entry[colorField]);
+  //   return [Math.min(...colorValues), Math.max(...colorValues)];
+  // }, [data, colorField]);
+
+  // // Convert data point into a bounded value so that a color can be associated with it
+  // const normalizeValue = useCallback((value: number) => {
+  //   return ((value - minBound) / (maxBound - minBound)) * 0.8 + 0.15;
+  // }, [minBound, maxBound]);
+
+  // const dataWithColor = useMemo(() => {
+  //   if (!colorField || !data || !data.length) {
+  //     return data;
+  //   }
+
+  //   return data.map((entry) => {
+  //     const color = colors(normalizeValue(entry[colorField]));
+  //     return {
+  //       ...entry,
+  //       color,
+  //     };
+  //   });
+  // }, [data, colorField, normalizeValue])
 
   return (
     <div
@@ -36,18 +56,17 @@ const Globe: FC<GlobeProps> = ({ data, xField, xUnits, yField, yUnits, colorFiel
       id={id}
     >
       {isEditing || <ResponsiveContainer>
-        {/* <div style={{ width: "100%", maxWidth: "100%", height: "100%", display: "flex", justifyContent: "center", position: "relative" }} className="globe-container"> */}
         <ReactGlobe
           globeImageUrl={targetBodyMap}
-          pointsData={data}
-          pointAltitude="size"
-          pointColor="color"
+          // pointsData={arcs}
+          // pointAltitude="size"
+          // pointColor="color"
+          arcsData={arcs}
+          arcColor={'color'}
+          arcLabel={'label'}
+          arcStroke={3}
           backgroundColor="black"
-        // @ts-ignore
-        // width={"100%"}
-        // height={"100%"}
         />
-        {/* </div> */}
       </ResponsiveContainer>}
     </div>
   );

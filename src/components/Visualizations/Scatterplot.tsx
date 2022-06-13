@@ -1,14 +1,12 @@
 import { FC, useEffect, useMemo, useState } from "react";
 import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, Cell, ResponsiveContainer } from "recharts";
-import { scaleSequential } from "d3-scale";
-import { interpolateSpectral } from "d3-scale-chromatic";
+import MuiTooltip from "@mui/material/Tooltip";
 
-import ColorScale from "./ColorScale";
+
+import ColorScale, { colors } from "./ColorScale";
 
 import "../../scss/Scatterplot.scss";
 import useStore from "../../utils/store";
-
-const colors = scaleSequential(interpolateSpectral);
 
 interface ScatterplotProps {
   id: string;
@@ -67,7 +65,18 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnit
       id={id}
     >
       <div style={{ display: "flex", flexDirection: "column", width: "100%", height: "100%" }}>
-        <h4 style={{ margin: 0, color: "#a1a1b5", fontSize: "12px" }}>{xField} vs {yField}</h4>
+        <h4 style={{ margin: 0, color: "#a1a1b5", fontSize: "12px" }}>
+          <MuiTooltip title={`X Axis: ${xField}`}>
+            <span>{xField} </span>
+          </MuiTooltip>
+          vs
+          <MuiTooltip title={`Y Axis: ${yField}`}>
+            <span> {yField}</span>
+          </MuiTooltip>
+          {colorField && <MuiTooltip title={`Color Field: ${colorField}`}>
+            <span> ({colorField})</span>
+          </MuiTooltip>}
+        </h4>
         <div style={{ width: "calc(100% - 15px)", height: "100%" }} className="scatterplot-container">
           <ResponsiveContainer width="100%" height="100%">
             <ScatterChart
