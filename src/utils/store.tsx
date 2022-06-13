@@ -197,6 +197,7 @@ const useStore = create<Store>(
         };
 
         let targetID = get().targetBodies[get().targetBody].value;
+
         axios
           .post(`${constants.API}/visualizations/trajectory_selection/${targetID}`, query)
           .then((response) => {
