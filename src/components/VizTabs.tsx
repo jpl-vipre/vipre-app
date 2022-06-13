@@ -10,6 +10,7 @@ import VizContent from "./VizContent";
 import EditTabDialog from "./EditTabDialog";
 
 import "../scss/VizTabs.scss";
+import { Tooltip } from "@mui/material";
 
 interface TabPanelProps {
   index: number;
@@ -70,9 +71,19 @@ const VizTabButton: FC<VizTabButtonProps> = ({ tab, defaultOpen = false }) => {
           <IconButton style={{ padding: 0 }} onClick={() => setOpen(!open)}>
             <EditIcon />
           </IconButton>
-          <h5 style={{ margin: "0 5px", cursor: "pointer" }} onClick={() => setActiveTab(tab.id)}>
-            {modifiedTab.label}
-          </h5>
+          <Tooltip title={modifiedTab && modifiedTab.label && modifiedTab.label.length > 25 ? modifiedTab.label : ""} style={{ background: "black" }}>
+            <h5 style={{
+              margin: "0 5px",
+              cursor: "pointer",
+              maxWidth: "200px",
+              textOverflow: "ellipsis",
+              display: "inline-block",
+              whiteSpace: "nowrap",
+              overflow: "hidden"
+            }} onClick={() => setActiveTab(tab.id)}>
+              {modifiedTab.label}
+            </h5>
+          </Tooltip>
         </span>
       </div>
 
