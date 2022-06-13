@@ -25,8 +25,7 @@
     ],
     "directories": {
       "buildResources": "assets"
-    },
-    "extraResources": "vipre-data"
+    }
   },
   "dependencies": {
     "@emotion/react": "^11.7.1",
