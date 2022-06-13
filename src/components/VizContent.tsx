@@ -53,7 +53,7 @@ const VizContent: FC<VizContentProps> = ({ tab }) => {
                   justifyContent: "center",
                   margin: "5px",
                   maxWidth: "calc(100% - 10px)",
-                  height: "100%"
+                  height: "calc(100% - 10px)"
                 }}
               >
                 <Visualization config={graphConfig} id={`${tab.id}-bottom-row-${i}`} />

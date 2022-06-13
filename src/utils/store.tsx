@@ -201,7 +201,23 @@ const useStore = create<Store>(
         axios
           .post(`${constants.API}/visualizations/trajectory_selection/${targetID}`, query)
           .then((response) => {
-            set({ trajectories: response.data })
+            let filteredData = response.data.filter((trajectory: any) => {
+              let isInRange = true;
+              filterList.forEach((filterItem) => {
+                if (filterItem.dataField.includes("trajectory.")) {
+                  let dataField = filterItem.dataField.replace(/^trajectory./, "");
+                  if (Array.isArray(filterItem.value)) {
+                    const [lower, upper] = filterItem.value;
+                    isInRange = isInRange && lower <= trajectory[dataField] && trajectory[dataField] <= upper;
+                  } else {
+                    isInRange = isInRange && trajectory[dataField] === filterItem.value;
+                  }
+                }
+              })
+
+              return isInRange;
+            })
+            set({ trajectories: filteredData })
           })
           .catch((err) => {
             console.error(err, query);
@@ -217,8 +233,25 @@ const useStore = create<Store>(
         axios
           .get(`${constants.API}/trajectories/${selectedTrajectory.id}/entries`)
           .then((response) => {
-            set({ entries: response.data })
+            const filterList = get().filterList;
+            let filteredData = response.data.filter((trajectory: any) => {
+              let isInRange = true;
+              filterList.forEach((filterItem) => {
+                if (filterItem.dataField.includes("entry.")) {
+                  let dataField = filterItem.dataField.replace(/^entry./, "");
+                  if (Array.isArray(filterItem.value)) {
+                    const [lower, upper] = filterItem.value;
+                    isInRange = isInRange && lower <= trajectory[dataField] && trajectory[dataField] <= upper;
+                  } else {
+                    isInRange = isInRange && trajectory[dataField] === filterItem.value;
+                  }
+                }
+              })
 
+              return isInRange;
+            })
+            console.log(response.data, filteredData, filterList)
+            set({ entries: filteredData })
             // Fetch arcs on successful fetch of entries
             get().fetchArcs();
           })

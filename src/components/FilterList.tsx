@@ -18,15 +18,20 @@ import "../scss/FilterList.scss";
 const FilterList: FC = () => {
   const filterList = useStore((state) => state.filterList);
   const searchTrajectories = useStore((state) => state.searchTrajectories);
+  const fetchEntries = useStore((state) => state.fetchEntries)
   const [openEditFilters, setOpenEditFilters] = useState(false);
 
-  const debouncedFilterList = useDebounce(filterList, 2000);
+  const debouncedFilterList = useDebounce(filterList, 1000);
 
   useEffect(() => {
-    if (debouncedFilterList.length > 0) {
+    if (debouncedFilterList.filter(filterItem => filterItem.dataField.startsWith("trajectory")).length > 0) {
       searchTrajectories();
     }
-  }, [searchTrajectories, debouncedFilterList]);
+
+    if (debouncedFilterList.filter(filterItem => filterItem.dataField.startsWith("entry")).length > 0) {
+      fetchEntries();
+    }
+  }, [searchTrajectories, fetchEntries, debouncedFilterList]);
 
   return (
     <div className="filter-container">
