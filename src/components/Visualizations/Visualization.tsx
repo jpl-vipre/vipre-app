@@ -12,7 +12,6 @@ interface VisualizationProps {
 const Visualization: FC<VisualizationProps> = ({ config, id }) => {
   const dataSource = (config.source || "trajectories") as keyof Store;
   const data = useStore((state) => state[dataSource]);
-  console.log(data)
   return (
     <div
       className="visualization-card"
@@ -22,6 +21,7 @@ const Visualization: FC<VisualizationProps> = ({ config, id }) => {
         alignItems: "center",
         height: "100%",
         maxHeight: "calc(100% - 15px)",
+        maxWidth: "100%",
         padding: "5px",
         border: "1px solid #a1a1b5",
         borderRadius: "5px",

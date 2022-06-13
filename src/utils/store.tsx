@@ -90,6 +90,8 @@ export type TargetBodies = Record<TargetBodyName, TargetBody>;
 export type Store = {
   activeTab: number;
   setActiveTab: (activeTab: number) => void;
+  editingTab: number | null;
+  setEditingTab: (editingTab: number | null) => void;
   tabs: VizTab[];
   setTabs: (tabs: VizTab[]) => void;
   setTab: (tab: VizTab) => void;
@@ -122,6 +124,8 @@ const useStore = create<Store>(
     (set, get): Store => ({
       activeTab: 0,
       setActiveTab: (activeTab: number) => set(() => ({ activeTab })),
+      editingTab: null,
+      setEditingTab: (editingTab) => set(() => ({ editingTab })),
       tabs: constants.DEFAULT_TABS,
       setTabs: (tabs: VizTab[]) => set({ tabs }),
       setTab: (tab: VizTab) => {

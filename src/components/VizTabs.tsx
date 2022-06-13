@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useCallback, useEffect, useMemo, useState } from "react";
 
 import IconButton from "@mui/material/IconButton";
 import EditIcon from "@mui/icons-material/Edit";
@@ -39,10 +39,19 @@ interface VizTabButtonProps {
 }
 
 const VizTabButton: FC<VizTabButtonProps> = ({ tab, defaultOpen = false }) => {
-  const [open, setOpen] = useState(defaultOpen);
+  const [editingTab, setEditingTab] = useStore(state => [state.editingTab, state.setEditingTab]);
   const [activeTab, setActiveTab] = useStore((state) => [state.activeTab, state.setActiveTab]);
   const setTab = useStore((state) => state.setTab);
   const [modifiedTab, setModifiedTab] = useState<VizTab>({ ...tab });
+
+  const open = useMemo(() => editingTab !== null && editingTab === tab.id, [tab, editingTab]);
+  const setOpen = useCallback((isOpen) => {
+    if (isOpen) {
+      setEditingTab(tab.id);
+    } else {
+      setEditingTab(null);
+    }
+  }, [setEditingTab, tab])
 
   useEffect(() => {
     setModifiedTab({ ...tab });

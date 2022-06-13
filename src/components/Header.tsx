@@ -4,8 +4,7 @@ import { FormControl, InputLabel, Select, MenuItem, IconButton, Tooltip } from "
 import SettingsIcon from "@mui/icons-material/Settings";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 
-import SelectFilter from "./Filters/SelectFilter";
-import useStore, { TargetBodyName } from "../utils/store";
+import useStore from "../utils/store";
 
 
 
