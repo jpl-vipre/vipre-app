@@ -1,6 +1,6 @@
 import { FC, useState, useEffect } from "react";
 
-import { useDebounce } from "usehooks-ts";
+import { useDebounce, useEffectOnce } from "usehooks-ts";
 
 import EditIcon from "@mui/icons-material/Edit";
 import IconButton from "@mui/material/IconButton";
@@ -22,6 +22,10 @@ const FilterList: FC = () => {
   const [openEditFilters, setOpenEditFilters] = useState(false);
 
   const debouncedFilterList = useDebounce(filterList, 1000);
+
+  useEffectOnce(() => {
+    searchTrajectories();
+  })
 
   useEffect(() => {
     if (debouncedFilterList.filter(filterItem => filterItem.dataField.startsWith("trajectory")).length > 0) {

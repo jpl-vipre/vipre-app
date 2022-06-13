@@ -1,5 +1,5 @@
 {
-  "name": "vapre",
+  "name": "vipre",
   "version": "1.0.0",
   "private": true,
   "author": "NASA JPL",
@@ -8,7 +8,7 @@
   "main": "./public/electron.js",
   "build": {
     "appId": "com.electron.vapre",
-    "productName": "VAPRE",
+    "productName": "VIPRE",
     "mac": {
       "category": "public.app-category.business",
       "icon": "assets/icon.icns"
@@ -25,7 +25,8 @@
     ],
     "directories": {
       "buildResources": "assets"
-    }
+    },
+    "extraResources": "vipre-data"
   },
   "dependencies": {
     "@emotion/react": "^11.7.1",

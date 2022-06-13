@@ -11,6 +11,8 @@ import SettingsView from "./views/SettingsView";
 
 import "./App.css";
 
+const { ipcRenderer } = window.require("electron");
+
 declare module "@mui/material/styles" {
   interface Theme {
     palette: Palette;
@@ -28,6 +30,14 @@ let theme = createTheme({
 const App: FC = () => {
   const [view, setView] = useState(0);
   const fetchFilterFields = useStore((state) => state.fetchFilterFields);
+
+  useEffect(() => {
+    ipcRenderer.on("api-loaded", (evt: any, info: any) => {
+      fetchFilterFields();
+      console.log("API LOADED")
+    })
+  }, [fetchFilterFields]);
+
 
   useEffect(() => {
     fetchFilterFields();

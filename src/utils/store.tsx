@@ -168,6 +168,20 @@ const useStore = create<Store>(
             trajectoryFields: response.data.TrajectoryFilters,
             entryFields: response.data.EntryFilters,
           });
+        }).catch(() => {
+          setTimeout(() => {
+            axios.get(`${constants.API}/filters`).then((response) => {
+              set({
+                trajectoryFields: response.data.TrajectoryFilters,
+                entryFields: response.data.EntryFilters,
+              });
+            }).catch(() => {
+              set({
+                trajectoryFields: [],
+                entryFields: [],
+              })
+            })
+          }, 1000)
         });
       },
       selectedTrajectory: null,
@@ -250,7 +264,6 @@ const useStore = create<Store>(
 
               return isInRange;
             })
-            console.log(response.data, filteredData, filterList)
             set({ entries: filteredData })
             // Fetch arcs on successful fetch of entries
             get().fetchArcs();

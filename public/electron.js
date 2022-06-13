@@ -1,6 +1,8 @@
 const { app, BrowserWindow, protocol, ipcMain, shell } = require("electron");
 const EventEmitter = require("events");
 
+const { exec } = require("child_process");
+
 const emitter = new EventEmitter();
 
 const path = require("path");
@@ -9,6 +11,7 @@ const url = require("url");
 emitter.setMaxListeners(100);
 
 let window;
+let api;
 
 const createWindow = () => {
   window = new BrowserWindow({
@@ -30,7 +33,9 @@ const createWindow = () => {
 
   window.maximize();
 
-  const appURL = app.isPackaged ? `file://${__dirname}/index.html` : "http://localhost:3000";
+  const appURL = app.isPackaged
+    ? `file://${__dirname}/index.html`
+    : "http://localhost:3000";
   window.loadURL(appURL);
 };
 
@@ -47,7 +52,23 @@ const setupLocalFilesNormalizerProxy = () => {
   );
 };
 
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
+  let apiPath = app.isPackaged
+    ? path.join(process.resourcesPath, "vipre-data", "src", "vipre-api.pex")
+    : path.join(__dirname, "..", "vipre-data", "src", "vipre-api.pex");
+  console.log("SPAWNING API", `${apiPath} app.main:app --port 8001`);
+  api = exec(`${apiPath} app.main:app --port 8001`, (err, stdout, stderr) => {
+    if (err) {
+      console.error(err);
+      console.error(stderr);
+
+      return;
+    }
+
+    window.webContents.send("api-loaded");
+    console.log(stdout);
+  });
+
   createWindow();
   setupLocalFilesNormalizerProxy();
 
@@ -76,5 +97,6 @@ app.whenReady().then(() => {
 app.on("window-all-closed", function () {
   if (process.platform !== "darwin") {
     app.quit();
+    if (api) api.kill("SIGINT");
   }
 });
