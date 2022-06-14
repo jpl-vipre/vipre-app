@@ -100,6 +100,6 @@ app.whenReady().then(async () => {
 app.on("window-all-closed", function () {
   if (process.platform !== "darwin") {
     app.quit();
-    if (api) api.kill("SIGINT");
   }
+  if (api) api.kill("SIGINT");
 });
