@@ -53,22 +53,6 @@ const setupLocalFilesNormalizerProxy = () => {
 };
 
 app.whenReady().then(async () => {
-  let apiPath = app.isPackaged
-    ? path.join(process.resourcesPath, "vipre-data", "src", "vipre-api.pex")
-    : path.join(__dirname, "..", "vipre-data", "src", "vipre-api.pex");
-  console.log("SPAWNING API", `${apiPath} app.main:app --port 8001`);
-  api = exec(`${apiPath} app.main:app --port 8001`, (err, stdout, stderr) => {
-    if (err) {
-      console.error(err);
-      console.error(stderr);
-
-      return;
-    }
-
-    window.webContents.send("api-loaded");
-    console.log(stdout);
-  });
-
   createWindow();
   setupLocalFilesNormalizerProxy();
 
@@ -76,6 +60,24 @@ app.whenReady().then(async () => {
     if (BrowserWindow.getAllWindows().length === 0) {
       createWindow();
     }
+  });
+
+  let apiPath = app.isPackaged
+    ? path.join(process.resourcesPath, "vipre-data", "vipre-api.pex")
+    : path.join(__dirname, "..", "vipre-data", "vipre-api.pex");
+
+  console.log(`SPAWNING API ${apiPath} app.main:app --port 8000`);
+
+  api = exec(`${apiPath} app.main:app --port 8000`, (err, stdout, stderr) => {
+    window.webContents.send("api-log", { stdout, err, stderr });
+    if (err) {
+      console.error(err);
+      console.error(stderr);
+      return;
+    }
+
+    window.webContents.send("api-loaded");
+    console.log(stdout);
   });
 
   ipcMain.on("new-window", (evt, url) => {

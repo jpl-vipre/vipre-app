@@ -10,7 +10,7 @@ import SaturnIcon from "../assets/icons/saturn.png";
 import NeptuneIcon from "../assets/icons/neptune.png";
 import UranusIcon from "../assets/icons/uranus.png";
 
-export const API = process.env.REACT_APP_API || "http://localhost:8001";
+export const API = process.env.REACT_APP_API || "http://localhost:8000";
 
 // 299 = Venus
 // 499 = Mars

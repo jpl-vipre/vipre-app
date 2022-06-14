@@ -8,6 +8,7 @@ import Header from "./components/Header";
 
 import DataView from "./views/DataView";
 import SettingsView from "./views/SettingsView";
+import { useEffectOnce } from "usehooks-ts";
 
 import "./App.css";
 
@@ -31,12 +32,11 @@ const App: FC = () => {
   const [view, setView] = useState(0);
   const fetchFilterFields = useStore((state) => state.fetchFilterFields);
 
-  useEffect(() => {
-    ipcRenderer.on("api-loaded", (evt: any, info: any) => {
-      fetchFilterFields();
-      console.log("API LOADED")
+  useEffectOnce(() => {
+    ipcRenderer.on("api-log", (evt: any, info: any) => {
+      console.log(evt, info);
     })
-  }, [fetchFilterFields]);
+  });
 
 
   useEffect(() => {
