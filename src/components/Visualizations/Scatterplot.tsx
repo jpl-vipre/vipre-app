@@ -1,14 +1,12 @@
 import { FC, useEffect, useMemo, useState } from "react";
 import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, Cell, ResponsiveContainer } from "recharts";
-import { scaleSequential } from "d3-scale";
-import { interpolateSpectral } from "d3-scale-chromatic";
+import MuiTooltip from "@mui/material/Tooltip";
 
-import ColorScale from "./ColorScale";
+
+import ColorScale, { colors } from "./ColorScale";
 
 import "../../scss/Scatterplot.scss";
 import useStore from "../../utils/store";
-
-const colors = scaleSequential(interpolateSpectral);
 
 interface ScatterplotProps {
   id: string;
@@ -32,7 +30,7 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnit
   const selectedTrajectory = useStore((state) => state.selectedTrajectory);
 
   const selectedTrajectoryIdx = useMemo(() => {
-    if (selectedTrajectory === null) return -1;
+    if (!data || selectedTrajectory === null) return -1;
     return data.findIndex((d) => d.id === selectedTrajectory.id);
   }, [data, selectedTrajectory]);
 
@@ -42,7 +40,7 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnit
   }, [selectedTrajectoryIdx, selectedActiveValues]);
 
   const [minBound, maxBound] = useMemo(() => {
-    if (!colorField || !data.length) {
+    if (!colorField || !data || !data.length) {
       return [0, 0];
     }
     const colorValues = data.map((entry) => entry[colorField]);
@@ -66,71 +64,85 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnit
       style={{ display: "flex", width: "100%", height: "100%", maxHeight: "calc(100% - 15px)", alignItems: "center" }}
       id={id}
     >
-      <div style={{ width: "calc(100% - 50px)", height: "100%" }} className="scatterplot-container">
-        <ResponsiveContainer width="100%" height="100%">
-          <ScatterChart
-            margin={{
-              top: 10,
-              right: 30,
-              left: -5,
-            }}
-          >
-            <CartesianGrid />
-            <XAxis
-              type="number"
-              dataKey={xField}
-              name={xField}
-              unit={xUnits || ""}
-              domain={["auto", "auto"]}
-              tickFormatter={(value) => value.toPrecision(2)}
-              fill="#ffffff"
-              style={{ fill: "#ffffff" }}
-            />
-            <YAxis
-              type="number"
-              dataKey={yField}
-              name={yField}
-              domain={["auto", "auto"]}
-              tickFormatter={(value) => value.toPrecision(2)}
-              unit={yUnits || ""}
-              fill="#ffffff"
-              style={{ fill: "#ffffff" }}
-            />
-            <Tooltip cursor={{ strokeDasharray: "3 3" }} formatter={(value: any) => value.toExponential()} />
-            <Scatter data={data} fill="#ffffff">
-              {data.map((entry, index) => {
-                let fill = "white";
-                let isWithinThreshold = activeValues.includes(index);
-                let isSelectedTrajectory = index === selectedTrajectoryIdx;
-                if (colorField && !isWithinThreshold && typeof entry[colorField] === "number") {
-                  isWithinThreshold =
-                    (hoverValue >= 0 && Math.abs(entry[colorField] - hoverValue) <= 0.05) ||
-                    (minSelected >= 0 && entry[colorField] >= minSelected && entry[colorField] <= maxSelected);
-                  fill = isWithinThreshold ? "white" : colors(normalizeValue(entry[colorField]));
-                }
+      <div style={{ display: "flex", flexDirection: "column", width: "100%", height: "100%" }}>
+        <h4 style={{ margin: 0, color: "#a1a1b5", fontSize: "12px" }}>
+          <MuiTooltip title={`X Axis: ${xField}`}>
+            <span>{xField} </span>
+          </MuiTooltip>
+          vs
+          <MuiTooltip title={`Y Axis: ${yField}`}>
+            <span> {yField}</span>
+          </MuiTooltip>
+          {colorField && <MuiTooltip title={`Color Field: ${colorField}`}>
+            <span> ({colorField})</span>
+          </MuiTooltip>}
+        </h4>
+        <div style={{ width: "calc(100% - 15px)", height: "100%" }} className="scatterplot-container">
+          <ResponsiveContainer width="100%" height="100%">
+            <ScatterChart
+              margin={{
+                top: 10,
+                right: 0,
+                left: 10,
+              }}
+            >
+              <CartesianGrid />
+              <XAxis
+                type="number"
+                dataKey={xField}
+                name={xField}
+                unit={xUnits || ""}
+                domain={["auto", "auto"]}
+                tickFormatter={(value) => value.toPrecision(2)}
+                fill="#ffffff"
+                style={{ fill: "#ffffff" }}
+              />
+              <YAxis
+                type="number"
+                dataKey={yField}
+                name={yField}
+                domain={["auto", "auto"]}
+                tickFormatter={(value) => value.toPrecision(2)}
+                unit={yUnits || ""}
+                fill="#ffffff"
+                style={{ fill: "#ffffff" }}
+              />
+              <Tooltip cursor={{ strokeDasharray: "3 3" }} formatter={(value: any) => value.toExponential()} />
+              <Scatter data={(data || [])} fill="#ffffff">
+                {(data || []).map((entry, index) => {
+                  let fill = "white";
+                  let isWithinThreshold = activeValues.includes(index);
+                  let isSelectedTrajectory = index === selectedTrajectoryIdx;
+                  if (colorField && !isWithinThreshold && typeof entry[colorField] === "number") {
+                    isWithinThreshold =
+                      (hoverValue >= 0 && Math.abs(entry[colorField] - hoverValue) <= 0.05) ||
+                      (minSelected >= 0 && entry[colorField] >= minSelected && entry[colorField] <= maxSelected);
+                    fill = isWithinThreshold ? "white" : colors(normalizeValue(entry[colorField]));
+                  }
 
-                return (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={isSelectedTrajectory ? "blue" : fill}
-                    style={{ stroke: isWithinThreshold ? "white" : "", strokeWidth: isSelectedTrajectory ? 6 : isWithinThreshold ? 3 : 0 }}
-                    onClick={() => {
-                      if (colorField && activeValues.includes(index) && (!isTrajectorySelector || confirmedSelectedTrajectory)) {
-                        setActiveValues(activeValues.filter((value) => value !== index));
-                      } else if (colorField) {
-                        if (isTrajectorySelector && !confirmedSelectedTrajectory) {
-                          setSelectedTrajectory(entry);
-                        } else if (!isTrajectorySelector || confirmedSelectedTrajectory) {
-                          setActiveValues([...activeValues, index]);
+                  return (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={isSelectedTrajectory ? "blue" : fill}
+                      style={{ stroke: isWithinThreshold ? "white" : "", strokeWidth: isSelectedTrajectory ? 6 : isWithinThreshold ? 3 : 0 }}
+                      onClick={() => {
+                        if (colorField && activeValues.includes(index) && (!isTrajectorySelector || confirmedSelectedTrajectory)) {
+                          setActiveValues(activeValues.filter((value) => value !== index));
+                        } else if (colorField) {
+                          if (isTrajectorySelector && !confirmedSelectedTrajectory) {
+                            setSelectedTrajectory(entry);
+                          } else if (!isTrajectorySelector || confirmedSelectedTrajectory) {
+                            setActiveValues([...activeValues, index]);
+                          }
                         }
-                      }
-                    }}
-                  />
-                );
-              })}
-            </Scatter>
-          </ScatterChart>
-        </ResponsiveContainer>
+                      }}
+                    />
+                  );
+                })}
+              </Scatter>
+            </ScatterChart>
+          </ResponsiveContainer>
+        </div>
       </div>
       {colorField && (
         <ColorScale

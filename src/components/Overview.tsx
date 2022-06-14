@@ -25,6 +25,7 @@ const Overview: FC = () => {
   const setSelectedTrajectory = useStore(state => state.setSelectedTrajectory);
   const setConfirmedSelectedTrajectory = useStore(state => state.setConfirmedSelectedTrajectory);
   const confirmedSelectedTrajectory = useStore(state => state.confirmedSelectedTrajectory);
+  const fetchEntries = useStore(state => state.fetchEntries);
 
   const overviewFields = useMemo(() => {
     let fields: Partial<FilterField>[] = trajectoryFields && trajectoryFields.length > 0 ? trajectoryFields : Object.entries(nameRemapping).map(([key, value]) => ({ field_name: key, ...value }));
@@ -46,7 +47,7 @@ const Overview: FC = () => {
       };
     });
   }, [trajectoryFields, selectedTrajectory]);
-  console.log(trajectoryFields, selectedTrajectory, overviewFields)
+
   return (
     <div className="overview-container">
       <div className="top" style={{ display: "flex", marginTop: "5px" }}>
@@ -58,9 +59,17 @@ const Overview: FC = () => {
           }}>
             <CloseIcon style={{ fontSize: "18px", color: "#EB4D3E" }} />
           </div>}
-          {selectedTrajectory && !confirmedSelectedTrajectory && <div style={{ marginRight: "5px", display: "flex", alignItems: "center" }} className="close-button" onClick={() => setConfirmedSelectedTrajectory(true)}>
-            <CheckIcon style={{ fontSize: "18px", color: "#77D572" }} />
-          </div>}
+          {selectedTrajectory && !confirmedSelectedTrajectory &&
+            <div
+              style={{ marginRight: "5px", display: "flex", alignItems: "center" }}
+              className="close-button"
+              onClick={() => {
+                setConfirmedSelectedTrajectory(true);
+                fetchEntries();
+              }}>
+              <CheckIcon style={{ fontSize: "18px", color: "#77D572" }} />
+            </div>
+          }
           <b style={{ marginRight: "5px" }}>Trajectory ID:</b>{selectedTrajectory ? selectedTrajectory.id : "N/A"}
         </div>
         <div style={{ marginLeft: "15px", marginRight: "5px", background: "black", padding: "10px", borderRadius: "5px", display: "flex", alignItems: "center" }}>

@@ -1,6 +1,6 @@
 {
-  "name": "vapre",
-  "version": "1.0.0",
+  "name": "vipre",
+  "version": "0.1.3",
   "private": true,
   "author": "NASA JPL",
   "description": "A tool for visualizing the entry conditions for all safe entry opportunities of a planetary entry probe being released from an interplanetary trajectory.",
@@ -8,7 +8,7 @@
   "main": "./public/electron.js",
   "build": {
     "appId": "com.electron.vapre",
-    "productName": "VAPRE",
+    "productName": "VIPRE",
     "mac": {
       "category": "public.app-category.business",
       "icon": "assets/icon.icns"
@@ -25,7 +25,10 @@
     ],
     "directories": {
       "buildResources": "assets"
-    }
+    },
+    "extraResources": [
+      "vipre-data"
+    ]
   },
   "dependencies": {
     "@emotion/react": "^11.7.1",
@@ -59,6 +62,8 @@
     "zustand-persist": "^0.4.0"
   },
   "scripts": {
+    "install-api": "STARTDIR=`pwd` && cd vipre-data && poetry install",
+    "start-api": "STARTDIR=`pwd` && cd vipre-data/src && poetry run uvicorn --reload --log-level debug app.main:app --port 8000",
     "react-start": "react-scripts start",
     "react-build": "react-scripts build",
     "build": "yarn version && yarn react-build && yarn electron-build",

@@ -8,8 +8,11 @@ import Header from "./components/Header";
 
 import DataView from "./views/DataView";
 import SettingsView from "./views/SettingsView";
+import { useEffectOnce } from "usehooks-ts";
 
 import "./App.css";
+
+const { ipcRenderer } = window.require("electron");
 
 declare module "@mui/material/styles" {
   interface Theme {
@@ -28,6 +31,13 @@ let theme = createTheme({
 const App: FC = () => {
   const [view, setView] = useState(0);
   const fetchFilterFields = useStore((state) => state.fetchFilterFields);
+
+  useEffectOnce(() => {
+    ipcRenderer.on("api-log", (evt: any, info: any) => {
+      console.log(evt, info);
+    })
+  });
+
 
   useEffect(() => {
     fetchFilterFields();

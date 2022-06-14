@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useCallback, useEffect, useMemo, useState } from "react";
 
 import IconButton from "@mui/material/IconButton";
 import EditIcon from "@mui/icons-material/Edit";
@@ -10,6 +10,7 @@ import VizContent from "./VizContent";
 import EditTabDialog from "./EditTabDialog";
 
 import "../scss/VizTabs.scss";
+import { Tooltip } from "@mui/material";
 
 interface TabPanelProps {
   index: number;
@@ -37,11 +38,21 @@ interface VizTabButtonProps {
   defaultOpen?: boolean;
 }
 
-const VizTabButton: FC<VizTabButtonProps> = ({ tab, defaultOpen = false }) => {
-  const [open, setOpen] = useState(defaultOpen);
+const VizTabButton: FC<VizTabButtonProps> = ({ tab }) => {
+  const [editingTab, setEditingTab] = useStore(state => [state.editingTab, state.setEditingTab]);
   const [activeTab, setActiveTab] = useStore((state) => [state.activeTab, state.setActiveTab]);
   const setTab = useStore((state) => state.setTab);
   const [modifiedTab, setModifiedTab] = useState<VizTab>({ ...tab });
+
+  const open = useMemo(() => editingTab !== null && editingTab === tab.id, [tab, editingTab]);
+
+  const setOpen = useCallback((isOpen) => {
+    if (isOpen) {
+      setEditingTab(tab.id);
+    } else {
+      setEditingTab(null);
+    }
+  }, [setEditingTab, tab])
 
   useEffect(() => {
     setModifiedTab({ ...tab });
@@ -70,9 +81,19 @@ const VizTabButton: FC<VizTabButtonProps> = ({ tab, defaultOpen = false }) => {
           <IconButton style={{ padding: 0 }} onClick={() => setOpen(!open)}>
             <EditIcon />
           </IconButton>
-          <h5 style={{ margin: "0 5px", cursor: "pointer" }} onClick={() => setActiveTab(tab.id)}>
-            {modifiedTab.label}
-          </h5>
+          <Tooltip title={modifiedTab && modifiedTab.label && modifiedTab.label.length > 25 ? modifiedTab.label : ""} style={{ background: "black" }}>
+            <h5 style={{
+              margin: "0 5px",
+              cursor: "pointer",
+              maxWidth: "200px",
+              textOverflow: "ellipsis",
+              display: "inline-block",
+              whiteSpace: "nowrap",
+              overflow: "hidden"
+            }} onClick={() => setActiveTab(tab.id)}>
+              {modifiedTab.label}
+            </h5>
+          </Tooltip>
         </span>
       </div>
 
@@ -84,13 +105,13 @@ const VizTabButton: FC<VizTabButtonProps> = ({ tab, defaultOpen = false }) => {
 const VizTabs: FC = () => {
   const tabs = useStore((state) => state.tabs);
   const setTab = useStore((state) => state.setTab);
-  const [newTabID, setNewTabID] = useState<number>(-1);
+  const setEditingTab = useStore(state => state.setEditingTab);
   return (
     <div className="viz-tab-container">
       <div>
         <div className="tabs">
           {tabs.map((tab) => (
-            <VizTabButton key={`${tab.id}-tab-button`} tab={tab} defaultOpen={newTabID === tab.id} />
+            <VizTabButton key={`${tab.id}-tab-button`} tab={tab} />
           ))}
           <div
             style={{
@@ -110,7 +131,7 @@ const VizTabs: FC = () => {
                   topRow: [],
                   bottomRow: [],
                 });
-                setNewTabID(tabID);
+                setEditingTab(tabID)
               }}
             >
               <AddIcon />

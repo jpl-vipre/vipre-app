@@ -17,6 +17,7 @@ const VizContent: FC<VizContentProps> = ({ tab }) => {
             margin: "5px",
             marginTop: "10px",
             maxWidth: "100%",
+            maxHeight: "50%"
           }}
         >
           {tab.topRow.map((graphConfig, i) => {
@@ -30,6 +31,7 @@ const VizContent: FC<VizContentProps> = ({ tab }) => {
                   justifyContent: "center",
                   margin: "5px",
                   height: "100%",
+                  maxWidth: "100%",
                 }}
               >
                 <Visualization config={graphConfig} id={`${tab.id}-top-row-${i}`} />
@@ -39,7 +41,7 @@ const VizContent: FC<VizContentProps> = ({ tab }) => {
         </div>
       )}
       {tab.bottomRow.length > 0 && (
-        <div style={{ display: "flex", flex: 1, alignItems: "center", margin: "5px", marginBottom: "10px" }}>
+        <div style={{ display: "flex", flex: 1, alignItems: "center", margin: "5px", marginBottom: "10px", maxHeight: "50%" }}>
           {tab.bottomRow.map((graphConfig, i) => {
             return (
               <div
@@ -50,7 +52,8 @@ const VizContent: FC<VizContentProps> = ({ tab }) => {
                   alignItems: "center",
                   justifyContent: "center",
                   margin: "5px",
-                  height: "100%",
+                  maxWidth: "calc(100% - 10px)",
+                  height: "calc(100% - 10px)"
                 }}
               >
                 <Visualization config={graphConfig} id={`${tab.id}-bottom-row-${i}`} />

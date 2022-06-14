@@ -13,6 +13,8 @@ const Visualization: FC<VisualizationProps> = ({ config, id }) => {
   const dataSource = (config.source || "trajectories") as keyof Store;
   const data = useStore((state) => state[dataSource]);
 
+  const stripSource = (field: string | undefined | null): string => field ? field.replace(/^[a-z]+./, "") : "";
+
   return (
     <div
       className="visualization-card"
@@ -22,6 +24,7 @@ const Visualization: FC<VisualizationProps> = ({ config, id }) => {
         alignItems: "center",
         height: "100%",
         maxHeight: "calc(100% - 15px)",
+        maxWidth: "100%",
         padding: "5px",
         border: "1px solid #a1a1b5",
         borderRadius: "5px",
@@ -33,11 +36,11 @@ const Visualization: FC<VisualizationProps> = ({ config, id }) => {
         <Scatterplot
           isTrajectorySelector={dataSource === "trajectories"}
           data={data as any[]}
-          xField={config.xAxis}
+          xField={stripSource(config.xAxis)}
           xUnits={config.xUnits}
-          yField={config.yAxis}
+          yField={stripSource(config.yAxis)}
           yUnits={config.yUnits}
-          colorField={config.color}
+          colorField={stripSource(config.color)}
           colorUnits={config.colorUnits}
           id={`${id}-scatterplot`}
         />
@@ -45,11 +48,11 @@ const Visualization: FC<VisualizationProps> = ({ config, id }) => {
       {config.type === "globe" && (
         <Globe
           data={data as any[]}
-          xField={config.xAxis}
+          xField={stripSource(config.xAxis)}
           xUnits={config.xUnits}
-          yField={config.yAxis}
+          yField={stripSource(config.yAxis)}
           yUnits={config.yUnits}
-          colorField={config.color}
+          colorField={stripSource(config.color)}
           colorUnits={config.colorUnits}
           id={`${id}-globe`}
         />

@@ -1,4 +1,16 @@
-export const API = process.env.REACT_APP_API || "http://localhost:8001";
+import VenusMap from "../assets/maps/299.jpg";
+import SaturnMap from "../assets/maps/Saturn.jpg";
+import NeptuneMap from "../assets/maps/899.jpg"
+import UranusMap from "../assets/maps/799.jpg"
+import JupiterMap from "../assets/maps/Jupiter.jpg"
+import TitanMap from "../assets/maps/Titan.png"
+import MarsMap from "../assets/maps/Mars.png"
+
+import SaturnIcon from "../assets/icons/saturn.png";
+import NeptuneIcon from "../assets/icons/neptune.png";
+import UranusIcon from "../assets/icons/uranus.png";
+
+export const API = process.env.REACT_APP_API || "http://localhost:8000";
 
 // 299 = Venus
 // 499 = Mars
@@ -9,14 +21,19 @@ export const API = process.env.REACT_APP_API || "http://localhost:8001";
 // 899 = Neptune
 export const DEFAULT_TARGET_BODY = "Saturn";
 export const TARGET_BODIES = {
-  "Venus": { icon: "", map: "/maps/299.jpg", value: "299" },
-  "Saturn": { icon: "/icons/saturn.svg", map: "/maps/Saturn.jpg", value: "699" },
-  "Neptune": { icon: "/icons/neptune.svg", map: "/maps/899.jpg", value: "899" },
-  "Uranus": { icon: "/icons/uranus.png", map: "/maps/799.jpg", value: "799" },
-  "Jupiter": { icon: "", map: "/maps/Jupiter.jpg", value: "599" },
-  "Titan": { icon: "", map: "/maps/Titan.png", value: "606" },
-  "Mars": { icon: "", map: "/maps/Mars.png", value: "499" },
+  "Venus": { icon: "", map: VenusMap, value: "299" },
+  "Saturn": { icon: SaturnIcon, map: SaturnMap, value: "699" },
+  "Neptune": { icon: NeptuneIcon, map: NeptuneMap, value: "899" },
+  "Uranus": { icon: UranusIcon, map: UranusMap, value: "799" },
+  "Jupiter": { icon: "", map: JupiterMap, value: "599" },
+  "Titan": { icon: "", map: TitanMap, value: "606" },
+  "Mars": { icon: "", map: MarsMap, value: "499" },
 }
+
+// Object.entries(TARGET_BODIES).forEach(([targetName, body]) => {
+//   TARGET_BODIES[targetName].icon = convertToPackagedPath(body.icon);
+//   TARGET_BODIES[targetName].map = convertToPackagedPath(body.map);
+// })
 
 export const GRAPH_TYPES = {
   scatterplot: {
@@ -32,6 +49,8 @@ export const GRAPH_TYPES = {
     color: true,
   },
 };
+
+export const GRAPH_SOURCES = ["trajectories", "entries"];
 
 export const DEFAULT_TABS = [
   {
@@ -159,5 +178,5 @@ export const FILTERS = [
   },
 ];
 
-const constants = { API, TARGET_BODIES, DEFAULT_TABS, FILTERS, GRAPH_TYPES, FILTER_TYPES, DEFAULT_TARGET_BODY };
+const constants = { API, TARGET_BODIES, DEFAULT_TABS, FILTERS, GRAPH_TYPES, FILTER_TYPES, DEFAULT_TARGET_BODY, GRAPH_SOURCES };
 export default constants;

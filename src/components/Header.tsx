@@ -4,8 +4,7 @@ import { FormControl, InputLabel, Select, MenuItem, IconButton, Tooltip } from "
 import SettingsIcon from "@mui/icons-material/Settings";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 
-import SelectFilter from "./Filters/SelectFilter";
-import useStore, { TargetBodyName } from "../utils/store";
+import useStore from "../utils/store";
 
 
 
@@ -16,6 +15,7 @@ const { ipcRenderer } = window.require("electron");
 const Header: FC<{ view: number; setView: (view: number) => void }> = ({ view, setView }) => {
   const [windowMaximized, setWindowMaximized] = useState(false);
   const targetBodies = useStore((state) => state.targetBodies);
+  const searchTrajectories = useStore((state) => state.searchTrajectories);
 
   const [targetBody, setTargetBody] = useStore(state => [state.targetBody, state.setTargetBody])
 
@@ -44,6 +44,7 @@ const Header: FC<{ view: number; setView: (view: number) => void }> = ({ view, s
               label="Target Body"
               onChange={(evt) => {
                 setTargetBody(evt.target.value);
+                searchTrajectories();
               }}
             >
               {Object.entries(targetBodies).map(([targetBodyName, targetBody]) => (

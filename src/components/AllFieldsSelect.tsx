@@ -7,8 +7,10 @@ interface AllFieldsSelectProps {
   label: string;
   onChange?: (value: string) => void;
   options?: string[];
+  disabled?: boolean;
+  source?: string;
 }
-const AllFieldsSelect: FC<AllFieldsSelectProps> = ({ value, label, onChange, options }) => {
+const AllFieldsSelect: FC<AllFieldsSelectProps> = ({ value, label, onChange, options, disabled, source }) => {
   const entryFields = useStore((state) => state.entryFields);
   const trajectoryFields = useStore((state) => state.trajectoryFields);
 
@@ -17,17 +19,16 @@ const AllFieldsSelect: FC<AllFieldsSelectProps> = ({ value, label, onChange, opt
       return options;
     }
 
-    return trajectoryFields.map((field) => field.field_name);
+    return trajectoryFields.map((field) => field.field_name.startsWith("trajectory") ? field.field_name : `trajectory.${field.field_name}`);
   }, [options, trajectoryFields]);
 
   const entryOptions = useMemo(() => {
-    return entryFields.map((field) => field.field_name);
+    return entryFields.map((field) => field.field_name.startsWith("entry") ? field.field_name : `entry.${field.field_name}`);
   }, [entryFields]);
 
   return (
-    <FormControl fullWidth style={{ margin: "5px" }}>
+    <FormControl fullWidth style={{ margin: "5px" }} disabled={disabled}>
       <InputLabel id={`${label.replace(/ /g, "-").toLowerCase()}-graph-type-label`}>{label}</InputLabel>
-      {/* TODO: Convert to Autocomplete with full list of fields */}
       <Select
         variant="standard"
         style={{ textAlign: "left", paddingLeft: "5px" }}
@@ -38,17 +39,17 @@ const AllFieldsSelect: FC<AllFieldsSelectProps> = ({ value, label, onChange, opt
           if (onChange) onChange(evt.target.value as string);
         }}
       >
-        {!options && <ListSubheader>Trajectory Fields</ListSubheader>}
-        {trajectoryOptions.map((option: any, i: number) => (
+        {!options && (!source || source === "trajectories") && <ListSubheader>Trajectory Fields</ListSubheader>}
+        {(options || (!source || source === "trajectories")) && trajectoryOptions.map((option: any, i: number) => (
           <MenuItem value={option} key={`traj-${label}-${option}-${i}`}>
-            {option}
+            {option.replace(/^trajectory./, "")}
           </MenuItem>
         ))}
-        {!options && <ListSubheader>Entry Fields</ListSubheader>}
-        {!options &&
+        {!options && (!source || source === "entries") && <ListSubheader>Entry Fields</ListSubheader>}
+        {!options && (!source || source === "entries") &&
           entryOptions.map((option: any, i: number) => (
             <MenuItem key={`entry-${label}-${option}-${i}`} value={option}>
-              {option}
+              {option.replace(/^entry./, "")}
             </MenuItem>
           ))}
       </Select>
