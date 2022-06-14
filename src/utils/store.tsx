@@ -170,18 +170,19 @@ const useStore = create<Store>(
           });
         }).catch(() => {
           setTimeout(() => {
-            axios.get(`${constants.API}/filters`).then((response) => {
+            axios.get(`${constants.API}/filters`).then((res) => {
               set({
-                trajectoryFields: response.data.TrajectoryFilters,
-                entryFields: response.data.EntryFilters,
+                trajectoryFields: res.data.TrajectoryFilters,
+                entryFields: res.data.EntryFilters,
               });
+              get().searchTrajectories();
             }).catch(() => {
               set({
                 trajectoryFields: [],
                 entryFields: [],
               })
             })
-          }, 1000)
+          }, 5000)
         });
       },
       selectedTrajectory: null,

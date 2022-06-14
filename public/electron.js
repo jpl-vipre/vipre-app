@@ -70,6 +70,7 @@ app.whenReady().then(async () => {
 
   api = exec(`${apiPath} app.main:app --port 8000`, (err, stdout, stderr) => {
     window.webContents.send("api-log", { stdout, err, stderr });
+
     if (err) {
       console.error(err);
       console.error(stderr);
