@@ -87,7 +87,7 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnit
       id={id}
     >
       <div style={{ display: "flex", flexDirection: "column", width: "100%", height: "100%" }}>
-        <h4 style={{ margin: 0, color: "#a1a1b5", fontSize: "12px" }}>
+        <h4 style={{ margin: 0, color: "white", fontSize: "12px" }}>
           <MuiTooltip title={`X Axis: ${xField}`}>
             <b style={{ fontWeight: 900 }}>{xField} </b>
           </MuiTooltip>
@@ -150,7 +150,7 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnit
                       onClick={() => {
                         if (colorField && activeValues.includes(index) && (!isTrajectorySelector || confirmedSelectedTrajectory)) {
                           setActiveValues(activeValues.filter((value) => value !== index));
-                        } else if (colorField) {
+                        } else {
                           if (isTrajectorySelector && !confirmedSelectedTrajectory) {
                             setSelectedTrajectory(entry);
                           } else if (!isTrajectorySelector || confirmedSelectedTrajectory) {

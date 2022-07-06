@@ -28,7 +28,8 @@ const Visualization: FC<VisualizationProps> = ({ config, id }) => {
         padding: "5px",
         border: "1px solid #a1a1b5",
         borderRadius: "5px",
-        background: config.type === "globe" ? "black" : "#232E44"
+        // background: config.type === "globe" ? "black" : "#232E44"
+        background: "black"
       }}
       id={id}
     >

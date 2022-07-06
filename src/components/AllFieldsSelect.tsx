@@ -9,8 +9,9 @@ interface AllFieldsSelectProps {
   options?: string[];
   disabled?: boolean;
   source?: string;
+  clearable?: boolean;
 }
-const AllFieldsSelect: FC<AllFieldsSelectProps> = ({ value, label, onChange, options, disabled, source }) => {
+const AllFieldsSelect: FC<AllFieldsSelectProps> = ({ value, label, onChange, options, disabled, source, clearable = false }) => {
   const entryFields = useStore((state) => state.entryFields);
   const trajectoryFields = useStore((state) => state.trajectoryFields);
 
@@ -39,6 +40,9 @@ const AllFieldsSelect: FC<AllFieldsSelectProps> = ({ value, label, onChange, opt
           if (onChange) onChange(evt.target.value as string);
         }}
       >
+        {clearable && <MenuItem value={""}>
+          Clear
+        </MenuItem>}
         {!options && (!source || source === "trajectories") && <ListSubheader>Trajectory Fields</ListSubheader>}
         {(options || (!source || source === "trajectories")) && trajectoryOptions.map((option: any, i: number) => (
           <MenuItem value={option} key={`traj-${label}-${option}-${i}`}>

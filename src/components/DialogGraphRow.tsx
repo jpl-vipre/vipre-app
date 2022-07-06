@@ -94,6 +94,7 @@ const DialogGraphRow: FC<DialogGraphRowProps> = ({ modifiedTab, setModifiedTab, 
                           key={`${option}-axis`}
                           label={label}
                           value={graphConfig[option as keyof GraphConfig]}
+                          clearable={true}
                           onChange={(value) => {
                             modifiedGraphConfig[option as keyof GraphConfig] = value;
                             row[i] = modifiedGraphConfig;
