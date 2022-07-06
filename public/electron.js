@@ -1,4 +1,11 @@
-const { app, BrowserWindow, protocol, ipcMain, shell } = require("electron");
+const {
+  app,
+  BrowserWindow,
+  protocol,
+  ipcMain,
+  shell,
+  dialog,
+} = require("electron");
 const EventEmitter = require("events");
 
 const { exec } = require("child_process");
@@ -7,6 +14,8 @@ const emitter = new EventEmitter();
 
 const path = require("path");
 const url = require("url");
+
+const fs = require("fs");
 
 emitter.setMaxListeners(100);
 
@@ -94,6 +103,50 @@ app.whenReady().then(async () => {
   ipcMain.on("unmaximize-app-window", () => {
     window.unmaximize();
     window.webContents.send("minimize");
+  });
+
+  ipcMain.on("export-config", (event, info) => {
+    dialog
+      .showSaveDialog({
+        properties: ["createDirectory"],
+        buttonLabel: "Save",
+        defaultPath: "vipre-config.json",
+        filters: [{ name: "Configs", extensions: ["json"] }],
+      })
+      .then((response) => {
+        if (!response.canceled) {
+          fs.writeFileSync(response.filePath, JSON.stringify(info, null, 4));
+          window.webContents.send("config-exported", {
+            path: response.filePath,
+          });
+        }
+      });
+  });
+
+  ipcMain.on("import-config", (event, info) => {
+    if (info && info.chooseFile) {
+      dialog
+        .showOpenDialog({
+          properties: ["openFile"],
+          buttonLabel: "Load",
+          filters: [{ name: "Configs", extensions: ["json"] }],
+        })
+        .then((response) => {
+          if (!response.canceled) {
+            const config = JSON.parse(fs.readFileSync(response.filePaths[0]));
+            window.webContents.send("config-imported", {
+              path: response.filePaths[0],
+              config: config,
+            });
+          }
+        });
+    } else if (info && info.path) {
+      const config = JSON.parse(fs.readFileSync(info.path));
+      window.webContents.send("config-imported", {
+        path: info.path,
+        config: config,
+      });
+    }
   });
 });
 

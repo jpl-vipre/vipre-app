@@ -102,6 +102,8 @@ export type Store = {
   tabs: VizTab[];
   setTabs: (tabs: VizTab[]) => void;
   setTab: (tab: VizTab) => void;
+  configPathHistory: string[];
+  setConfigPathHistory: (paths: string[]) => void;
   filterList: FilterItem[];
   targetBodies: TargetBodies;
   targetBody: TargetBodyName;
@@ -128,7 +130,7 @@ const useStore = create<Store>(
   persist(
     {
       key: "vipre-app",
-      allowlist: ["activeTab", "tabs", "filterList"],
+      allowlist: ["activeTab", "tabs", "filterList", "configPathHistory"],
     },
     (set, get): Store => ({
       activeTab: 0,
@@ -146,6 +148,8 @@ const useStore = create<Store>(
           set({ tabs: [...tabs.slice(0, tabIndex), tab, ...tabs.slice(tabIndex + 1)] });
         }
       },
+      configPathHistory: [],
+      setConfigPathHistory: (configPathHistory) => set({ configPathHistory }),
       filterList: constants.FILTERS.map((filter, i) => ({ ...filter, id: i })),
       setFilterList: (filterList: FilterItem[]) => set({ filterList }),
       targetBodies: constants.TARGET_BODIES,
