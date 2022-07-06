@@ -59,6 +59,28 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnit
     }
   }, [confirmedSelectedTrajectory, isTrajectorySelector, setActiveValues]);
 
+  const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: any[]; label?: string; }) => {
+    if (active && payload && payload.length) {
+      let fields = [[xField, xUnits], [yField, yUnits], [colorField, colorUnits]].filter(([field]) => field !== undefined)
+
+      return (
+        <div className="chart-tooltip">
+          {fields.map(([field, units], i) => {
+            let value: number = field && payload[0].payload && payload[0].payload[field] !== undefined ? payload[0].payload[field] : null;
+            let displayValue: string = value !== null ? value.toExponential() : "";
+            return (
+              <p key={`chart-tooltip-${field}-${i}`} className="label">
+                {field}: <b>{displayValue}{units ? ` ${units}` : ""}</b>
+              </p>
+            )
+          })}
+        </div>
+      );
+    }
+
+    return null;
+  };
+
   return (
     <div
       style={{ display: "flex", width: "100%", height: "100%", maxHeight: "calc(100% - 15px)", alignItems: "center" }}
@@ -67,14 +89,14 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnit
       <div style={{ display: "flex", flexDirection: "column", width: "100%", height: "100%" }}>
         <h4 style={{ margin: 0, color: "#a1a1b5", fontSize: "12px" }}>
           <MuiTooltip title={`X Axis: ${xField}`}>
-            <span>{xField} </span>
+            <b style={{ fontWeight: 900 }}>{xField} </b>
           </MuiTooltip>
           vs
           <MuiTooltip title={`Y Axis: ${yField}`}>
-            <span> {yField}</span>
+            <b style={{ fontWeight: 900 }}> {yField}</b>
           </MuiTooltip>
           {colorField && <MuiTooltip title={`Color Field: ${colorField}`}>
-            <span> ({colorField})</span>
+            <span> (<b style={{ fontWeight: 900 }}>{colorField}</b>)</span>
           </MuiTooltip>}
         </h4>
         <div style={{ width: "calc(100% - 15px)", height: "100%" }} className="scatterplot-container">
@@ -107,7 +129,7 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnit
                 fill="#ffffff"
                 style={{ fill: "#ffffff" }}
               />
-              <Tooltip cursor={{ strokeDasharray: "3 3" }} formatter={(value: any) => value.toExponential()} />
+              <Tooltip cursor={{ strokeDasharray: "3 3" }} formatter={(value: any) => value.toExponential()} content={<CustomTooltip />} />
               <Scatter data={(data || [])} fill="#ffffff">
                 {(data || []).map((entry, index) => {
                   let fill = "white";

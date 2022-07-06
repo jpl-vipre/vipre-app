@@ -73,12 +73,12 @@ const SettingsView: FC = () => {
               </Tooltip>
             </div>
             <FormControl style={{ width: "375px" }}>
-              <InputLabel id="config-select-label">Import Config</InputLabel>
+              <InputLabel id="config-select-label">Import Configuration File</InputLabel>
               <Select
                 id="config-select"
                 value={selectedConfig}
-                placeholder="Import Config"
-                label="Import Config"
+                placeholder="Import Configuration File"
+                label="Import Configuration File"
                 labelId="config-select-label"
                 onChange={(evt) => {
                   if (evt.target.value === "local") {

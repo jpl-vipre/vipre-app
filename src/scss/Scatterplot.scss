@@ -20,4 +20,25 @@
       font-size: 14px;
     }
   }
+
+  .chart-tooltip {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+
+    background-color: white;
+    min-width: 100px;
+    min-height: 50px;
+
+    padding: 5px;
+
+    border: 1px solid #9697aa;
+    border-radius: 5px;
+
+    .label {
+      flex: 1;
+      color: black;
+      margin: 2px 5px;
+    }
+  }
 }
