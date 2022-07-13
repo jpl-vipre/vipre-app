@@ -36,8 +36,8 @@ const ColorScale: FC<ColorScaleProps> = ({
   maxSelected,
   setMaxSelected,
 }) => {
+  let boundedSteps = steps <= 1 ? 1 : steps + 1;
   const [firstSelectedValue, setFirstSelectedValue] = useState<number>(-1);
-
   const closestMinMax = useMemo(() => {
     if (minSelected === undefined || maxSelected === undefined || minSelected === -1 || maxSelected === -1) {
       return [-1, -1];
@@ -46,7 +46,7 @@ const ColorScale: FC<ColorScaleProps> = ({
 
     let closestValues = [-1, -1].map((_, i) => {
       let closestValue = -1;
-      Array.from(new Array(steps + 1)).forEach((_, j) => {
+      Array.from(new Array(boundedSteps)).forEach((_, j) => {
         let rangeValue = minBound + (j / steps) * (maxBound - minBound);
         if (
           closestValue === -1 ||
@@ -58,7 +58,7 @@ const ColorScale: FC<ColorScaleProps> = ({
       return closestValue;
     });
     return closestValues;
-  }, [minSelected, maxSelected, steps, minBound, maxBound]);
+  }, [minSelected, maxSelected, steps, boundedSteps, minBound, maxBound]);
 
   const closestActiveValues = useMemo(() => {
     if (activeValues === undefined) {
@@ -100,7 +100,7 @@ const ColorScale: FC<ColorScaleProps> = ({
         }}
         onMouseLeave={() => setFirstSelectedValue(-1)}
       >
-        {Array.from(new Array(steps + 1)).map((_, i) => {
+        {Array.from(new Array(boundedSteps)).map((_, i) => {
           let value = minBound + (i / steps) * (maxBound - minBound);
           let hoverText = closestActiveValues[value]
             ? closestActiveValues[value].join(` ${units || "units"}, `) + ` ${units || "units"}`

@@ -30,26 +30,35 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnit
   const selectedTrajectory = useStore((state) => state.selectedTrajectory);
 
   const selectedTrajectoryIdx = useMemo(() => {
-    if (!data || selectedTrajectory === null) return -1;
+    if (!data || selectedTrajectory === null || !isTrajectorySelector) return -1;
     return data.findIndex((d) => d.id === selectedTrajectory.id);
-  }, [data, selectedTrajectory]);
+  }, [data, selectedTrajectory, isTrajectorySelector]);
 
   const activeValues = useMemo(() => {
     if (selectedTrajectoryIdx === -1) return selectedActiveValues;
     return [selectedTrajectoryIdx, ...selectedActiveValues];
   }, [selectedTrajectoryIdx, selectedActiveValues]);
 
-  const [minBound, maxBound] = useMemo(() => {
+  const [minBound, maxBound, steps] = useMemo(() => {
     if (!colorField || !data || !data.length) {
-      return [0, 0];
+      return [0, 0, 1];
     }
     const colorValues = data.map((entry) => entry[colorField]);
-    return [Math.min(...colorValues), Math.max(...colorValues)];
+    let min = Math.min(...colorValues);
+    let max = Math.max(...colorValues);
+    let steps = Math.ceil(Math.max(Math.min((max - min) / 0.01, 100), 1));
+
+    return [min, max, steps];
   }, [data, colorField]);
 
   // Convert data point into a bounded value so that a color can be associated with it
   const normalizeValue = (value: number) => {
-    return ((value - minBound) / (maxBound - minBound)) * 0.8 + 0.15;
+    if (maxBound <= minBound) {
+      return 0.15;
+    }
+    else {
+      return ((value - minBound) / (maxBound - minBound)) * 0.8 + 0.15;
+    }
   };
 
   // Clear selected values when trajectory is removed
@@ -171,6 +180,7 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnit
           id={`${id}-color-scale`}
           minBound={minBound}
           maxBound={maxBound}
+          steps={steps}
           units={colorUnits}
           interpolateColorValue={(value) => colors(normalizeValue(value))}
           setHoverValue={setHoverValue}

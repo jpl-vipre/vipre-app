@@ -94,6 +94,17 @@ export type Coordinate = {
   color?: string;
 }
 
+export type SchemaField = {
+  "Field name": string;
+  "Short Name": string;
+  "Datatype (range)": number;
+  "Example Value": string | number;
+  "Filtering Needs": string;
+  "Back End Computable": string;
+  "Description": string;
+  schemaName?: string;
+}
+
 export type Store = {
   activeTab: number;
   setActiveTab: (activeTab: number) => void;
@@ -124,6 +135,8 @@ export type Store = {
   searchTrajectories: () => void;
   arcs: Coordinate[];
   fetchArcs: () => void;
+  schemas: Record<string, SchemaField>;
+  fetchSchemas: () => void;
 };
 
 const useStore = create<Store>(
@@ -190,7 +203,7 @@ const useStore = create<Store>(
         });
       },
       selectedTrajectory: null,
-      setSelectedTrajectory: (selectedTrajectory) => set({ selectedTrajectory }),
+      setSelectedTrajectory: (selectedTrajectory) => set({ selectedTrajectory, entries: [] }),
       confirmedSelectedTrajectory: false,
       setConfirmedSelectedTrajectory: (confirmedSelectedTrajectory) => set({ confirmedSelectedTrajectory }),
       trajectories: [],
@@ -312,6 +325,23 @@ const useStore = create<Store>(
         //   .catch((err) => {
         //     console.error(err);
         //   });
+      },
+      schemas: {},
+      fetchSchemas: () => {
+        let schemas: Record<string, SchemaField> = {};
+        constants.SCHEMA_NAMES.forEach((schemaName) => {
+          let schema = require(`../../vipre-data/schemas/vipre_schema-${schemaName}.json`);
+          if (schema && schema.fields) {
+            schema.fields.forEach((field: SchemaField) => {
+              schemas[`${schemaName}.${field["Field name"]}`] = {
+                ...field,
+                schemaName
+              }
+            })
+          }
+        })
+
+        set({ schemas })
       }
     })
   )

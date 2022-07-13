@@ -31,6 +31,7 @@ let theme = createTheme({
 const App: FC = () => {
   const [view, setView] = useState(0);
   const fetchFilterFields = useStore((state) => state.fetchFilterFields);
+  const fetchSchemas = useStore((state) => state.fetchSchemas);
 
   useEffectOnce(() => {
     ipcRenderer.on("api-log", (evt: any, info: any) => {
@@ -41,7 +42,8 @@ const App: FC = () => {
 
   useEffect(() => {
     fetchFilterFields();
-  }, [fetchFilterFields]);
+    fetchSchemas();
+  }, [fetchFilterFields, fetchSchemas]);
 
   return (
     <ThemeProvider theme={theme}>

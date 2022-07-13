@@ -12,13 +12,16 @@ import UranusIcon from "../assets/icons/uranus.png";
 
 export const API = process.env.REACT_APP_API || "http://localhost:8000";
 
-// 299 = Venus
-// 499 = Mars
-// 599 = Jupiter
-// 606 = Titan
-// 699 = Saturn
-// 799 = Uranus
-// 899 = Neptune
+export const SCHEMA_NAMES = [
+  "architecture",
+  "body",
+  "entry",
+  "flyby",
+  "maneuver",
+  "occultation",
+  "trajectory"
+]
+
 export const DEFAULT_TARGET_BODY = "Saturn";
 export const TARGET_BODIES = {
   "Venus": { icon: "", map: VenusMap, value: "299" },
@@ -29,11 +32,6 @@ export const TARGET_BODIES = {
   "Titan": { icon: "", map: TitanMap, value: "606" },
   "Mars": { icon: "", map: MarsMap, value: "499" },
 }
-
-// Object.entries(TARGET_BODIES).forEach(([targetName, body]) => {
-//   TARGET_BODIES[targetName].icon = convertToPackagedPath(body.icon);
-//   TARGET_BODIES[targetName].map = convertToPackagedPath(body.map);
-// })
 
 export const GRAPH_TYPES = {
   scatterplot: {
@@ -178,5 +176,5 @@ export const FILTERS = [
   },
 ];
 
-const constants = { API, TARGET_BODIES, DEFAULT_TABS, FILTERS, GRAPH_TYPES, FILTER_TYPES, DEFAULT_TARGET_BODY, GRAPH_SOURCES };
+const constants = { API, SCHEMA_NAMES, TARGET_BODIES, DEFAULT_TABS, FILTERS, GRAPH_TYPES, FILTER_TYPES, DEFAULT_TARGET_BODY, GRAPH_SOURCES };
 export default constants;
