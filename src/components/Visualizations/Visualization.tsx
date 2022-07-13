@@ -13,6 +13,7 @@ const Visualization: FC<VisualizationProps> = ({ config, id }) => {
   const dataSource = (config.source || "trajectories") as keyof Store;
   const data = useStore((state) => state[dataSource]);
 
+  console.log(data, config)
   const stripSource = (field: string | undefined | null): string => field ? field.replace(/^[a-z]+./, "") : "";
 
   return (
