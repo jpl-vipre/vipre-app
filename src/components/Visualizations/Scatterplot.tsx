@@ -61,7 +61,7 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnit
 
   const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: any[]; label?: string; }) => {
     if (active && payload && payload.length) {
-      let fields = [[xField, xUnits], [yField, yUnits], [colorField, colorUnits]].filter(([field]) => field !== undefined)
+      let fields = [[xField, xUnits], [yField, yUnits], [colorField, colorUnits]].filter(([field]) => !!field)
 
       return (
         <div className="chart-tooltip">
