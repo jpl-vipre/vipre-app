@@ -9,23 +9,33 @@ interface AllFieldsSelectProps {
   options?: string[];
   disabled?: boolean;
   source?: string;
+  useFilterFields?: boolean;
   clearable?: boolean;
 }
-const AllFieldsSelect: FC<AllFieldsSelectProps> = ({ value, label, onChange, options, disabled, source, clearable = false }) => {
+const AllFieldsSelect: FC<AllFieldsSelectProps> = ({ value, label, onChange, options, disabled, source, useFilterFields = true, clearable = false }) => {
   const entryFields = useStore((state) => state.entryFields);
+  const entryFilters = useStore((state) => state.entryFilters);
   const trajectoryFields = useStore((state) => state.trajectoryFields);
+  const trajectoryFilters = useStore((state) => state.trajectoryFilters);
 
   const trajectoryOptions = useMemo(() => {
     if (options && Array.isArray(options)) {
       return options;
     }
-
-    return trajectoryFields.map((field) => field.field_name.startsWith("trajectory") ? field.field_name : `trajectory.${field.field_name}`);
-  }, [options, trajectoryFields]);
+    if (useFilterFields) {
+      return trajectoryFilters.map((field) => field.field_name.startsWith("trajectory") ? field.field_name : `trajectory.${field.field_name}`);
+    } else {
+      return trajectoryFields.map((field) => field.startsWith("trajectory") ? field : `trajectory.${field}`);
+    }
+  }, [options, trajectoryFields, trajectoryFilters, useFilterFields]);
 
   const entryOptions = useMemo(() => {
-    return entryFields.map((field) => field.field_name.startsWith("entry") ? field.field_name : `entry.${field.field_name}`);
-  }, [entryFields]);
+    if (useFilterFields) {
+      return entryFilters.map((field) => field.field_name.startsWith("entry") ? field.field_name : `entry.${field.field_name}`);
+    } else {
+      return entryFields.map((field) => field.startsWith("entry") ? field : `entry.${field}`);
+    }
+  }, [entryFields, useFilterFields, entryFilters]);
 
   return (
     <FormControl fullWidth style={{ margin: "5px" }} disabled={disabled}>

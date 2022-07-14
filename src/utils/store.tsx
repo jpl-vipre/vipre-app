@@ -121,18 +121,22 @@ export type Store = {
   setTargetBody: (targetBody: TargetBodyName) => void;
   setFilterList: (filterList: FilterItem[]) => void;
   setFilter: (filter: FilterItem) => void;
-  trajectoryFields: FilterField[];
-  entryFields: FilterField[];
+  trajectoryFilters: FilterField[];
+  entryFilters: FilterField[];
   fetchFilterFields: () => void;
+  trajectoryFields: string[];
+  entryFields: string[];
+  fetchFields: () => void;
   trajectories: Trajectory[];
   setTrajectories: (trajectories: Trajectory[]) => void;
   entries: Entry[];
   fetchEntries: () => void;
   selectedTrajectory: Trajectory | null;
-  setSelectedTrajectory: (trajectory: Trajectory | null) => void;
+  setSelectedTrajectory: (trajectory: Trajectory | null, refetch?: boolean) => void;
   confirmedSelectedTrajectory: boolean;
   setConfirmedSelectedTrajectory: (confirmedSelectedTrajectory: boolean) => void;
   searchTrajectories: () => void;
+  fetchSelectedTrajectory: () => void;
   arcs: Coordinate[];
   fetchArcs: () => void;
   schemas: Record<string, SchemaField>;
@@ -177,20 +181,45 @@ const useStore = create<Store>(
           set({ filterList: [...filterList.slice(0, filterIndex), filter, ...filterList.slice(filterIndex + 1)] });
         }
       },
-      trajectoryFields: [],
-      entryFields: [],
+      trajectoryFilters: [],
+      entryFilters: [],
       fetchFilterFields: () => {
         axios.get(`${constants.API}/filters`).then((response) => {
           set({
-            trajectoryFields: response.data.TrajectoryFilters,
-            entryFields: response.data.EntryFilters,
+            trajectoryFilters: response.data.TrajectoryFilters,
+            entryFilters: response.data.EntryFilters,
           });
         }).catch(() => {
           setTimeout(() => {
             axios.get(`${constants.API}/filters`).then((res) => {
               set({
-                trajectoryFields: res.data.TrajectoryFilters,
-                entryFields: res.data.EntryFilters,
+                trajectoryFilters: res.data.TrajectoryFilters,
+                entryFilters: res.data.EntryFilters,
+              });
+              get().searchTrajectories();
+            }).catch(() => {
+              set({
+                trajectoryFilters: [],
+                entryFilters: [],
+              })
+            })
+          }, 5000)
+        });
+      },
+      trajectoryFields: [],
+      entryFields: [],
+      fetchFields: () => {
+        axios.get(`${constants.API}/fields`).then((response) => {
+          set({
+            trajectoryFields: response.data.TrajectoryFields,
+            entryFields: response.data.EntryFields,
+          });
+        }).catch(() => {
+          setTimeout(() => {
+            axios.get(`${constants.API}/fields`).then((res) => {
+              set({
+                trajectoryFields: res.data.TrajectoryFields,
+                entryFields: res.data.EntryFields,
               });
               get().searchTrajectories();
             }).catch(() => {
@@ -203,7 +232,12 @@ const useStore = create<Store>(
         });
       },
       selectedTrajectory: null,
-      setSelectedTrajectory: (selectedTrajectory) => set({ selectedTrajectory, entries: [] }),
+      setSelectedTrajectory: (selectedTrajectory, refetch = false) => {
+        set({ selectedTrajectory, entries: [] })
+        if (refetch) {
+          get().fetchSelectedTrajectory();
+        }
+      },
       confirmedSelectedTrajectory: false,
       setConfirmedSelectedTrajectory: (confirmedSelectedTrajectory) => set({ confirmedSelectedTrajectory }),
       trajectories: [],
@@ -255,6 +289,22 @@ const useStore = create<Store>(
             console.error(err, query);
           });
       },
+      fetchSelectedTrajectory: () => {
+        let selectedTrajectory = get().selectedTrajectory;
+        if (!selectedTrajectory || !selectedTrajectory.id) {
+          return;
+        }
+
+        axios
+          .get(`${constants.API}/trajectories/${selectedTrajectory.id}`)
+          .then((response) => {
+            console.log(response)
+            set({ selectedTrajectory: response.data })
+          })
+          .catch((err) => {
+            console.error(err);
+          });
+      },
       entries: [],
       fetchEntries: () => {
         let selectedTrajectory = get().selectedTrajectory;
@@ -282,6 +332,8 @@ const useStore = create<Store>(
 
               return isInRange;
             })
+
+            console.log(response.data, filteredData)
             set({ entries: filteredData })
             // Fetch arcs on successful fetch of entries
             get().fetchArcs();

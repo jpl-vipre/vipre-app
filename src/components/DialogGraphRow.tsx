@@ -95,6 +95,7 @@ const DialogGraphRow: FC<DialogGraphRowProps> = ({ modifiedTab, setModifiedTab, 
                           label={label}
                           value={graphConfig[option as keyof GraphConfig]}
                           clearable={true}
+                          useFilterFields={false}
                           onChange={(value) => {
                             modifiedGraphConfig[option as keyof GraphConfig] = value;
                             row[i] = modifiedGraphConfig;

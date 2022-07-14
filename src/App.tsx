@@ -31,6 +31,7 @@ let theme = createTheme({
 const App: FC = () => {
   const [view, setView] = useState(0);
   const fetchFilterFields = useStore((state) => state.fetchFilterFields);
+  const fetchFields = useStore((state) => state.fetchFields);
   const fetchSchemas = useStore((state) => state.fetchSchemas);
 
   useEffectOnce(() => {
@@ -43,7 +44,8 @@ const App: FC = () => {
   useEffect(() => {
     fetchFilterFields();
     fetchSchemas();
-  }, [fetchFilterFields, fetchSchemas]);
+    fetchFields();
+  }, [fetchFilterFields, fetchSchemas, fetchFields]);
 
   return (
     <ThemeProvider theme={theme}>

@@ -70,7 +70,11 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnit
 
   const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: any[]; label?: string; }) => {
     if (active && payload && payload.length) {
-      let fields = [[xField, xUnits], [yField, yUnits], [colorField, colorUnits]].filter(([field]) => !!field)
+      let fields = [[xField, xUnits], [yField, yUnits], [colorField, colorUnits]].filter(([field]) => !!field);
+      let otherFields: [string, string][] = [];
+      if (payload && payload[0]?.payload) {
+        otherFields = Object.entries(payload[0].payload || {}).filter(([field, value]) => ![xField, yField, colorField].includes(field) && typeof value !== "object").map(([field]) => ([field, ""]))
+      }
 
       return (
         <div className="chart-tooltip">
@@ -79,6 +83,16 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnit
             let displayValue: string = value !== null ? value.toExponential() : "";
             return (
               <p key={`chart-tooltip-${field}-${i}`} className="label">
+                {field}: <b>{displayValue}{units ? ` ${units}` : ""}</b>
+              </p>
+            )
+          })}
+          <div className="tooltip-split"></div>
+          {otherFields.map(([field, units], i) => {
+            let value: number = field && payload[0].payload && payload[0].payload[field] !== undefined ? payload[0].payload[field] : null;
+            let displayValue: string = value !== null && typeof value === "number" ? value.toExponential() : "";
+            return (
+              <p key={`chart-tooltip-other-${field}-${i}`} className="label">
                 {field}: <b>{displayValue}{units ? ` ${units}` : ""}</b>
               </p>
             )
@@ -161,7 +175,7 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnit
                           setActiveValues(activeValues.filter((value) => value !== index));
                         } else {
                           if (isTrajectorySelector && !confirmedSelectedTrajectory) {
-                            setSelectedTrajectory(entry);
+                            setSelectedTrajectory(entry, true);
                           } else if (!isTrajectorySelector || confirmedSelectedTrajectory) {
                             setActiveValues([...activeValues, index]);
                           }

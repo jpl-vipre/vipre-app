@@ -77,18 +77,20 @@ app.whenReady().then(async () => {
 
   console.log(`SPAWNING API ${apiPath} app.main:app --port 8000`);
 
-  api = exec(`${apiPath} app.main:app --port 8000`, (err, stdout, stderr) => {
-    window.webContents.send("api-log", { stdout, err, stderr });
+  if (!process.env.REACT_APP_STOP_API) {
+    api = exec(`${apiPath} app.main:app --port 8000`, (err, stdout, stderr) => {
+      window.webContents.send("api-log", { stdout, err, stderr });
 
-    if (err) {
-      console.error(err);
-      console.error(stderr);
-      return;
-    }
+      if (err) {
+        console.error(err);
+        console.error(stderr);
+        return;
+      }
 
-    window.webContents.send("api-loaded");
-    console.log(stdout);
-  });
+      window.webContents.send("api-loaded");
+      console.log(stdout);
+    });
+  }
 
   ipcMain.on("new-window", (evt, url) => {
     evt.preventDefault();
