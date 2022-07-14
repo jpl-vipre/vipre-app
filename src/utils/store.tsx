@@ -50,6 +50,17 @@ export type FilterField = {
   units?: string;
 };
 
+export type TargetBodyInfo = {
+  "id": number;
+  "name": string;
+  "radius": number;
+  "mu": number;
+  "period": number;
+  "pole_vec_x": number;
+  "pole_vec_y": number;
+  "pole_vec_z": number;
+}
+
 export type Trajectory = {
   id: number;
   body_id: number;
@@ -70,6 +81,7 @@ export type Trajectory = {
   pos_target_arr_x: number;
   pos_target_arr_y: number;
   pos_target_arr_z: number;
+  target_body?: TargetBodyInfo;
 }
 
 export type Entry = {
