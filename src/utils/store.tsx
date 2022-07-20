@@ -317,7 +317,6 @@ const useStore = create<Store>(
         axios
           .get(`${constants.API}/trajectories/${selectedTrajectory.id}`)
           .then((response) => {
-            console.log(response)
             set({ selectedTrajectory: response.data })
           })
           .catch((err) => {
@@ -352,7 +351,6 @@ const useStore = create<Store>(
               return isInRange;
             })
 
-            console.log(response.data, filteredData)
             set({ entries: filteredData })
             // Fetch arcs on successful fetch of entries
             get().fetchArcs();

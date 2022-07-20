@@ -55,6 +55,7 @@ const Overview: FC = () => {
       // Sun_Earth_Body angle: acos[dot(-pos_earth_arr, pos_target_earth) / pos_earth_mag / pos_target_earth_mag], where pos_target_earth = pos_target_arr - pos_earth_arr
     }
 
+    // lv_poly(c3) / exp(total_dv / gIsp).lv_poly is a polynomial in c3 and gIsp is 3.2 km / s for a bi - prop engine. (For Falcon Heavy lv_poly = -0.005881 * c3 ^ 3 + 1.362 * c3 ^ 2 - 166.8 * c3 + 6676)
     // Default polynomial set to Falcon Heavy
     let deliveredMass: string | number = "N/A";
     if (selectedTrajectory?.c3 && selectedTrajectory?.dv_total) {
@@ -75,6 +76,16 @@ const Overview: FC = () => {
 
     return overview;
   }, [selectedTrajectory]);
+
+  const architectureSequence: string = useMemo(() => {
+    // @ts-ignore
+    if (selectedTrajectory && selectedTrajectory?.architecture && selectedTrajectory?.architecture?.sequence) {
+      // @ts-ignore
+      return selectedTrajectory.architecture.sequence;
+    } else {
+      return "N/A";
+    }
+  }, [selectedTrajectory])
 
   return (
     <div className="overview-container">
@@ -101,7 +112,7 @@ const Overview: FC = () => {
           <b style={{ marginRight: "5px" }}>Trajectory ID:</b>{selectedTrajectory ? selectedTrajectory.id : "N/A"}
         </div>
         <div style={{ marginLeft: "15px", marginRight: "5px", background: "black", padding: "10px", borderRadius: "5px", display: "flex", alignItems: "center" }}>
-          <b style={{ marginRight: "5px" }}>Flyby Sequence:</b>N/A
+          <b style={{ marginRight: "5px" }}>Flyby Sequence:</b>{architectureSequence}
         </div>
       </div>
       <div className="overview-list">
