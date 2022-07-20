@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { GraphConfig, VizTab } from "../utils/store";
+import useStore, { GraphConfig, VizTab } from "../utils/store";
 import { FormControl, IconButton, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
@@ -14,6 +14,8 @@ interface DialogGraphRowProps {
   rowName: keyof VizTab;
 }
 const DialogGraphRow: FC<DialogGraphRowProps> = ({ modifiedTab, setModifiedTab, rowLabel, rowName }) => {
+  const schemas = useStore(state => state.schemas);
+
   return (
     <OutlinedContainer label={rowLabel}>
       <div style={{ display: "flex" }}>
@@ -78,12 +80,12 @@ const DialogGraphRow: FC<DialogGraphRowProps> = ({ modifiedTab, setModifiedTab, 
                 </div>
                 <div style={{ display: "flex", width: "100%" }}>
                   {[
-                    ["xAxis", "X Axis"],
-                    ["yAxis", "Y Axis"],
-                    ["color", "Color"],
+                    ["xAxis", "X Axis", "xUnits"],
+                    ["yAxis", "Y Axis", "yUnits"],
+                    ["color", "Color", "colorUnits"],
                   ]
                     .filter(([option]: any) => (constants.GRAPH_TYPES as any)[graphConfig.type as any][option])
-                    .map(([option, label]) => {
+                    .map(([option, label, unitField]) => {
                       let row = [...(modifiedTab[rowName] as GraphConfig[])];
                       let modifiedGraphConfig: GraphConfig = { ...row[i] };
 
@@ -98,6 +100,11 @@ const DialogGraphRow: FC<DialogGraphRowProps> = ({ modifiedTab, setModifiedTab, 
                           useFilterFields={false}
                           onChange={(value) => {
                             modifiedGraphConfig[option as keyof GraphConfig] = value;
+                            // @ts-ignore
+                            if (schemas && schemas[value] && schemas[value]["units"]) {
+                              // @ts-ignore
+                              modifiedGraphConfig[unitField as keyof GraphConfig] = schemas[value]["units"] as string;
+                            }
                             row[i] = modifiedGraphConfig;
                             let newTab = { ...modifiedTab };
                             // @ts-ignore

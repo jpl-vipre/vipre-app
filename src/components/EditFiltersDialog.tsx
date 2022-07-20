@@ -24,6 +24,7 @@ const EditFilter: FC<{ filter: FilterItem; setFilter: (filter: FilterItem) => vo
 }) => {
   // @ts-ignore
   const filterOptions: any = (constants.FILTER_TYPES[filter.type] as any) || {};
+  const schemas = useStore(state => state.schemas)
 
   return (
     <div>
@@ -46,6 +47,9 @@ const EditFilter: FC<{ filter: FilterItem; setFilter: (filter: FilterItem) => vo
           label="Data Field"
           onChange={(value) => {
             setFilter({ ...filter, dataField: value });
+            if (schemas && schemas[value] && schemas[value]["units"]) {
+              setFilter({ ...filter, units: schemas[value]["units"] });
+            }
           }}
         />
       </div>

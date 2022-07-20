@@ -107,13 +107,20 @@ export type Coordinate = {
 }
 
 export type SchemaField = {
-  "Field name": string;
-  "Short Name": string;
-  "Datatype (range)": number;
-  "Example Value": string | number;
-  "Filtering Needs": string;
-  "Back End Computable": string;
-  "Description": string;
+  computable: string;
+  datatype_range: string;
+  description: string;
+  example_value: string;
+  field_name: string;
+  filtering: string;
+  foreign_key: string;
+  indexed: boolean;
+  key: string;
+  nullable: boolean;
+  primary_key: boolean;
+  short_name: string;
+  sql_datatype: string;
+  units: string;
   schemaName?: string;
 }
 
@@ -394,10 +401,10 @@ const useStore = create<Store>(
       fetchSchemas: () => {
         let schemas: Record<string, SchemaField> = {};
         constants.SCHEMA_NAMES.forEach((schemaName) => {
-          let schema = require(`../../vipre-data/schemas/vipre_schema-${schemaName}.json`);
+          let schema = require(`../../vipre-schemas/models/vipre_schema-${schemaName}.json`);
           if (schema && schema.fields) {
             schema.fields.forEach((field: SchemaField) => {
-              schemas[`${schemaName}.${field["Field name"]}`] = {
+              schemas[`${schemaName}.${field["field_name"]}`] = {
                 ...field,
                 schemaName
               }
