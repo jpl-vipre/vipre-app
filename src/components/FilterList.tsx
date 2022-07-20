@@ -5,7 +5,7 @@ import { useDebounce, useEffectOnce } from "usehooks-ts";
 import EditIcon from "@mui/icons-material/Edit";
 import IconButton from "@mui/material/IconButton";
 
-import useStore from "../utils/store";
+import useStore, { FilterItem } from "../utils/store";
 import SelectFilter from "./Filters/SelectFilter";
 import MultiSelectFilter from "./Filters/MultiSelectFilter";
 import DateRangeFilter from "./Filters/DateRangeFilter";
@@ -14,6 +14,22 @@ import SliderRangeFilter from "./Filters/SliderRangeFilter";
 import EditFiltersDialog from "./EditFiltersDialog";
 
 import "../scss/FilterList.scss";
+
+const FilterComponent: FC<{ filter: FilterItem }> = ({ filter }) => {
+  const key = `filter-${filter.id}`;
+  switch (filter.type) {
+    case "select":
+      return <SelectFilter filter={filter} key={key} />;
+    case "multi-select":
+      return <MultiSelectFilter filter={filter} key={key} />;
+    case "date-range":
+      return <DateRangeFilter filter={filter} key={key} />;
+    case "slider-range":
+      return <SliderRangeFilter filter={filter} key={key} />;
+    default:
+      return null;
+  }
+}
 
 const FilterList: FC = () => {
   const filterList = useStore((state) => state.filterList);
@@ -36,7 +52,6 @@ const FilterList: FC = () => {
       fetchEntries();
     }
   }, [searchTrajectories, fetchEntries, debouncedFilterList]);
-
   return (
     <div className="filter-container">
       <div
@@ -54,23 +69,14 @@ const FilterList: FC = () => {
         <h5>Filters</h5>
       </div>
       <div style={{ padding: "10px", display: "flex", flexDirection: "column", overflow: "scroll" }}>
+        <h5 style={{ width: "100%", textAlign: "left", marginBottom: "5px", paddingBottom: "2px", borderBottom: "1px solid rgba(255, 255, 255, 0.7)" }}>Trajectory Filters</h5>
         {filterList
-          .filter((filter) => !filter.hidden)
-          .map((filter, i) => {
-            const key = `filter-${filter.id}-${i}`;
-            switch (filter.type) {
-              case "select":
-                return <SelectFilter filter={filter} key={key} />;
-              case "multi-select":
-                return <MultiSelectFilter filter={filter} key={key} />;
-              case "date-range":
-                return <DateRangeFilter filter={filter} key={key} />;
-              case "slider-range":
-                return <SliderRangeFilter filter={filter} key={key} />;
-              default:
-                return null;
-            }
-          })}
+          .filter((filter) => !filter.hidden && filter.dataField.startsWith("trajectory"))
+          .map((filter, i) => <FilterComponent filter={filter} key={`filter-component-${filter.id}-${i}`} />)}
+        <h5 style={{ width: "100%", textAlign: "left", marginBottom: "5px", paddingBottom: "2px", borderBottom: "1px solid rgba(255, 255, 255, 0.7)" }}>Entry Filters</h5>
+        {filterList
+          .filter((filter) => !filter.hidden && filter.dataField.startsWith("entry"))
+          .map((filter, i) => <FilterComponent filter={filter} key={`filter-component-${filter.id}-${i}`} />)}
       </div>
       <EditFiltersDialog open={openEditFilters} setOpen={setOpenEditFilters} />
     </div>

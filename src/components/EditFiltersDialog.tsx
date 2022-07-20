@@ -179,7 +179,7 @@ const EditFiltersDialog: FC<EditFiltersDialogProps> = ({ open, setOpen }) => {
       <DialogTitle className="filters-title">Filters</DialogTitle>
       <DialogContent className="filters-content">
         <OutlinedContainer label="Filters">
-          {modifiedFilters.slice(1).map((modifiedFilter, i) => {
+          {modifiedFilters.map((modifiedFilter, i) => {
             return (
               <OutlinedContainer
                 key={`${modifiedFilter.id}-${i}`}

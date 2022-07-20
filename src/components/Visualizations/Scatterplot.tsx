@@ -109,7 +109,8 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnit
       style={{ display: "flex", width: "100%", height: "100%", maxHeight: "calc(100% - 15px)", alignItems: "center" }}
       id={id}
     >
-      <div style={{ display: "flex", flexDirection: "column", width: "100%", height: "100%" }}>
+      <div style={{ display: "flex", flexDirection: "column", width: "100%", height: "100%", position: "relative" }}>
+        <h4 style={{ margin: 0, color: "#a1a1b5", fontSize: "12px", position: "absolute", top: -5 }}>{isTrajectorySelector ? "Trajectory" : "Entry"}</h4>
         <h4 style={{ margin: 0, color: "white", fontSize: "12px" }}>
           <MuiTooltip title={`X Axis: ${xField}`}>
             <b style={{ fontWeight: 900 }}>{xField} </b>
