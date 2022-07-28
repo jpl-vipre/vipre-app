@@ -2484,6 +2484,13 @@
   dependencies:
     "@types/jest" "*"
 
+"@types/three@^0.142.0":
+  version "0.142.0"
+  resolved "https://registry.npmjs.org/@types/three/-/three-0.142.0.tgz#32ca897afc925057174a398416777fcb141666d6"
+  integrity sha512-YNVnlqthfgqsxKuSNbT/G2r+ha/6x+aJm7kvjT+sxa4jUROw/KOPm5xzGj33sk1+Librg6NwH/wJ6LCDX33UZg==
+  dependencies:
+    "@types/webxr" "*"
+
 "@types/trusted-types@^2.0.2":
   version "2.0.2"
   resolved "https://registry.npmjs.org/@types/trusted-types/-/trusted-types-2.0.2.tgz#fc25ad9943bcac11cceb8168db4f275e0e72e756"
@@ -2493,6 +2500,11 @@
   version "1.10.5"
   resolved "https://registry.npmjs.org/@types/verror/-/verror-1.10.5.tgz#2a1413aded46e67a1fe2386800e291123ed75eb1"
   integrity sha512-9UjMCHK5GPgQRoNbqdLIAvAy0EInuiqbW0PBMtVP6B5B2HQJlvoJHM+KodPZMEjOa5VkSc+5LH7xy+cUzQdmHw==
+
+"@types/webxr@*":
+  version "0.5.0"
+  resolved "https://registry.npmjs.org/@types/webxr/-/webxr-0.5.0.tgz#aae1cef3210d88fd4204f8c33385a0bbc4da07c9"
+  integrity sha512-IUMDPSXnYIbEO2IereEFcgcqfDREOgmbGqtrMpVPpACTU6pltYLwHgVkrnYv0XhWEcjio9sYEfIEzgn3c7nDqA==
 
 "@types/ws@^8.2.2":
   version "8.2.2"
@@ -10939,10 +10951,15 @@ three-render-objects@^1.26:
     kapsule "^1.13"
     polished "4"
 
-"three@>=0.118 <1", three@^0.140.0:
+"three@>=0.118 <1":
   version "0.140.0"
   resolved "https://registry.npmjs.org/three/-/three-0.140.0.tgz#5ad85df954c63015337a846134e0daa6c7c0dead"
   integrity sha512-jcHjbnYspPLDdsDQChmzyAoZ5KhJbgFk6pNGlAIc9fQMvsfPGjF5H9glrngqvb2CR/qXcClMyp5PYdF996lldA==
+
+three@^0.143.0:
+  version "0.143.0"
+  resolved "https://registry.npmjs.org/three/-/three-0.143.0.tgz#1455bca132cc2b20beb7f41d313e10c29e5ed9df"
+  integrity sha512-oKcAGYHhJ46TGEuHjodo2n6TY2R6lbvrkp+feKZxqsUL/WkH7GKKaeu6RHeyb2Xjfk2dPLRKLsOP0KM2VgT8Zg==
 
 throat@^6.0.1:
   version "6.0.1"

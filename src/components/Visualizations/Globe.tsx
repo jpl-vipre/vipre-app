@@ -1,4 +1,5 @@
 import { FC, useCallback, useEffect, useMemo } from "react";
+import * as THREE from 'three';
 import { ResponsiveContainer } from "recharts";
 
 import ReactGlobe from "react-globe.gl";
@@ -58,12 +59,18 @@ const Globe: FC<GlobeProps> = ({ data, xField, xUnits, yField, yUnits, colorFiel
       {isEditing || <ResponsiveContainer>
         <ReactGlobe
           globeImageUrl={targetBody.map}
-          pointsData={arcs}
-          pointAltitude="altitude"
-          pointLat="latitude"
-          pointLng="longitude"
-          pointRadius={2}
-          pointColor="color"
+          objectsData={arcs}
+          objectAltitude="altitude"
+          objectLat="latitude"
+          objectLng="longitude"
+          objectThreeObject={(point: any) => {
+            const geometry = new THREE.SphereGeometry(5, 32, 16);
+            const material = new THREE.MeshBasicMaterial({ color: point.color });
+            return new THREE.Mesh(geometry, material);
+          }}
+          objectLabel="label"
+          // pathPoin={2}
+          // objec="color"
           // arcsData={arcs}
           // arcColor={'color'}
           // arcLabel={'label'}

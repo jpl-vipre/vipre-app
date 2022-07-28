@@ -395,30 +395,6 @@ const useStore = create<Store>(
       arcs: [],
       fetchArcs: () => {
         let selectedEntries = get().selectedEntries;
-        // let selectedTrajectory = get().selectedTrajectory;
-        // console.log(selectedTrajectory)
-
-        // const entries = get().entries;
-
-        // const gData = entries.map(() => ({
-        //   startLat: (Math.random() - 0.5) * 180,
-        //   startLng: (Math.random() - 0.5) * 360,
-        //   endLat: (Math.random() - 0.5) * 180,
-        //   endLng: (Math.random() - 0.5) * 360,
-        //   label: `Arc Label`,
-        //   color: [['red', 'white', 'blue', 'green'][Math.round(Math.random() * 3)], ['red', 'white', 'blue', 'green'][Math.round(Math.random() * 3)]]
-        // }));
-        // // @ts-ignore
-        // const gData = entries.map(() => ({
-        //   lat: (Math.random() - 0.5) * 180,
-        //   lng: (Math.random() - 0.5) * 360,
-        //   size: 0.3,
-        //   color: "white"
-        // }));
-
-        // set({ arcs: [] });
-
-        // return;
 
         let arcs = get().arcs;
         arcs = arcs.filter((arc) => selectedEntries.findIndex((entry) => entry.id === arc.entryID) >= 0);
@@ -437,7 +413,8 @@ const useStore = create<Store>(
                     entryID: selectedEntry.id,
                     // @ts-ignore
                     altitude: point.height / selectedEntry.target_body.radius,
-                    color: constants.TRAJECTORY_COLORS[i % constants.TRAJECTORY_COLORS.length]
+                    color: constants.TRAJECTORY_COLORS[i % constants.TRAJECTORY_COLORS.length],
+                    label: `Entry ID: ${selectedEntry.id}`
                   }
                 });
                 set({ arcs: [...arcs, ...arc] });

@@ -177,11 +177,11 @@ export const FILTERS = [
 ];
 
 export const TRAJECTORY_COLORS = [
-  "#4d4e5c",
-  "#5555aa",
+  "#f7d300",
+  "#68b9ff",
   "#fde6c6",
-  "#f9f2d1",
-  "#ae7f71",
+  "#15ff00",
+  "#ff3b00",
   "#ffd6c7",
   "#433d3c",
   "#a9bdb1",

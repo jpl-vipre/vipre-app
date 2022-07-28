@@ -1,7 +1,7 @@
 import { FC, useEffect, useMemo, useState } from "react";
 import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, Cell, ResponsiveContainer } from "recharts";
 import MuiTooltip from "@mui/material/Tooltip";
-
+import constants from "../../utils/constants";
 
 import ColorScale, { colors } from "./ColorScale";
 
@@ -158,7 +158,16 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnit
               <Scatter data={(data || [])} fill="#ffffff">
                 {(data || []).map((entry, index) => {
                   let fill = "white";
+                  let stroke = "white";
                   let isWithinThreshold = activeValues.includes(index);
+                  if (!isTrajectorySelector && isWithinThreshold) {
+                    let selectedEntryIndex = selectedEntries.findIndex((selectedEntry) => selectedEntry.id === entry.id);
+                    if (selectedEntryIndex >= 0) {
+                      fill = constants.TRAJECTORY_COLORS[selectedEntryIndex % constants.TRAJECTORY_COLORS.length]
+                      stroke = fill;
+                    }
+                  }
+
                   let isSelectedTrajectory = index === selectedTrajectoryIdx;
                   if (colorField && !isWithinThreshold && typeof entry[colorField] === "number") {
                     isWithinThreshold =
@@ -171,7 +180,7 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnit
                     <Cell
                       key={`cell-${index}`}
                       fill={isSelectedTrajectory ? "blue" : fill}
-                      style={{ stroke: isWithinThreshold ? "white" : "", strokeWidth: isSelectedTrajectory ? 6 : isWithinThreshold ? 3 : 0 }}
+                      style={{ stroke: isWithinThreshold ? stroke : "", strokeWidth: isSelectedTrajectory ? 6 : isWithinThreshold ? 3 : 0 }}
                       onClick={() => {
                         if (activeValues.includes(index) && (!isTrajectorySelector || confirmedSelectedTrajectory)) {
                           setActiveValues(activeValues.filter((value) => value !== index));
