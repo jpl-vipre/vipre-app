@@ -1,4 +1,4 @@
-import { FC, useCallback, useMemo } from "react";
+import { FC, useCallback, useEffect, useMemo } from "react";
 import { ResponsiveContainer } from "recharts";
 
 import ReactGlobe from "react-globe.gl";
@@ -19,7 +19,7 @@ interface GlobeProps {
   colorUnits?: string;
 }
 const Globe: FC<GlobeProps> = ({ data, xField, xUnits, yField, yUnits, colorField, colorUnits, id }) => {
-  const targetBodyMap = useStore(state => state.targetBodies[state.targetBody].map)
+  const targetBody = useStore(state => state.targetBodies[state.targetBody])
   const isEditing = useStore(state => state.editingTab !== null);
   const arcs = useStore(state => state.arcs);
 
@@ -57,13 +57,16 @@ const Globe: FC<GlobeProps> = ({ data, xField, xUnits, yField, yUnits, colorFiel
     >
       {isEditing || <ResponsiveContainer>
         <ReactGlobe
-          globeImageUrl={targetBodyMap}
-          // pointsData={arcs}
-          // pointAltitude="size"
-          // pointColor="color"
-          arcsData={arcs}
-          arcColor={'color'}
-          arcLabel={'label'}
+          globeImageUrl={targetBody.map}
+          pointsData={arcs}
+          pointAltitude="altitude"
+          pointLat="latitude"
+          pointLng="longitude"
+          pointRadius={2}
+          pointColor="color"
+          // arcsData={arcs}
+          // arcColor={'color'}
+          // arcLabel={'label'}
           arcStroke={3}
           backgroundColor="black"
         />

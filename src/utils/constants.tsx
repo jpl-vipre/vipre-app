@@ -176,5 +176,38 @@ export const FILTERS = [
   },
 ];
 
-const constants = { API, SCHEMA_NAMES, TARGET_BODIES, DEFAULT_TABS, FILTERS, GRAPH_TYPES, FILTER_TYPES, DEFAULT_TARGET_BODY, GRAPH_SOURCES };
+export const TRAJECTORY_COLORS = [
+  "#4d4e5c",
+  "#5555aa",
+  "#fde6c6",
+  "#f9f2d1",
+  "#ae7f71",
+  "#ffd6c7",
+  "#433d3c",
+  "#a9bdb1",
+  "#8f7303",
+  "#885511",
+  "#ff964f",
+  "#c47967",
+  "#8f917c",
+  "#cdd6b1",
+  "#4f2923",
+  "#f3c6cc",
+  "#9d896c",
+  "#b18276",
+  "#96cbf1",
+  "#dac43c",
+  "#414634",
+  "#00bbee",
+  "#b0ab80",
+  "#4a455d",
+  "#bdbaae",
+  "#b9a0d2",
+  "#15646d",
+  "#d4c7d9",
+  "#5e5a67",
+  "#e9e6d4"
+]
+
+const constants = { API, SCHEMA_NAMES, TARGET_BODIES, DEFAULT_TABS, FILTERS, GRAPH_TYPES, FILTER_TYPES, DEFAULT_TARGET_BODY, GRAPH_SOURCES, TRAJECTORY_COLORS };
 export default constants;

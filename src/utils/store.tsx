@@ -92,6 +92,14 @@ const TARGET_BODIES = Object.keys(constants.TARGET_BODIES);
 export type TargetBodyName = typeof TARGET_BODIES[number];
 
 export type TargetBody = {
+  id?: number;
+  name?: string;
+  radius?: number;
+  mu?: number;
+  period?: number;
+  pole_vec_x?: number;
+  pole_vec_y?: number;
+  pole_vec_z?: number;
   icon?: string;
   map?: string;
   value: string | number;
@@ -100,8 +108,10 @@ export type TargetBody = {
 export type TargetBodies = Record<TargetBodyName, TargetBody>;
 
 export type Coordinate = {
-  lat: number;
-  lng: number;
+  entryID: number;
+  latitude: number;
+  longitude: number;
+  height?: number;
   size?: number;
   color?: string;
 }
@@ -136,6 +146,7 @@ export type Store = {
   setConfigPathHistory: (paths: string[]) => void;
   filterList: FilterItem[];
   targetBodies: TargetBodies;
+  fetchBodies: () => void;
   targetBody: TargetBodyName;
   setTargetBody: (targetBody: TargetBodyName) => void;
   setFilterList: (filterList: FilterItem[]) => void;
@@ -150,6 +161,8 @@ export type Store = {
   setTrajectories: (trajectories: Trajectory[]) => void;
   entries: Entry[];
   fetchEntries: () => void;
+  selectedEntries: Entry[];
+  setSelectedEntries: (selectedEntries: Entry[]) => void;
   selectedTrajectory: Trajectory | null;
   setSelectedTrajectory: (trajectory: Trajectory | null, refetch?: boolean) => void;
   confirmedSelectedTrajectory: boolean;
@@ -189,6 +202,21 @@ const useStore = create<Store>(
       filterList: constants.FILTERS.map((filter, i) => ({ ...filter, id: i })),
       setFilterList: (filterList: FilterItem[]) => set({ filterList }),
       targetBodies: constants.TARGET_BODIES,
+      fetchBodies: () => {
+        let targetBodies = get().targetBodies;
+        axios.get(`${constants.API}/bodies`).then((response) => {
+          response.data.forEach((body: TargetBody) => {
+            // @ts-ignore
+            let existingBody: TargetBody = constants.TARGET_BODIES[body.name] as any || {};
+            // @ts-ignore
+            targetBodies[body.name] = { ...existingBody, ...body };
+          })
+
+          set({ targetBodies });
+        }).catch((err) => {
+          console.error(err)
+        })
+      },
       targetBody: constants.DEFAULT_TARGET_BODY as TargetBodyName,
       setTargetBody: (targetBody) => set({ targetBody }),
       setFilter: (filter: FilterItem) => {
@@ -359,8 +387,14 @@ const useStore = create<Store>(
             console.error(err);
           });
       },
+      selectedEntries: [],
+      setSelectedEntries: (selectedEntries) => {
+        set({ selectedEntries });
+        get().fetchArcs();
+      },
       arcs: [],
       fetchArcs: () => {
+        let selectedEntries = get().selectedEntries;
         // let selectedTrajectory = get().selectedTrajectory;
         // console.log(selectedTrajectory)
 
@@ -382,18 +416,37 @@ const useStore = create<Store>(
         //   color: "white"
         // }));
 
-        set({ arcs: [] });
+        // set({ arcs: [] });
 
-        return;
+        // return;
 
-        // axios
-        //   .get(`${constants.API}/visualizations/${(selectedTrajectory || {}).id}/arcs`)
-        //   .then((response) => {
-        //     set({ arcs: response.data })
-        //   })
-        //   .catch((err) => {
-        //     console.error(err);
-        //   });
+        let arcs = get().arcs;
+        arcs = arcs.filter((arc) => selectedEntries.findIndex((entry) => entry.id === arc.entryID) >= 0);
+        set({ arcs });
+
+        selectedEntries.forEach((selectedEntry, i) => {
+          if (arcs.findIndex((arc) => arc.entryID === selectedEntry.id) < 0) {
+            axios
+              .post(`${constants.API}/visualizations/get_entry_arc/${selectedEntry.id}`, {
+                "ta_step": 100
+              })
+              .then((response) => {
+                let arc: Coordinate[] = response.data.map((point: any) => {
+                  return {
+                    ...point,
+                    entryID: selectedEntry.id,
+                    // @ts-ignore
+                    altitude: point.height / selectedEntry.target_body.radius,
+                    color: constants.TRAJECTORY_COLORS[i % constants.TRAJECTORY_COLORS.length]
+                  }
+                });
+                set({ arcs: [...arcs, ...arc] });
+              })
+              .catch((err) => {
+                console.error(err);
+              });
+          }
+        })
       },
       schemas: {},
       fetchSchemas: () => {

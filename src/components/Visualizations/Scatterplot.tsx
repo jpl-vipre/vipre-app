@@ -28,6 +28,7 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnit
   const confirmedSelectedTrajectory = useStore(state => state.confirmedSelectedTrajectory);
   const setSelectedTrajectory = useStore(state => state.setSelectedTrajectory);
   const selectedTrajectory = useStore((state) => state.selectedTrajectory);
+  const [selectedEntries, setSelectedEntries] = useStore(state => [state.selectedEntries, state.setSelectedEntries]);
 
   const selectedTrajectoryIdx = useMemo(() => {
     if (!data || selectedTrajectory === null || !isTrajectorySelector) return -1;
@@ -172,13 +173,15 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnit
                       fill={isSelectedTrajectory ? "blue" : fill}
                       style={{ stroke: isWithinThreshold ? "white" : "", strokeWidth: isSelectedTrajectory ? 6 : isWithinThreshold ? 3 : 0 }}
                       onClick={() => {
-                        if (colorField && activeValues.includes(index) && (!isTrajectorySelector || confirmedSelectedTrajectory)) {
+                        if (activeValues.includes(index) && (!isTrajectorySelector || confirmedSelectedTrajectory)) {
                           setActiveValues(activeValues.filter((value) => value !== index));
+                          setSelectedEntries(selectedEntries.filter(selectedEntry => selectedEntry.id !== data[index].id));
                         } else {
                           if (isTrajectorySelector && !confirmedSelectedTrajectory) {
                             setSelectedTrajectory(entry, true);
-                          } else if (!isTrajectorySelector || confirmedSelectedTrajectory) {
+                          } else if (!isTrajectorySelector && confirmedSelectedTrajectory) {
                             setActiveValues([...activeValues, index]);
+                            setSelectedEntries([...selectedEntries, entry]);
                           }
                         }
                       }}
