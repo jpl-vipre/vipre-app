@@ -24,32 +24,6 @@ const Globe: FC<GlobeProps> = ({ data, xField, xUnits, yField, yUnits, colorFiel
   const isEditing = useStore(state => state.editingTab !== null);
   const arcs = useStore(state => state.arcs);
 
-  // const [minBound, maxBound] = useMemo(() => {
-  //   if (!colorField || !data || !data.length) {
-  //     return [0, 0];
-  //   }
-  //   const colorValues = data.map((entry) => entry[colorField]);
-  //   return [Math.min(...colorValues), Math.max(...colorValues)];
-  // }, [data, colorField]);
-
-  // // Convert data point into a bounded value so that a color can be associated with it
-  // const normalizeValue = useCallback((value: number) => {
-  //   return ((value - minBound) / (maxBound - minBound)) * 0.8 + 0.15;
-  // }, [minBound, maxBound]);
-
-  // const dataWithColor = useMemo(() => {
-  //   if (!colorField || !data || !data.length) {
-  //     return data;
-  //   }
-
-  //   return data.map((entry) => {
-  //     const color = colors(normalizeValue(entry[colorField]));
-  //     return {
-  //       ...entry,
-  //       color,
-  //     };
-  //   });
-  // }, [data, colorField, normalizeValue])
 
   return (
     <div
@@ -59,7 +33,7 @@ const Globe: FC<GlobeProps> = ({ data, xField, xUnits, yField, yUnits, colorFiel
       {isEditing || <ResponsiveContainer>
         <ReactGlobe
           globeImageUrl={targetBody.map}
-          objectsData={arcs}
+          objectsData={arcs.map(obj => ({ ...obj }))}
           objectAltitude="altitude"
           objectLat="latitude"
           objectLng="longitude"
@@ -74,7 +48,7 @@ const Globe: FC<GlobeProps> = ({ data, xField, xUnits, yField, yUnits, colorFiel
           // arcsData={arcs}
           // arcColor={'color'}
           // arcLabel={'label'}
-          arcStroke={3}
+          // arcStroke={3}
           backgroundColor="black"
         />
       </ResponsiveContainer>}

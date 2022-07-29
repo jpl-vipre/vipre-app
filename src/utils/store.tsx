@@ -408,13 +408,15 @@ const useStore = create<Store>(
               })
               .then((response) => {
                 let arc: Coordinate[] = response.data.map((point: any) => {
+                  // @ts-ignore
+                  let altitude = (point.height / selectedEntry.target_body.radius) - 1;
+
                   return {
                     ...point,
                     entryID: selectedEntry.id,
-                    // @ts-ignore
-                    altitude: point.height / selectedEntry.target_body.radius,
+                    altitude,
                     color: constants.TRAJECTORY_COLORS[i % constants.TRAJECTORY_COLORS.length],
-                    label: `Entry ID: ${selectedEntry.id}`
+                    label: `Entry ID: ${selectedEntry.id}<br/>Lat: ${point.latitude},<br/>Lon: ${point.longitude},<br/>Alt: ${point.height}`
                   }
                 });
                 set({ arcs: [...arcs, ...arc] });
