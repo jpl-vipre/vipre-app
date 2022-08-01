@@ -1,6 +1,6 @@
 import { FC, useState, useEffect } from "react";
 
-import { FormControl, InputLabel, MenuItem, Select, ListSubheader, Button, Divider, IconButton, Snackbar, Alert, Tooltip } from "@mui/material";
+import { FormControl, InputLabel, MenuItem, Select, ListSubheader, Button, Divider, IconButton, Snackbar, Alert, Tooltip, TextField } from "@mui/material";
 
 import useStore from "../utils/store";
 import "../scss/SettingsView.scss";
@@ -18,6 +18,7 @@ const SettingsView: FC = () => {
 
   const [filterList, setFilterList] = useStore(state => [state.filterList, state.setFilterList]);
   const [tabs, setTabs] = useStore(state => [state.tabs, state.setTabs]);
+  const [relayVolumeScale, setRelayVolumeScale] = useStore(state => [state.relayVolumeScale, state.setRelayVolumeScale]);
 
   const [isErrorStatus, setIsErrorStatus] = useState<boolean>(false);
   const [statusMessage, setStatusMessage] = useState<string>("");
@@ -61,8 +62,8 @@ const SettingsView: FC = () => {
     <div className="settings-container">
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "15px" }}>
         <h1>Settings</h1>
-        <div style={{ display: "flex", flexDirection: "column", marginTop: "15px" }}>
-          <div style={{ display: "flex" }}>
+        <div style={{ display: "flex", flexDirection: "column", marginTop: "15px", width: "100%" }}>
+          <div style={{ display: "flex", margin: "auto" }}>
             <div style={{ marginRight: "5px" }}>
               <Tooltip title="Export Config">
                 <IconButton onClick={() => {
@@ -117,6 +118,19 @@ const SettingsView: FC = () => {
                 <MenuItem value="local">Choose Config from Computer</MenuItem>
               </Select>
             </FormControl>
+          </div>
+          <Divider style={{ margin: "15px 0", width: "100%" }} />
+          <div style={{ marginTop: "15px" }}>
+            <TextField
+              id="relay-volume-scale"
+              label="Relay Volume Scale"
+              variant="outlined"
+              type="number"
+              value={relayVolumeScale}
+              onChange={(evt: any) => {
+                setRelayVolumeScale(evt.target.value);
+              }}
+            />
           </div>
         </div>
         <Snackbar open={statusMessage.length > 0} autoHideDuration={3000} onClose={() => {

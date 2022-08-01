@@ -142,6 +142,8 @@ export type Store = {
   tabs: VizTab[];
   setTabs: (tabs: VizTab[]) => void;
   setTab: (tab: VizTab) => void;
+  relayVolumeScale: number;
+  setRelayVolumeScale: (relayVolumeScale: number) => void;
   configPathHistory: string[];
   setConfigPathHistory: (paths: string[]) => void;
   filterList: FilterItem[];
@@ -197,6 +199,8 @@ const useStore = create<Store>(
           set({ tabs: [...tabs.slice(0, tabIndex), tab, ...tabs.slice(tabIndex + 1)] });
         }
       },
+      relayVolumeScale: 1,
+      setRelayVolumeScale: (relayVolumeScale) => set({ relayVolumeScale }),
       configPathHistory: [],
       setConfigPathHistory: (configPathHistory) => set({ configPathHistory }),
       filterList: constants.FILTERS.map((filter, i) => ({ ...filter, id: i })),
@@ -362,7 +366,9 @@ const useStore = create<Store>(
           .get(`${constants.API}/trajectories/${selectedTrajectory.id}/entries`)
           .then((response) => {
             const filterList = get().filterList;
+            const relayVolumeScale = get().relayVolumeScale;
             let filteredData = response.data.filter((trajectory: any) => {
+              trajectory["relay_volume"] = trajectory["relay_volume"] ? trajectory["relay_volume"] * relayVolumeScale : 0;
               let isInRange = true;
               filterList.forEach((filterItem) => {
                 if (filterItem.dataField.includes("entry.")) {

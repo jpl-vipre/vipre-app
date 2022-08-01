@@ -34,6 +34,7 @@ const App: FC = () => {
   const fetchFields = useStore((state) => state.fetchFields);
   const fetchSchemas = useStore((state) => state.fetchSchemas);
   const fetchBodies = useStore((state) => state.fetchBodies);
+  const fetchEntries = useStore((state) => state.fetchEntries);
 
   useEffectOnce(() => {
     ipcRenderer.on("api-log", (evt: any, info: any) => {
@@ -41,13 +42,18 @@ const App: FC = () => {
     })
   });
 
-
   useEffect(() => {
     fetchFilterFields();
     fetchSchemas();
     fetchFields();
     fetchBodies();
   }, [fetchFilterFields, fetchSchemas, fetchFields, fetchBodies]);
+
+  useEffect(() => {
+    if (view === 0) {
+      fetchEntries();
+    }
+  }, [view, fetchEntries])
 
   return (
     <ThemeProvider theme={theme}>
