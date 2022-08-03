@@ -12,6 +12,7 @@ interface VisualizationProps {
 const Visualization: FC<VisualizationProps> = ({ config, id }) => {
   const dataSource = (config.source || "trajectories") as keyof Store;
   const data = useStore((state) => state[dataSource]);
+  const entryData = useStore(state => state.entries);
 
   const stripSource = (field: string | undefined | null): string => field ? field.replace(/^[a-z]+./, "") : "";
 
@@ -47,13 +48,9 @@ const Visualization: FC<VisualizationProps> = ({ config, id }) => {
       )}
       {config.type === "globe" && (
         <Globe
-          data={data as any[]}
-          xField={stripSource(config.xAxis)}
-          xUnits={config.xUnits}
-          yField={stripSource(config.yAxis)}
-          yUnits={config.yUnits}
+          globeType={config.globeType || "entryPoint"}
           colorField={stripSource(config.color)}
-          colorUnits={config.colorUnits}
+          data={entryData}
           id={`${id}-globe`}
         />
       )}

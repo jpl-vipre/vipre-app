@@ -42,8 +42,8 @@ export const GRAPH_TYPES = {
   },
   globe: {
     label: "Globe",
-    xAxis: true,
-    yAxis: true,
+    xAxis: false,
+    yAxis: false,
     color: true,
   },
 };

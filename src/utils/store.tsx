@@ -19,6 +19,7 @@ export type GraphConfig = {
   color?: string;
   colorUnits?: string;
   source?: string;
+  globeType?: string;
 };
 
 export type VizTab = {
@@ -84,8 +85,29 @@ export type Trajectory = {
   target_body?: TargetBodyInfo;
 }
 
+export type PosEntryLatLonHeight = {
+  latitude: number;
+  longitude: number;
+  height: number;
+}
+
 export type Entry = {
   id: number;
+  target_body: TargetBodyInfo;
+  bvec_theta: number;
+  bvec_mag: number;
+  safe: boolean;
+  t_entry: number;
+  relay_volume: number;
+  pos_entry_x: number;
+  pos_entry_y: number;
+  pos_entry_z: number;
+  pos_entry_mag: number;
+  vel_entry_x: number;
+  vel_entry_y: number;
+  vel_entry_z: number;
+  vel_entry_mag: number;
+  pos_entry_lat_long_h: PosEntryLatLonHeight;
 }
 
 const TARGET_BODIES = Object.keys(constants.TARGET_BODIES);

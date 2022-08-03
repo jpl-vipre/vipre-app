@@ -50,7 +50,7 @@ const Overview: FC = () => {
     let distanceToEarth: string | number = "N/A";
     let sunEarthBodyAngle: string | number = "N/A";
     if (selectedTrajectory?.pos_earth_arr_x && selectedTrajectory?.pos_earth_arr_y && selectedTrajectory?.pos_earth_arr_z) {
-      distanceToEarth = Math.sqrt(Math.pow(selectedTrajectory.pos_earth_arr_x, 2) + Math.pow(selectedTrajectory.pos_earth_arr_y, 2) + Math.pow(selectedTrajectory.pos_earth_arr_z, 2))
+      distanceToEarth = Math.sqrt(Math.pow(selectedTrajectory.pos_earth_arr_x, 2) + Math.pow(selectedTrajectory.pos_earth_arr_y, 2) + Math.pow(selectedTrajectory.pos_earth_arr_z, 2));
 
       // Sun_Earth_Body angle: acos[dot(-pos_earth_arr, pos_target_earth) / pos_earth_mag / pos_target_earth_mag], where pos_target_earth = pos_target_arr - pos_earth_arr
     }
@@ -117,10 +117,17 @@ const Overview: FC = () => {
       </div>
       <div className="overview-list">
         {overviewFields.map((overviewField) => {
+          let value: string | number = overviewField.value;
+          if (typeof overviewField.value === "number") {
+            value = Math.round(overviewField.value * 100) / 100;
+            if (`${value}`.length >= 10) {
+              value = value.toPrecision(5);
+            }
+          }
           return (
             <Tooltip title={`${overviewField.display_name}: ${overviewField.value} ${overviewField.units}`} disableHoverListener={overviewField.value === "N/A"}>
               <div key={overviewField.display_name} className="overview-field">
-                <h2>{typeof overviewField.value === "number" ? Math.round(overviewField.value * 100) / 100 : overviewField.value}</h2>
+                <h2>{value}</h2>
                 <h5>{overviewField.display_name}</h5>
                 <h6>{overviewField.units}</h6>
               </div>

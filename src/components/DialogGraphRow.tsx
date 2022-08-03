@@ -1,6 +1,6 @@
 import { FC } from "react";
 import useStore, { GraphConfig, VizTab } from "../utils/store";
-import { FormControl, IconButton, InputLabel, MenuItem, Select, TextField } from "@mui/material";
+import { FormControl, FormControlLabel, FormLabel, IconButton, InputLabel, MenuItem, Radio, RadioGroup, Select, TextField } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import constants from "../utils/constants";
@@ -40,6 +40,9 @@ const DialogGraphRow: FC<DialogGraphRowProps> = ({ modifiedTab, setModifiedTab, 
                       onChange={(evt) => {
                         let row = [...(modifiedTab[rowName] as GraphConfig[])];
                         row[i] = { ...row[i], type: evt.target.value };
+                        if (evt.target.value === "globe") {
+                          row[i]["source"] = "entries";
+                        }
                         let newTab = { ...modifiedTab };
                         // @ts-ignore
                         newTab[rowName] = row;
@@ -53,7 +56,7 @@ const DialogGraphRow: FC<DialogGraphRowProps> = ({ modifiedTab, setModifiedTab, 
                       ))}
                     </Select>
                   </FormControl>
-                  <FormControl fullWidth style={{ marginBottom: "5px", marginLeft: "10px" }}>
+                  {graphConfig.type !== "globe" && <FormControl fullWidth style={{ marginBottom: "5px", marginLeft: "10px" }}>
                     <InputLabel id={`top-${i}-graph-source-label`}>Source</InputLabel>
                     <Select
                       variant="standard"
@@ -76,7 +79,30 @@ const DialogGraphRow: FC<DialogGraphRowProps> = ({ modifiedTab, setModifiedTab, 
                         </MenuItem>
                       ))}
                     </Select>
-                  </FormControl>
+                  </FormControl>}
+                </div>
+                <div style={{ display: "flex", width: "100%" }}>
+                  {graphConfig.type === "globe" && <FormControl style={{ margin: "5px" }}>
+                    <FormLabel id="globe-viz-type">Globe Type</FormLabel>
+                    <RadioGroup
+                      row
+                      aria-labelledby="globe-viz-type"
+                      defaultValue="entryPoint"
+                      name="globe-viz-type-group"
+                      value={graphConfig.globeType}
+                      onChange={(evt) => {
+                        let row = [...(modifiedTab[rowName] as GraphConfig[])];
+                        row[i] = { ...row[i], globeType: evt.target.value };
+                        let newTab = { ...modifiedTab };
+                        // @ts-ignore
+                        newTab[rowName] = row;
+                        setModifiedTab(newTab);
+                      }}
+                    >
+                      <FormControlLabel value="entryPoint" control={<Radio />} label="Entry Points" />
+                      <FormControlLabel value="arc" control={<Radio />} label="Arcs" />
+                    </RadioGroup>
+                  </FormControl>}
                 </div>
                 <div style={{ display: "flex", width: "100%" }}>
                   {[
@@ -84,7 +110,7 @@ const DialogGraphRow: FC<DialogGraphRowProps> = ({ modifiedTab, setModifiedTab, 
                     ["yAxis", "Y Axis", "yUnits"],
                     ["color", "Color", "colorUnits"],
                   ]
-                    .filter(([option]: any) => (constants.GRAPH_TYPES as any)[graphConfig.type as any][option])
+                    .filter(([option]: any) => (constants.GRAPH_TYPES as any)[graphConfig.type as any][option] && (graphConfig.type !== "globe" || (option !== "color" || graphConfig.globeType === "entryPoint")))
                     .map(([option, label, unitField]) => {
                       let row = [...(modifiedTab[rowName] as GraphConfig[])];
                       let modifiedGraphConfig: GraphConfig = { ...row[i] };
@@ -121,7 +147,7 @@ const DialogGraphRow: FC<DialogGraphRowProps> = ({ modifiedTab, setModifiedTab, 
                     ["yAxis", "yUnits", "Y Units"],
                     ["color", "colorUnits", "Color Units"],
                   ]
-                    .filter(([option]: any) => (constants.GRAPH_TYPES as any)[graphConfig.type as any][option])
+                    .filter(([option]: any) => (constants.GRAPH_TYPES as any)[graphConfig.type as any][option] && (graphConfig.type !== "globe" || (option !== "color" || graphConfig.globeType === "entryPoint")))
                     .map(([_, option, label]) => {
                       return (
                         <TextField
