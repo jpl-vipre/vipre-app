@@ -58,16 +58,22 @@ const Overview: FC = () => {
     // lv_poly(c3) / exp(total_dv / gIsp).lv_poly is a polynomial in c3 and gIsp is 3.2 km / s for a bi - prop engine. (For Falcon Heavy lv_poly = -0.005881 * c3 ^ 3 + 1.362 * c3 ^ 2 - 166.8 * c3 + 6676)
     // Default polynomial set to Falcon Heavy
     let deliveredMass: string | number = "N/A";
+    let deliveredMassTooltip: string | number = "";
     if (selectedTrajectory?.c3 && selectedTrajectory?.dv_total) {
       let c3 = selectedTrajectory.c3;
-      let craftPolynomial = (-0.005881 * c3 ^ 3 + 1.362 * c3 ^ 2 - 166.8 * c3 + 6676);
-      deliveredMass = craftPolynomial / Math.exp(selectedTrajectory.dv_total / 3.2);
+      let launchVehiclePolynomial = (-0.005881 * c3 ^ 3 + 1.362 * c3 ^ 2 - 166.8 * c3 + 6676);
+      let lvDeliveredMass = launchVehiclePolynomial / Math.exp(selectedTrajectory.dv_total / 3.2);
+      if (lvDeliveredMass >= 0) {
+        deliveredMass = lvDeliveredMass;
+      } else {
+        deliveredMassTooltip = `Invalid Launch Vehicle. Mass with LV: ${lvDeliveredMass.toFixed(3)} kg`
+      }
     }
 
     let overview = [
       { display_name: "Launch Date", units: "Years Past 2000", value: launchDate },
       { display_name: "Flight Time", units: "Years", value: flightTime },
-      { display_name: "Delivered Mass", units: "kg", value: deliveredMass },
+      { display_name: "Delivered Mass", units: "kg", value: deliveredMass, tooltip: deliveredMassTooltip },
       { display_name: "Arrival V ∞ Magnitude", units: "km/s", value: vInfMag },
       { display_name: "Arrival V ∞ Declination", units: "km/s", value: vInfDeclination },
       { display_name: "Distance to Earth", units: "km", value: distanceToEarth },
@@ -124,8 +130,14 @@ const Overview: FC = () => {
               value = value.toPrecision(5);
             }
           }
+
+          let tooltipMessage = `${overviewField.display_name}: ${overviewField.value} ${overviewField.units}`;
+          if (overviewField.tooltip) {
+            tooltipMessage = overviewField.tooltip;
+          }
+
           return (
-            <Tooltip title={`${overviewField.display_name}: ${overviewField.value} ${overviewField.units}`} disableHoverListener={overviewField.value === "N/A"}>
+            <Tooltip title={tooltipMessage} disableHoverListener={overviewField.value === "N/A" && !overviewField.tooltip}>
               <div key={overviewField.display_name} className="overview-field">
                 <h2>{value}</h2>
                 <h5>{overviewField.display_name}</h5>
