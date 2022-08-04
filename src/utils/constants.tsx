@@ -33,6 +33,13 @@ export const TARGET_BODIES = {
   "Mars": { icon: "", map: MarsMap, value: "499" },
 }
 
+export const LAUNCH_VEHICLES = {
+  "Falcon Heavy": {
+    name: "Falcon Heavy",
+    polynomial: (c3: number) => (-0.005881 * c3 ^ 3 + 1.362 * c3 ^ 2 - 166.8 * c3 + 6676)
+  }
+}
+
 export const GRAPH_TYPES = {
   scatterplot: {
     label: "Scatterplot",
@@ -209,5 +216,5 @@ export const TRAJECTORY_COLORS = [
   "#e9e6d4"
 ]
 
-const constants = { API, SCHEMA_NAMES, TARGET_BODIES, DEFAULT_TABS, FILTERS, GRAPH_TYPES, FILTER_TYPES, DEFAULT_TARGET_BODY, GRAPH_SOURCES, TRAJECTORY_COLORS };
+const constants = { API, SCHEMA_NAMES, TARGET_BODIES, DEFAULT_TABS, FILTERS, GRAPH_TYPES, FILTER_TYPES, DEFAULT_TARGET_BODY, GRAPH_SOURCES, TRAJECTORY_COLORS, LAUNCH_VEHICLES };
 export default constants;

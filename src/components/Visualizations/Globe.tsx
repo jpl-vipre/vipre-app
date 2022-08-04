@@ -1,10 +1,10 @@
-import { FC, useCallback, useEffect, useMemo, useState } from "react";
+import { FC, useMemo, useState } from "react";
 import * as THREE from 'three';
 import { ResponsiveContainer } from "recharts";
 
 import ReactGlobe from "react-globe.gl";
 
-import ColorScale, { colors } from "./ColorScale";
+import { colors } from "./ColorScale";
 import useStore from "../../utils/store";
 
 import "../../scss/Globe.scss";
@@ -26,7 +26,7 @@ const Globe: FC<GlobeProps> = ({ globeType, data, colorField, id }) => {
 
   const [hoverID, setHoverID] = useState(-1);
 
-  const [minBound, maxBound, steps] = useMemo(() => {
+  const [minBound, maxBound] = useMemo(() => {
     if (!colorField || !data || !data.length) {
       return [0, 0, 1];
     }

@@ -3,13 +3,12 @@ import { FC, useState, useEffect } from "react";
 import { FormControl, InputLabel, MenuItem, Select, ListSubheader, Button, Divider, IconButton, Snackbar, Alert, Tooltip, TextField } from "@mui/material";
 
 import useStore from "../utils/store";
+import constants from "../utils/constants";
 import "../scss/SettingsView.scss";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 
 // @ts-ignore
 const { ipcRenderer } = window.require("electron");
-// @ts-ignore
-const path = window.require("path");
 
 const SettingsView: FC = () => {
   const [selectedConfig, setSelectedConfig] = useState<string>("");
@@ -19,6 +18,7 @@ const SettingsView: FC = () => {
   const [filterList, setFilterList] = useStore(state => [state.filterList, state.setFilterList]);
   const [tabs, setTabs] = useStore(state => [state.tabs, state.setTabs]);
   const [relayVolumeScale, setRelayVolumeScale] = useStore(state => [state.relayVolumeScale, state.setRelayVolumeScale]);
+  const [launchVehicleName, setLaunchVehicle] = useStore(state => [state.launchVehicleName, state.setLaunchVehicle]);
 
   const [isErrorStatus, setIsErrorStatus] = useState<boolean>(false);
   const [statusMessage, setStatusMessage] = useState<string>("");
@@ -121,7 +121,25 @@ const SettingsView: FC = () => {
           </div>
           <Divider style={{ margin: "15px 0", width: "100%" }} />
           <div style={{ marginTop: "15px" }}>
+            <FormControl style={{ width: "200px" }}>
+              <InputLabel id="launch-vehicle-label">Launch Vehicle</InputLabel>
+              <Select
+                id="launch-vehicle"
+                value={launchVehicleName}
+                placeholder="Launch Vehicle"
+                label="Launch Vehicle"
+                labelId="launch-vehicle-label"
+                onChange={(evt) => {
+                  setLaunchVehicle(evt.target.value);
+                }}
+              >
+                {Object.entries(constants.LAUNCH_VEHICLES).map(([launchVehicle]) => <MenuItem key={launchVehicle} value={launchVehicle}>{launchVehicle}</MenuItem>)}
+              </Select>
+            </FormControl>
+          </div>
+          <div style={{ marginTop: "15px" }}>
             <TextField
+              style={{ width: "200px" }}
               id="relay-volume-scale"
               label="Relay Volume Scale"
               variant="outlined"

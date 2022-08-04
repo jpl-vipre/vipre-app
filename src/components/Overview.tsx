@@ -4,7 +4,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import CheckIcon from "@mui/icons-material/Check";
 
 
-import useStore, { FilterField, Trajectory } from "../utils/store";
+import useStore from "../utils/store";
 
 import "../scss/Overview.scss";
 import { Tooltip } from "@mui/material";
@@ -23,6 +23,10 @@ const Overview: FC = () => {
   const setConfirmedSelectedTrajectory = useStore(state => state.setConfirmedSelectedTrajectory);
   const confirmedSelectedTrajectory = useStore(state => state.confirmedSelectedTrajectory);
   const fetchEntries = useStore(state => state.fetchEntries);
+  const getLaunchVehicle = useStore(state => state.getLaunchVehicle);
+  const launchVehicle = useMemo(() => {
+    return getLaunchVehicle();
+  }, [getLaunchVehicle])
 
   const overviewFields = useMemo(() => {
     let launchDate: string | number = "N/A";
@@ -59,14 +63,13 @@ const Overview: FC = () => {
     // Default polynomial set to Falcon Heavy
     let deliveredMass: string | number = "N/A";
     let deliveredMassTooltip: string | number = "";
-    if (selectedTrajectory?.c3 && selectedTrajectory?.dv_total) {
-      let c3 = selectedTrajectory.c3;
-      let launchVehiclePolynomial = (-0.005881 * c3 ^ 3 + 1.362 * c3 ^ 2 - 166.8 * c3 + 6676);
+    if (selectedTrajectory?.c3 && selectedTrajectory?.dv_total && launchVehicle && launchVehicle.polynomial) {
+      let launchVehiclePolynomial = launchVehicle.polynomial(selectedTrajectory.c3);
       let lvDeliveredMass = launchVehiclePolynomial / Math.exp(selectedTrajectory.dv_total / 3.2);
       if (lvDeliveredMass >= 0) {
         deliveredMass = lvDeliveredMass;
       } else {
-        deliveredMassTooltip = `Invalid Launch Vehicle. Mass with LV: ${lvDeliveredMass.toFixed(3)} kg`
+        deliveredMassTooltip = `Incompatible Launch Vehicle (${launchVehicle.name})`;
       }
     }
 
@@ -81,7 +84,7 @@ const Overview: FC = () => {
     ];
 
     return overview;
-  }, [selectedTrajectory]);
+  }, [selectedTrajectory, launchVehicle]);
 
   const architectureSequence: string = useMemo(() => {
     // @ts-ignore
@@ -122,7 +125,7 @@ const Overview: FC = () => {
         </div>
       </div>
       <div className="overview-list">
-        {overviewFields.map((overviewField) => {
+        {overviewFields.map((overviewField, i) => {
           let value: string | number = overviewField.value;
           if (typeof overviewField.value === "number") {
             value = Math.round(overviewField.value * 100) / 100;
@@ -137,7 +140,7 @@ const Overview: FC = () => {
           }
 
           return (
-            <Tooltip title={tooltipMessage} disableHoverListener={overviewField.value === "N/A" && !overviewField.tooltip}>
+            <Tooltip title={tooltipMessage} disableHoverListener={overviewField.value === "N/A" && !overviewField.tooltip} key={`overview-${i}`}>
               <div key={overviewField.display_name} className="overview-field">
                 <h2>{value}</h2>
                 <h5>{overviewField.display_name}</h5>

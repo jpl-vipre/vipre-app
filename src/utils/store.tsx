@@ -159,6 +159,11 @@ export type SchemaField = {
   schemaName?: string;
 }
 
+export type LaunchVehicle = {
+  name: string;
+  polynomial: (c3: number) => number;
+}
+
 export type Store = {
   activeTab: number;
   setActiveTab: (activeTab: number) => void;
@@ -200,13 +205,16 @@ export type Store = {
   fetchArcs: () => void;
   schemas: Record<string, SchemaField>;
   fetchSchemas: () => void;
+  getLaunchVehicle: () => LaunchVehicle;
+  launchVehicleName: string;
+  setLaunchVehicle: (launchVehicleName: string) => void;
 };
 
 const useStore = create<Store>(
   persist(
     {
       key: "vipre-app",
-      allowlist: ["activeTab", "tabs", "filterList", "configPathHistory"],
+      allowlist: ["activeTab", "tabs", "filterList", "configPathHistory", "launchVehicleName"],
     },
     (set, get): Store => ({
       activeTab: 0,
@@ -474,6 +482,15 @@ const useStore = create<Store>(
         })
 
         set({ schemas })
+      },
+      // @ts-ignore
+      getLaunchVehicle: () => constants.LAUNCH_VEHICLES[get().launchVehicleName],
+      launchVehicleName: "Falcon Heavy",
+      setLaunchVehicle: (launchVehicleName) => {
+        // @ts-ignore
+        if (constants.LAUNCH_VEHICLES[launchVehicleName]) {
+          set({ launchVehicleName: launchVehicleName })
+        }
       }
     })
   )
