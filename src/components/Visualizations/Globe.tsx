@@ -9,6 +9,8 @@ import useStore from "../../utils/store";
 
 import "../../scss/Globe.scss";
 
+const GLOBE_RADIUS = 100;
+
 interface GlobeProps {
   id: string;
   data: any[];
@@ -46,10 +48,12 @@ const Globe: FC<GlobeProps> = ({ globeType, data, colorField, id }) => {
       }
     };
 
+    let globeObjectsData = [];
+
     if (globeType === "arc") {
-      return arcs.map(obj => ({ ...obj }));
+      globeObjectsData = arcs.map(obj => ({ ...obj }));
     } else {
-      return data.map((entry) => {
+      globeObjectsData = data.map((entry) => {
         let selectedEntryIndex = selectedEntries.findIndex((selectedEntry) => selectedEntry.id === entry.id);
         let isSelectedEntry = selectedEntryIndex >= 0;
 
@@ -64,7 +68,22 @@ const Globe: FC<GlobeProps> = ({ globeType, data, colorField, id }) => {
         }
       })
     }
-  }, [globeType, data, arcs, colorField, selectedEntries, maxBound, minBound, hoverID])
+
+    if (targetBody.radius && targetBody.ringInnerRadius && targetBody.ringOuterRadius) {
+      let ringLayer = {
+        entryID: -1,
+        altitude: -1,
+        latitude: 0,
+        longitude: 0,
+        innerRadius: targetBody.ringInnerRadius / targetBody.radius * GLOBE_RADIUS,
+        outerRadius: targetBody.ringOuterRadius / targetBody.radius * GLOBE_RADIUS,
+      };
+
+      return [ringLayer, ...globeObjectsData];
+    } else {
+      return globeObjectsData;
+    }
+  }, [globeType, data, arcs, colorField, selectedEntries, maxBound, minBound, hoverID, targetBody])
 
   return (
     <div
@@ -79,9 +98,24 @@ const Globe: FC<GlobeProps> = ({ globeType, data, colorField, id }) => {
           objectLat="latitude"
           objectLng="longitude"
           objectThreeObject={(point: any) => {
-            const geometry = new THREE.SphereGeometry(5, 32, 16);
-            const material = new THREE.MeshBasicMaterial({ color: point.color });
-            return new THREE.Mesh(geometry, material);
+            if (point.entryID === -1) {
+              const geometry = new THREE.RingGeometry(point.innerRadius, point.outerRadius, 32);
+
+              const texture = new THREE.TextureLoader().load('/rings/saturn_ring_image.png');
+              const material = new THREE.MeshLambertMaterial({
+                side: THREE.DoubleSide,
+                map: texture,
+                transparent: true
+              });
+
+              let globeMesh = new THREE.Mesh(geometry, material);
+              globeMesh.rotation.x = Math.PI / 2;
+              return globeMesh;
+            } else {
+              const geometry = new THREE.SphereGeometry(5, 32, 16);
+              const material = new THREE.MeshBasicMaterial({ color: point.color });
+              return new THREE.Mesh(geometry, material);
+            }
           }}
           objectLabel="label"
           backgroundColor="black"

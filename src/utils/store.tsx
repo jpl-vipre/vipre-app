@@ -117,6 +117,8 @@ export type TargetBody = {
   id?: number;
   name?: string;
   radius?: number;
+  ringInnerRadius?: number;
+  ringOuterRadius?: number;
   mu?: number;
   period?: number;
   pole_vec_x?: number;
@@ -124,6 +126,7 @@ export type TargetBody = {
   pole_vec_z?: number;
   icon?: string;
   map?: string;
+  ringTexture?: string;
   value: string | number;
 }
 
@@ -244,7 +247,7 @@ const useStore = create<Store>(
         })
       },
       targetBody: constants.DEFAULT_TARGET_BODY as TargetBodyName,
-      setTargetBody: (targetBody) => set({ targetBody }),
+      setTargetBody: (targetBody) => set({ targetBody, trajectories: [], entries: [], arcs: [], selectedTrajectory: null }),
       setFilter: (filter: FilterItem) => {
         let filterList = get().filterList;
         let filterIndex = filterList.findIndex((existingFilter) => existingFilter.label === filter.label);
