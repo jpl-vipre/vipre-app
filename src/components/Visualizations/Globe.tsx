@@ -66,7 +66,7 @@ const Globe: FC<GlobeProps> = ({ globeType, data, colorField, id }) => {
           altitude,
           latitude: entry.pos_entry_lat_long_h?.latitude,
           longitude: entry.pos_entry_lat_long_h?.longitude,
-          color: hoverID === entry.id ? "blue" : isSelectedEntry ? "#fff" : color
+          color: hoverID === entry.id ? "lightblue" : isSelectedEntry ? "blue" : color
         }
       })
     }

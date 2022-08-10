@@ -64,10 +64,8 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnit
 
   // Clear selected values when trajectory is removed
   useEffect(() => {
-    if (!confirmedSelectedTrajectory && isTrajectorySelector) {
-      setActiveValues([])
-    }
-  }, [confirmedSelectedTrajectory, isTrajectorySelector, setActiveValues]);
+    setActiveValues([]);
+  }, [confirmedSelectedTrajectory, setActiveValues]);
 
   const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: any[]; label?: string; }) => {
     if (active && payload && payload.length) {

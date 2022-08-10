@@ -323,7 +323,7 @@ const useStore = create<Store>(
         }
       },
       confirmedSelectedTrajectory: false,
-      setConfirmedSelectedTrajectory: (confirmedSelectedTrajectory) => set({ confirmedSelectedTrajectory }),
+      setConfirmedSelectedTrajectory: (confirmedSelectedTrajectory) => set({ confirmedSelectedTrajectory, selectedEntries: [], arcs: [] }),
       trajectories: [],
       setTrajectories: (trajectories) => set({ trajectories }),
       searchTrajectories: () => {
