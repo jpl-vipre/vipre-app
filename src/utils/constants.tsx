@@ -10,7 +10,7 @@ import SaturnIcon from "../assets/icons/saturn.png";
 import NeptuneIcon from "../assets/icons/neptune.png";
 import UranusIcon from "../assets/icons/uranus.png";
 
-export const API = process.env.REACT_APP_API || "http://localhost:8000";
+export const API = process.env.REACT_APP_API ? process.env.REACT_APP_API : process.platform === "win32" ? "http://localhost:5000" : "http://localhost:8000";
 
 export const SCHEMA_NAMES = [
   "architecture",
@@ -67,10 +67,8 @@ export const DEFAULT_TABS = [
       { type: "scatterplot", xAxis: "", xUnits: "", yAxis: "", yUnits: "", color: "", colorUnits: "" },
     ],
     bottomRow: [
-      { type: "globe", xAxis: "", xUnits: "", yAxis: "", yUnits: "", color: "", colorUnits: "" },
-      { type: "globe", xAxis: "", xUnits: "", yAxis: "", yUnits: "", color: "", colorUnits: "" },
-      { type: "globe", xAxis: "", xUnits: "", yAxis: "", yUnits: "", color: "", colorUnits: "" },
-      { type: "globe", xAxis: "", xUnits: "", yAxis: "", yUnits: "", color: "", colorUnits: "" },
+      { type: "globe", xAxis: "", xUnits: "", yAxis: "", yUnits: "", color: "", colorUnits: "", globeType: "entryPoint" },
+      { type: "globe", xAxis: "", xUnits: "", yAxis: "", yUnits: "", color: "", colorUnits: "", globeType: "arc" },
     ],
   },
 ];

@@ -7,6 +7,8 @@ import ReactGlobe from "react-globe.gl";
 import { colors } from "./ColorScale";
 import useStore from "../../utils/store";
 
+import SaturnRings from "../../assets/maps/saturn_ring_image.png";
+
 import "../../scss/Globe.scss";
 
 const GLOBE_RADIUS = 100;
@@ -101,7 +103,7 @@ const Globe: FC<GlobeProps> = ({ globeType, data, colorField, id }) => {
             if (point.entryID === -1) {
               const geometry = new THREE.RingGeometry(point.innerRadius, point.outerRadius, 32);
 
-              const texture = new THREE.TextureLoader().load('/rings/saturn_ring_image.png');
+              const texture = new THREE.TextureLoader().load(SaturnRings);
               const material = new THREE.MeshLambertMaterial({
                 side: THREE.DoubleSide,
                 map: texture,

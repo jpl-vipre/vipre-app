@@ -42,6 +42,7 @@ const DialogGraphRow: FC<DialogGraphRowProps> = ({ modifiedTab, setModifiedTab, 
                         row[i] = { ...row[i], type: evt.target.value };
                         if (evt.target.value === "globe") {
                           row[i]["source"] = "entries";
+                          row[i]["globeType"] = "entryPoint";
                         }
                         let newTab = { ...modifiedTab };
                         // @ts-ignore
@@ -104,72 +105,81 @@ const DialogGraphRow: FC<DialogGraphRowProps> = ({ modifiedTab, setModifiedTab, 
                     </RadioGroup>
                   </FormControl>}
                 </div>
-                <div style={{ display: "flex", width: "100%" }}>
-                  {[
-                    ["xAxis", "X Axis", "xUnits"],
-                    ["yAxis", "Y Axis", "yUnits"],
-                    ["color", "Color", "colorUnits"],
-                  ]
-                    .filter(([option]: any) => (constants.GRAPH_TYPES as any)[graphConfig.type as any][option] && (graphConfig.type !== "globe" || (option !== "color" || graphConfig.globeType === "entryPoint")))
-                    .map(([option, label, unitField]) => {
-                      let row = [...(modifiedTab[rowName] as GraphConfig[])];
-                      let modifiedGraphConfig: GraphConfig = { ...row[i] };
+                <div className="additional-options" style={{ display: "flex", flexWrap: "wrap" }}>
+                  <div style={{ display: "flex", flex: 1 }}>
+                    {[
+                      ["xAxis", "X Axis", "xUnits"],
+                      ["yAxis", "Y Axis", "yUnits"],
+                      ["color", "Color", "colorUnits"],
+                    ]
+                      .filter(([option]: any) => (constants.GRAPH_TYPES as any)[graphConfig.type as any][option] && (graphConfig.type !== "globe" || (option !== "color" || !graphConfig.globeType || graphConfig.globeType === "entryPoint")))
+                      .map(([option, label, unitField]) => {
+                        let row = [...(modifiedTab[rowName] as GraphConfig[])];
+                        let modifiedGraphConfig: GraphConfig = { ...row[i] };
 
-                      return (
-                        <AllFieldsSelect
-                          disabled={!modifiedGraphConfig.source}
-                          source={modifiedGraphConfig.source}
-                          key={`${option}-axis`}
-                          label={label}
-                          value={graphConfig[option as keyof GraphConfig]}
-                          clearable={true}
-                          useFilterFields={false}
-                          onChange={(value) => {
-                            modifiedGraphConfig[option as keyof GraphConfig] = value;
-                            // @ts-ignore
-                            if (schemas && schemas[value] && schemas[value]["units"]) {
+                        return (
+                          <AllFieldsSelect
+                            style={{ minWidth: "100px" }}
+                            disabled={!modifiedGraphConfig.source && graphConfig.type !== "globe"}
+                            source={modifiedGraphConfig.source ? modifiedGraphConfig.source : graphConfig.type === "globe" ? "entries" : "trajectories"}
+                            key={`${option}-axis`}
+                            label={label}
+                            value={graphConfig[option as keyof GraphConfig]}
+                            clearable={true}
+                            useFilterFields={false}
+                            onChange={(value) => {
+                              modifiedGraphConfig[option as keyof GraphConfig] = value;
                               // @ts-ignore
-                              modifiedGraphConfig[unitField as keyof GraphConfig] = schemas[value]["units"] as string;
-                            }
-                            row[i] = modifiedGraphConfig;
-                            let newTab = { ...modifiedTab };
-                            // @ts-ignore
-                            newTab[rowName] = row;
-                            setModifiedTab(newTab);
-                          }}
-                        />
-                      );
-                    })}
-                </div>
-                <div style={{ display: "flex" }} className="axis-units">
-                  {[
-                    ["xAxis", "xUnits", "X Units"],
-                    ["yAxis", "yUnits", "Y Units"],
-                    ["color", "colorUnits", "Color Units"],
-                  ]
-                    .filter(([option]: any) => (constants.GRAPH_TYPES as any)[graphConfig.type as any][option] && (graphConfig.type !== "globe" || (option !== "color" || graphConfig.globeType === "entryPoint")))
-                    .map(([_, option, label]) => {
-                      return (
-                        <TextField
-                          style={{ margin: "5px" }}
-                          key={`${option}-axis-units`}
-                          label={label}
-                          type="text"
-                          variant="standard"
-                          value={graphConfig[option as keyof GraphConfig]}
-                          onChange={(evt: any) => {
-                            let row = [...(modifiedTab[rowName] as GraphConfig[])];
-                            let modifiedGraphConfig: GraphConfig = { ...row[i] };
-                            modifiedGraphConfig[option as keyof GraphConfig] = evt.target.value;
-                            row[i] = modifiedGraphConfig;
-                            let newTab = { ...modifiedTab };
-                            // @ts-ignore
-                            newTab[rowName] = row;
-                            setModifiedTab(newTab);
-                          }}
-                        />
-                      );
-                    })}
+                              if (schemas && schemas[value] && schemas[value]["units"]) {
+                                // @ts-ignore
+                                modifiedGraphConfig[unitField as keyof GraphConfig] = schemas[value]["units"] as string;
+                              }
+
+                              if (graphConfig.type === "globe" && !graphConfig.globeType) {
+                                modifiedGraphConfig.globeType = "entryPoint";
+                                modifiedGraphConfig.source = "entries";
+                              }
+
+                              row[i] = modifiedGraphConfig;
+                              let newTab = { ...modifiedTab };
+                              // @ts-ignore
+                              newTab[rowName] = row;
+                              setModifiedTab(newTab);
+                            }}
+                          />
+                        );
+                      })}
+                  </div>
+                  <div style={{ display: "flex", flex: 1 }} className="axis-units">
+                    {[
+                      ["xAxis", "xUnits", "X Units"],
+                      ["yAxis", "yUnits", "Y Units"],
+                      ["color", "colorUnits", "Color Units"],
+                    ]
+                      .filter(([option]: any) => (constants.GRAPH_TYPES as any)[graphConfig.type as any][option] && (graphConfig.type !== "globe" || (option !== "color" || !graphConfig.globeType || graphConfig.globeType === "entryPoint")))
+                      .map(([_, option, label]) => {
+                        return (
+                          <TextField
+                            style={{ margin: "5px", minWidth: "100px" }}
+                            key={`${option}-axis-units`}
+                            label={label}
+                            type="text"
+                            variant="standard"
+                            value={graphConfig[option as keyof GraphConfig]}
+                            onChange={(evt: any) => {
+                              let row = [...(modifiedTab[rowName] as GraphConfig[])];
+                              let modifiedGraphConfig: GraphConfig = { ...row[i] };
+                              modifiedGraphConfig[option as keyof GraphConfig] = evt.target.value;
+                              row[i] = modifiedGraphConfig;
+                              let newTab = { ...modifiedTab };
+                              // @ts-ignore
+                              newTab[rowName] = row;
+                              setModifiedTab(newTab);
+                            }}
+                          />
+                        );
+                      })}
+                  </div>
                 </div>
                 <IconButton
                   onClick={() => {

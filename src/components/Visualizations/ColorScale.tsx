@@ -36,7 +36,7 @@ const ColorScale: FC<ColorScaleProps> = ({
   maxSelected,
   setMaxSelected,
 }) => {
-  let boundedSteps = steps <= 1 ? 1 : steps + 1;
+  let boundedSteps = !steps || steps <= 1 ? 1 : steps + 1;
   const [firstSelectedValue, setFirstSelectedValue] = useState<number>(-1);
   const closestMinMax = useMemo(() => {
     if (minSelected === undefined || maxSelected === undefined || minSelected === -1 || maxSelected === -1) {

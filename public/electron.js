@@ -71,14 +71,37 @@ app.whenReady().then(async () => {
     }
   });
 
-  let apiPath = app.isPackaged
-    ? path.join(process.resourcesPath, "vipre-data", "vipre-api.pex")
-    : path.join(__dirname, "..", "vipre-data", "vipre-api.pex");
+  let apiPath = "";
+  let datasetPath = "";
+  if (process.platform === "win32") {
+    apiPath = app.isPackaged
+      ? path.join(process.resourcesPath, "vipre-data", "server", "server.exe")
+      : path.join(__dirname, "..", "vipre-data", "server", "server.exe");
+  } else {
+    apiPath = app.isPackaged
+      ? path.join(process.resourcesPath, "vipre-data", "vipre-api.pex")
+      : path.join(__dirname, "..", "vipre-data", "vipre-api.pex");
+  }
 
-  console.log(`SPAWNING API ${apiPath} app.main:app --port 8000`);
+  datasetPath = app.isPackaged
+    ? `sqlite:///${path.join(
+        process.resourcesPath,
+        "vipre-data",
+        "data",
+        "EJS_subset_big.db"
+      )}`
+    : path.join(__dirname, "..", "vipre-data", "data", "EJS_subset_big.db");
+
+  console.log(
+    `SPAWNING ${process.platform} API: SQL_ALCHEMY_DATABASE_URI=${datasetPath} ${apiPath} vipre_data.app.main:app --port 8000`
+  );
 
   if (!process.env.REACT_APP_STOP_API) {
-    api = exec(`${apiPath} app.main:app --port 8000`, (err, stdout, stderr) => {
+    let apiCommand =
+      process.platform === "win32"
+        ? `"${apiPath}"`
+        : `SQL_ALCHEMY_DATABASE_URI=${datasetPath} ${apiPath} vipre_data.app.main:app --port 8000`;
+    api = exec(apiCommand, (err, stdout, stderr) => {
       window.webContents.send("api-log", { stdout, err, stderr });
 
       if (err) {

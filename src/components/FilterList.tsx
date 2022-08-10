@@ -68,7 +68,7 @@ const FilterList: FC = () => {
         </IconButton>
         <h5>Filters</h5>
       </div>
-      <div style={{ padding: "10px", display: "flex", flexDirection: "column", overflow: "scroll" }}>
+      <div className="filter-area" style={{ padding: "10px", display: "flex", flexDirection: "column", overflow: "scroll" }}>
         <h5 style={{ width: "100%", textAlign: "left", marginBottom: "5px", paddingBottom: "2px", borderBottom: "1px solid rgba(255, 255, 255, 0.7)", color: "rgba(255, 255, 255, 0.7)" }}>Trajectory Filters</h5>
         {filterList
           .filter((filter) => !filter.hidden && filter.dataField.startsWith("trajectory"))
