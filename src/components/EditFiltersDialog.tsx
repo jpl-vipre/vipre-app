@@ -23,8 +23,8 @@ const EditFilter: FC<{ filter: FilterItem; setFilter: (filter: FilterItem) => vo
   deleteFilter,
 }) => {
   // @ts-ignore
-  const filterOptions: any = (constants.FILTER_TYPES[filter.type] as any) || {};
-  const schemas = useStore(state => state.schemas)
+  const filterOptions: any = ({ ...constants.FILTER_TYPES[filter.type] } as any) || {};
+  const schemas = useStore(state => state.schemas);
 
   return (
     <div>
@@ -46,9 +46,10 @@ const EditFilter: FC<{ filter: FilterItem; setFilter: (filter: FilterItem) => vo
           value={filter.dataField}
           label="Data Field"
           onChange={(value) => {
-            setFilter({ ...filter, dataField: value });
             if (schemas && schemas[value] && schemas[value]["units"]) {
-              setFilter({ ...filter, units: schemas[value]["units"] });
+              setFilter({ ...filter, dataField: value, units: schemas[value]["units"] });
+            } else {
+              setFilter({ ...filter, dataField: value });
             }
           }}
         />
@@ -168,10 +169,10 @@ interface EditFiltersDialogProps {
 const EditFiltersDialog: FC<EditFiltersDialogProps> = ({ open, setOpen }) => {
   const [filterList, setFilterList] = useStore((state) => [state.filterList, state.setFilterList]);
 
-  const [modifiedFilters, setModifiedFilters] = useState(filterList);
+  const [modifiedFilters, setModifiedFilters] = useState(JSON.parse(JSON.stringify(filterList)) as FilterItem[]);
 
   useEffect(() => {
-    setModifiedFilters(filterList)
+    setModifiedFilters(JSON.parse(JSON.stringify(filterList)));
   }, [filterList])
 
   return (

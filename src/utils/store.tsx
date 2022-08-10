@@ -258,7 +258,7 @@ const useStore = create<Store>(
       setTargetBody: (targetBody) => set({ targetBody, trajectories: [], entries: [], arcs: [], selectedTrajectory: null }),
       setFilter: (filter: FilterItem) => {
         let filterList = get().filterList;
-        let filterIndex = filterList.findIndex((existingFilter) => existingFilter.label === filter.label);
+        let filterIndex = filterList.findIndex((existingFilter) => existingFilter.id === filter.id);
         if (filterIndex === -1) {
           set({ filterList: [...filterList, filter] });
         } else {
