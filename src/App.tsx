@@ -34,7 +34,7 @@ const App: FC = () => {
   const fetchFields = useStore((state) => state.fetchFields);
   const fetchSchemas = useStore((state) => state.fetchSchemas);
   const fetchBodies = useStore((state) => state.fetchBodies);
-  const fetchEntries = useStore((state) => state.fetchEntries);
+  const searchTrajectories = useStore((state) => state.searchTrajectories);
 
   useEffectOnce(() => {
     ipcRenderer.on("api-log", (evt: any, info: any) => {
@@ -51,9 +51,9 @@ const App: FC = () => {
 
   useEffect(() => {
     if (view === 0) {
-      fetchEntries();
+      searchTrajectories();
     }
-  }, [view, fetchEntries])
+  }, [view, searchTrajectories])
 
   return (
     <ThemeProvider theme={theme}>

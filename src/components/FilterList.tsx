@@ -44,12 +44,8 @@ const FilterList: FC = () => {
   })
 
   useEffect(() => {
-    if (debouncedFilterList.filter(filterItem => filterItem.dataField.startsWith("trajectory")).length > 0) {
+    if (debouncedFilterList.length > 0) {
       searchTrajectories();
-    }
-
-    if (debouncedFilterList.filter(filterItem => filterItem.dataField.startsWith("entry")).length > 0) {
-      fetchEntries();
     }
   }, [searchTrajectories, fetchEntries, debouncedFilterList]);
   return (

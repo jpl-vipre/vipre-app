@@ -317,7 +317,7 @@ const useStore = create<Store>(
       },
       selectedTrajectory: null,
       setSelectedTrajectory: (selectedTrajectory, refetch = false) => {
-        set({ selectedTrajectory, entries: [] })
+        set({ selectedTrajectory, entries: [], selectedEntries: [], arcs: [] })
         if (refetch) {
           get().fetchSelectedTrajectory();
         }
@@ -351,6 +351,10 @@ const useStore = create<Store>(
         axios
           .post(`${constants.API}/visualizations/trajectory_selection/${targetID}`, query)
           .then((response) => {
+
+            const selectedTrajectory = get().selectedTrajectory;
+            let isSelectedTrajectoryVisible = false;
+
             let filteredData = response.data.filter((trajectory: any) => {
               let isInRange = true;
               filterList.forEach((filterItem) => {
@@ -363,11 +367,22 @@ const useStore = create<Store>(
                     isInRange = isInRange && trajectory[dataField] === filterItem.value;
                   }
                 }
-              })
+              });
+
+
+              if (selectedTrajectory && selectedTrajectory.id === trajectory.id && isInRange) {
+                isSelectedTrajectoryVisible = true;
+              }
 
               return isInRange;
             })
-            set({ trajectories: filteredData })
+            if (!isSelectedTrajectoryVisible) {
+              set({ trajectories: filteredData, selectedTrajectory: null, confirmedSelectedTrajectory: false, entries: [], selectedEntries: [], arcs: [] });
+            } else {
+              set({ trajectories: filteredData });
+            }
+
+            get().fetchEntries();
           })
           .catch((err) => {
             console.error(err, query);
@@ -392,36 +407,48 @@ const useStore = create<Store>(
       fetchEntries: () => {
         let selectedTrajectory = get().selectedTrajectory;
         if (selectedTrajectory === null || !selectedTrajectory.id) {
+          set({ entries: [] });
           return;
         }
 
-        // 
         axios
           .get(`${constants.API}/trajectories/${selectedTrajectory.id}/entries`)
           .then((response) => {
             const filterList = get().filterList;
             const relayVolumeScale = get().relayVolumeScale;
-            let filteredData = response.data.filter((trajectory: any) => {
+
+            const selectedEntries = get().selectedEntries;
+            const filteredSelectedEntries: Entry[] = [];
+
+            let filteredData = response.data.filter((entry: any) => {
               let isInRange = true;
               filterList.forEach((filterItem) => {
                 if (filterItem.dataField.includes("entry.")) {
                   let dataField = filterItem.dataField.replace(/^entry./, "");
                   if (Array.isArray(filterItem.value)) {
                     const [lower, upper] = filterItem.value;
-                    isInRange = isInRange && lower <= trajectory[dataField] && trajectory[dataField] <= upper;
+                    isInRange = isInRange && lower <= entry[dataField] && entry[dataField] <= upper;
                   } else {
-                    isInRange = isInRange && trajectory[dataField] === filterItem.value;
+                    isInRange = isInRange && entry[dataField] === filterItem.value;
                   }
                 }
               })
 
               return isInRange;
-            }).map((trajectory: any) => {
-              trajectory["relay_volume"] = trajectory["relay_volume"] ? trajectory["relay_volume"] * relayVolumeScale : 0;
-              return trajectory;
-            })
+            }).map((entry: any) => {
+              entry["relay_volume"] = entry["relay_volume"] ? entry["relay_volume"] * relayVolumeScale : 0;
 
-            set({ entries: filteredData })
+
+              selectedEntries.forEach(selectedEntry => {
+                if (selectedEntry.id === entry.id) {
+                  filteredSelectedEntries.push(selectedEntry);
+                }
+              });
+
+              return entry;
+            });
+
+            set({ entries: filteredData, selectedEntries: filteredSelectedEntries })
             // Fetch arcs on successful fetch of entries
             get().fetchArcs();
           })

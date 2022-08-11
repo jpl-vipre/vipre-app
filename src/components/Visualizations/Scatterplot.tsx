@@ -30,6 +30,23 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnit
   const selectedTrajectory = useStore((state) => state.selectedTrajectory);
   const [selectedEntries, setSelectedEntries] = useStore(state => [state.selectedEntries, state.setSelectedEntries]);
 
+  useEffect(() => {
+    if (!isTrajectorySelector) {
+      let newActiveValues: number[] = [];
+      selectedEntries.forEach((entry) => {
+        selectedActiveValues.forEach(i => {
+          if (entry.id === data[i].id) {
+            newActiveValues.push(i);
+          }
+        })
+      });
+
+      if (newActiveValues.length !== selectedActiveValues.length) {
+        setActiveValues(newActiveValues);
+      }
+    }
+  }, [selectedEntries, selectedActiveValues, data, isTrajectorySelector])
+
   const selectedTrajectoryIdx = useMemo(() => {
     if (!data || selectedTrajectory === null || !isTrajectorySelector) return -1;
     return data.findIndex((d) => d.id === selectedTrajectory.id);
@@ -154,7 +171,7 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnit
               />
               <Tooltip cursor={{ strokeDasharray: "3 3" }} formatter={(value: any) => value.toExponential()} content={<CustomTooltip />} />
               <Scatter data={(data || [])} fill="#ffffff">
-                {(data || []).map((entry, index) => {
+                {((confirmedSelectedTrajectory || isTrajectorySelector) && data ? data : []).map((entry, index) => {
                   let fill = "white";
                   let stroke = "white";
                   let isWithinThreshold = activeValues.includes(index);
