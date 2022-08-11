@@ -375,6 +375,11 @@ const useStore = create<Store>(
               }
 
               return isInRange;
+            }).map((trajectory: Trajectory) => {
+              trajectory["t_arr"] = trajectory["t_arr"] ? trajectory["t_arr"] / 60 / 60 / 24 / 365.25 : trajectory["t_arr"];
+              trajectory["t_launch"] = trajectory["t_launch"] ? trajectory["t_launch"] / 60 / 60 / 24 / 365.25 : trajectory["t_launch"];
+
+              return trajectory;
             })
             if (!isSelectedTrajectoryVisible) {
               set({ trajectories: filteredData, selectedTrajectory: null, confirmedSelectedTrajectory: false, entries: [], selectedEntries: [], arcs: [] });
@@ -437,7 +442,7 @@ const useStore = create<Store>(
               return isInRange;
             }).map((entry: any) => {
               entry["relay_volume"] = entry["relay_volume"] ? entry["relay_volume"] * relayVolumeScale : 0;
-
+              entry["t_entry"] = entry["t_entry"] ? entry["t_entry"] / 60 / 60 / 24 / 365.25 : entry["t_entry"];
 
               selectedEntries.forEach(selectedEntry => {
                 if (selectedEntry.id === entry.id) {
@@ -503,6 +508,9 @@ const useStore = create<Store>(
           let schema = require(`../../vipre-schemas/models/vipre_schema-${schemaName}.json`);
           if (schema && schema.fields) {
             schema.fields.forEach((field: SchemaField) => {
+              if (["t_arr", "t_entry", "t_launch"].includes(field["field_name"])) {
+                field["units"] = "years past 2000";
+              }
               schemas[`${schemaName}.${field["field_name"]}`] = {
                 ...field,
                 schemaName

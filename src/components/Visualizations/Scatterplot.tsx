@@ -1,5 +1,5 @@
 import { FC, useEffect, useMemo, useState } from "react";
-import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, Cell, ResponsiveContainer } from "recharts";
+import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, Cell, ResponsiveContainer, Label } from "recharts";
 import MuiTooltip from "@mui/material/Tooltip";
 import constants from "../../utils/constants";
 
@@ -128,14 +128,14 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnit
       <div style={{ display: "flex", flexDirection: "column", width: "100%", height: "100%", position: "relative" }}>
         <h4 style={{ margin: 0, color: "#a1a1b5", fontSize: "12px", position: "absolute", top: -5 }}>{isTrajectorySelector ? "Trajectory" : "Entry"}</h4>
         <h4 style={{ margin: 0, color: "white", fontSize: "12px" }}>
-          <MuiTooltip title={`X Axis: ${xField}`}>
+          <MuiTooltip title={`X Axis: ${xField} (${xUnits || "No Units"})`}>
             <b style={{ fontWeight: 900 }}>{xField} </b>
           </MuiTooltip>
           vs
-          <MuiTooltip title={`Y Axis: ${yField}`}>
+          <MuiTooltip title={`Y Axis: ${yField} (${yUnits || "No Units"})`}>
             <b style={{ fontWeight: 900 }}> {yField}</b>
           </MuiTooltip>
-          {colorField && <MuiTooltip title={`Color Field: ${colorField}`}>
+          {colorField && <MuiTooltip title={`Color Field: ${colorField} (${colorUnits || "No Units"})`}>
             <span> (<b style={{ fontWeight: 900 }}>{colorField}</b>)</span>
           </MuiTooltip>}
         </h4>
@@ -153,21 +153,24 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnit
                 type="number"
                 dataKey={xField}
                 name={xField}
-                unit={xUnits || ""}
+                // unit={xUnits || ""}
                 domain={["auto", "auto"]}
                 tickFormatter={(value) => value.toPrecision(2)}
                 fill="#ffffff"
                 style={{ fill: "#ffffff" }}
-              />
+              >
+                <Label value={`${xField} (${xUnits})`} offset={2} position="insideBottom" fill="white" fontSize={10} />
+              </XAxis>
               <YAxis
                 type="number"
                 dataKey={yField}
                 name={yField}
                 domain={["auto", "auto"]}
                 tickFormatter={(value) => value.toPrecision(2)}
-                unit={yUnits || ""}
+                // unit={yUnits || ""}
                 fill="#ffffff"
                 style={{ fill: "#ffffff" }}
+                label={{ value: `${yField} (${yUnits})`, dy: 30, angle: -90, position: 'insideLeft', fill: "white", fontSize: 10 }}
               />
               <Tooltip cursor={{ strokeDasharray: "3 3" }} formatter={(value: any) => value.toExponential()} content={<CustomTooltip />} />
               <Scatter data={(data || [])} fill="#ffffff">
