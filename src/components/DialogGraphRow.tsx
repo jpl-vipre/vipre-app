@@ -101,12 +101,12 @@ const DialogGraphRow: FC<DialogGraphRowProps> = ({ modifiedTab, setModifiedTab, 
                       }}
                     >
                       <FormControlLabel value="entryPoint" control={<Radio />} label="Entry Points" />
-                      <FormControlLabel value="arc" control={<Radio />} label="Arcs" />
+                      <FormControlLabel value="arc" control={<Radio />} label="Trajectories" />
                     </RadioGroup>
                   </FormControl>}
                 </div>
-                <div className="additional-options" style={{ display: "flex", flexWrap: "wrap" }}>
-                  <div style={{ display: "flex", flex: 1 }}>
+                <div className="additional-options" style={{ display: "flex", flexWrap: "wrap", maxWidth: "400px" }}>
+                  <div style={{ display: "flex", flex: 1, maxWidth: "400px" }}>
                     {[
                       ["xAxis", "X Axis", "xUnits"],
                       ["yAxis", "Y Axis", "yUnits"],
@@ -150,7 +150,7 @@ const DialogGraphRow: FC<DialogGraphRowProps> = ({ modifiedTab, setModifiedTab, 
                         );
                       })}
                   </div>
-                  <div style={{ display: "flex", flex: 1 }} className="axis-units">
+                  <div style={{ display: "flex", flex: 1, maxWidth: "400px" }} className="axis-units">
                     {[
                       ["xAxis", "xUnits", "X Units"],
                       ["yAxis", "yUnits", "Y Units"],

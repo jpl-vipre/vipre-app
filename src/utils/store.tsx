@@ -402,7 +402,6 @@ const useStore = create<Store>(
             const filterList = get().filterList;
             const relayVolumeScale = get().relayVolumeScale;
             let filteredData = response.data.filter((trajectory: any) => {
-              trajectory["relay_volume"] = trajectory["relay_volume"] ? trajectory["relay_volume"] * relayVolumeScale : 0;
               let isInRange = true;
               filterList.forEach((filterItem) => {
                 if (filterItem.dataField.includes("entry.")) {
@@ -417,6 +416,9 @@ const useStore = create<Store>(
               })
 
               return isInRange;
+            }).map((trajectory: any) => {
+              trajectory["relay_volume"] = trajectory["relay_volume"] ? trajectory["relay_volume"] * relayVolumeScale : 0;
+              return trajectory;
             })
 
             set({ entries: filteredData })
