@@ -10,6 +10,8 @@ import SaturnIcon from "../assets/icons/saturn.png";
 import NeptuneIcon from "../assets/icons/neptune.png";
 import UranusIcon from "../assets/icons/uranus.png";
 
+import package_json from "../../package.json";
+
 export const API = process.env.REACT_APP_API ? process.env.REACT_APP_API : process.platform === "win32" ? "http://localhost:5000" : "http://localhost:8000";
 
 export const SCHEMA_NAMES = [
@@ -212,7 +214,9 @@ export const TRAJECTORY_COLORS = [
   "#d4c7d9",
   "#5e5a67",
   "#e9e6d4"
-]
+];
 
-const constants = { API, SCHEMA_NAMES, TARGET_BODIES, DEFAULT_TABS, FILTERS, GRAPH_TYPES, FILTER_TYPES, DEFAULT_TARGET_BODY, GRAPH_SOURCES, TRAJECTORY_COLORS, LAUNCH_VEHICLES };
+export const VERSION = package_json.version;
+
+const constants = { API, VERSION, SCHEMA_NAMES, TARGET_BODIES, DEFAULT_TABS, FILTERS, GRAPH_TYPES, FILTER_TYPES, DEFAULT_TARGET_BODY, GRAPH_SOURCES, TRAJECTORY_COLORS, LAUNCH_VEHICLES };
 export default constants;

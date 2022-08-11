@@ -395,6 +395,7 @@ const useStore = create<Store>(
           return;
         }
 
+        // 
         axios
           .get(`${constants.API}/trajectories/${selectedTrajectory.id}/entries`)
           .then((response) => {
@@ -443,7 +444,7 @@ const useStore = create<Store>(
           if (arcs.findIndex((arc) => arc.entryID === selectedEntry.id) < 0) {
             axios
               .post(`${constants.API}/visualizations/get_entry_arc/${selectedEntry.id}`, {
-                "ta_step": 100
+                "ta_step": 50
               })
               .then((response) => {
                 let arc: Coordinate[] = response.data.map((point: any) => {
