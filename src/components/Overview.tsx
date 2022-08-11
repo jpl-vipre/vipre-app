@@ -69,6 +69,7 @@ const Overview: FC = () => {
       if (lvDeliveredMass >= 0) {
         deliveredMass = lvDeliveredMass;
       } else {
+        deliveredMass = "Invalid";
         deliveredMassTooltip = `Incompatible Launch Vehicle (${launchVehicle.name})`;
       }
     }
