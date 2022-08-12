@@ -12,7 +12,7 @@ import UranusIcon from "../assets/icons/uranus.png";
 
 import package_json from "../../package.json";
 
-export const API = process.env.REACT_APP_API ? process.env.REACT_APP_API : process.platform === "win32" ? "http://localhost:5000" : "http://localhost:8000";
+export const API = process.env.REACT_APP_API ? process.env.REACT_APP_API : "http://localhost:8463";
 
 export const SCHEMA_NAMES = [
   "architecture",

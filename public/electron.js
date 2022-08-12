@@ -66,12 +66,12 @@ const launchAPI = () => {
   let datasetPath = "";
   if (process.platform === "win32") {
     apiPath = app.isPackaged
-      ? path.join(process.resourcesPath, "vipre-data", "server", "server.exe")
-      : path.join(__dirname, "..", "vipre-data", "server", "server.exe");
+      ? path.join(process.resourcesPath, "vipre-data", "winbuild", "server.exe")
+      : path.join(__dirname, "..", "vipre-data", "winbuild", "server.exe");
   } else {
     apiPath = app.isPackaged
-      ? path.join(process.resourcesPath, "vipre-data", "vipre-api.pex")
-      : path.join(__dirname, "..", "vipre-data", "vipre-api.pex");
+      ? path.join(process.resourcesPath, "vipre-data", "macbuild", "server")
+      : path.join(__dirname, "..", "vipre-data", "macbuild", "server");
   }
 
   datasetPath = app.isPackaged
@@ -79,15 +79,22 @@ const launchAPI = () => {
         process.resourcesPath,
         "vipre-data",
         "data",
-        "EJS_test_big.db"
+        "EJS_test_big2.db"
       )}`
-    : path.join(__dirname, "..", "vipre-data", "data", "EJS_test_big.db");
+    : path.join(
+        __dirname,
+        "..",
+        "vipre-data",
+        "vipre_data",
+        "sql",
+        "EJS_test_big2.db"
+      );
 
   if (!process.env.REACT_APP_STOP_API) {
     let apiCommand =
       process.platform === "win32"
         ? `"${apiPath}"`
-        : `SQL_ALCHEMY_DATABASE_URI=${datasetPath} "${apiPath}" vipre_data.app.main:app --port 8000`;
+        : `SQL_ALCHEMY_DATABASE_URI=${datasetPath} "${apiPath}"`;
 
     console.log(`SPAWNING ${apiCommand}`);
 
