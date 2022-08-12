@@ -6,7 +6,7 @@ import { Tooltip } from "@mui/material";
 
 import "../../scss/ColorScale.scss";
 
-export const colors = scaleSequential(interpolateSpectral);
+export const colors = (value: number) => scaleSequential(interpolateSpectral)(1 - value);
 
 interface ColorScaleProps {
   id: string;
@@ -68,9 +68,9 @@ const ColorScale: FC<ColorScaleProps> = ({
     let valueMap: Record<number, number[]> = {};
     activeValues.forEach((activeValue) => {
       let closestValue = -1;
-      Array.from(new Array(steps)).forEach((_, i) => {
-        let rangeValue = minBound + (i / steps) * (maxBound - minBound);
-        if (closestValue === -1 || Math.abs(activeValue - rangeValue) < Math.abs(activeValue - closestValue)) {
+      Array.from(new Array(boundedSteps)).forEach((_, i) => {
+        let rangeValue = minBound + ((boundedSteps - i) / steps) * (maxBound - minBound);
+        if (closestValue === -1 || Math.abs(activeValue - rangeValue) <= Math.abs(activeValue - closestValue)) {
           closestValue = rangeValue;
         }
       });
@@ -81,13 +81,13 @@ const ColorScale: FC<ColorScaleProps> = ({
     });
 
     return valueMap;
-  }, [activeValues, steps, maxBound, minBound]);
+  }, [activeValues, boundedSteps, steps, maxBound, minBound]);
 
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%", width: "50px" }} className="color-scale">
-      <Tooltip title={`${minBound.toExponential()} ${units}`}>
+      <Tooltip title={`${maxBound.toExponential()} ${units}`}>
         <span style={{ color: "#a1a1b5", fontSize: "10px", marginBottom: "5px", whiteSpace: "pre" }}>
-          {`${minBound.toFixed(2)}`} {units}
+          {`${Math.round(maxBound)}`} {units}
         </span>
       </Tooltip>
       <div
@@ -101,7 +101,7 @@ const ColorScale: FC<ColorScaleProps> = ({
         onMouseLeave={() => setFirstSelectedValue(-1)}
       >
         {Array.from(new Array(boundedSteps)).map((_, i) => {
-          let value = minBound + (i / steps) * (maxBound - minBound);
+          let value = minBound + ((boundedSteps - i) / steps) * (maxBound - minBound);
           let hoverText = closestActiveValues[value]
             ? closestActiveValues[value].join(` ${units || "units"}, `) + ` ${units || "units"}`
             : `${Math.round(value * 100) / 100} ${units || "units"}`;
@@ -168,9 +168,9 @@ const ColorScale: FC<ColorScaleProps> = ({
           );
         })}
       </div>
-      <Tooltip title={`${maxBound.toExponential()} ${units}`}>
+      <Tooltip title={`${minBound.toExponential()} ${units}`}>
         <span style={{ color: "#a1a1b5", fontSize: "10px", marginTop: "5px", whiteSpace: "pre" }}>
-          {maxBound.toFixed(2)} {units}
+          {Math.round(minBound)} {units}
         </span>
       </Tooltip>
     </div>

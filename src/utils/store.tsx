@@ -107,7 +107,10 @@ export type Entry = {
   vel_entry_y: number;
   vel_entry_z: number;
   vel_entry_mag: number;
-  pos_entry_lat_long_h: PosEntryLatLonHeight;
+  pos_entry_latitude: number;
+  os_entry_longitude: number;
+  pos_entry_height: number;
+  flight_path_angle: number;
 }
 
 const TARGET_BODIES = Object.keys(constants.TARGET_BODIES);
@@ -443,6 +446,7 @@ const useStore = create<Store>(
             }).map((entry: any) => {
               entry["relay_volume"] = entry["relay_volume"] ? entry["relay_volume"] * relayVolumeScale : 0;
               entry["t_entry"] = entry["t_entry"] ? entry["t_entry"] / 60 / 60 / 24 / 365.25 : entry["t_entry"];
+              entry["safe"] = entry["safe"] ? 1 : 0;
 
               selectedEntries.forEach(selectedEntry => {
                 if (selectedEntry.id === entry.id) {
@@ -490,7 +494,7 @@ const useStore = create<Store>(
                     entryID: selectedEntry.id,
                     altitude,
                     color: constants.TRAJECTORY_COLORS[i % constants.TRAJECTORY_COLORS.length],
-                    label: `Entry ID: ${selectedEntry.id}<br/>Lat: ${point.latitude},<br/>Lon: ${point.longitude},<br/>Alt: ${point.height}`
+                    label: `<div class="globe-tooltip">Radius: ${point.height}</div>`
                   }
                 });
                 set({ arcs: [...arcs, ...arc] });

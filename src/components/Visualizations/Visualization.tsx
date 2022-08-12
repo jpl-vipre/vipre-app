@@ -50,6 +50,7 @@ const Visualization: FC<VisualizationProps> = ({ config, id }) => {
         <Globe
           globeType={config.globeType || "entryPoint"}
           colorField={stripSource(config.color)}
+          colorUnits={config.colorUnits}
           data={entryData}
           id={`${id}-globe`}
         />

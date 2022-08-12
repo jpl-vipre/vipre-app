@@ -120,6 +120,12 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnit
     return null;
   };
 
+  const [xFieldLabel, yFieldLabel, colorFieldLabel] = useMemo(() => {
+    return [xField, yField, colorField].map(field => {
+      return field === "dv_total" ? "total_interplanterary_dv" : field;
+    })
+  }, [xField, yField, colorField])
+
   return (
     <div
       style={{ display: "flex", width: "100%", height: "100%", maxHeight: "calc(100% - 15px)", alignItems: "center" }}
@@ -128,15 +134,15 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnit
       <div style={{ display: "flex", flexDirection: "column", width: "100%", height: "100%", position: "relative" }}>
         <h4 style={{ margin: 0, color: "#a1a1b5", fontSize: "12px", position: "absolute", top: -5 }}>{isTrajectorySelector ? "Trajectory" : "Entry"}</h4>
         <h4 style={{ margin: 0, color: "white", fontSize: "12px" }}>
-          <MuiTooltip title={`X Axis: ${xField} (${xUnits || "No Units"})`}>
-            <b style={{ fontWeight: 900 }}>{xField} </b>
+          <MuiTooltip title={`X Axis: ${xFieldLabel} (${xUnits || "No Units"})`}>
+            <b style={{ fontWeight: 900 }}>{xFieldLabel} </b>
           </MuiTooltip>
           vs
-          <MuiTooltip title={`Y Axis: ${yField} (${yUnits || "No Units"})`}>
-            <b style={{ fontWeight: 900 }}> {yField}</b>
+          <MuiTooltip title={`Y Axis: ${yFieldLabel} (${yUnits || "No Units"})`}>
+            <b style={{ fontWeight: 900 }}> {yFieldLabel}</b>
           </MuiTooltip>
-          {colorField && <MuiTooltip title={`Color Field: ${colorField} (${colorUnits || "No Units"})`}>
-            <span> (<b style={{ fontWeight: 900 }}>{colorField}</b>)</span>
+          {colorField && <MuiTooltip title={`Color Field: ${colorFieldLabel} (${colorUnits || "No Units"})`}>
+            <span> (<b style={{ fontWeight: 900 }}>{colorFieldLabel}</b>)</span>
           </MuiTooltip>}
         </h4>
         <div style={{ width: "calc(100% - 15px)", height: "100%" }} className="scatterplot-container">
@@ -159,7 +165,7 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnit
                 fill="#ffffff"
                 style={{ fill: "#ffffff" }}
               >
-                <Label value={`${xField} (${xUnits})`} offset={2} position="insideBottom" fill="white" fontSize={10} />
+                <Label value={`${xFieldLabel} (${xUnits})`} offset={2} position="insideBottom" fill="white" fontSize={10} />
               </XAxis>
               <YAxis
                 type="number"
@@ -170,7 +176,7 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnit
                 // unit={yUnits || ""}
                 fill="#ffffff"
                 style={{ fill: "#ffffff" }}
-                label={{ value: `${yField} (${yUnits})`, dy: 30, angle: -90, position: 'insideLeft', fill: "white", fontSize: 10 }}
+                label={{ value: `${yFieldLabel} (${yUnits})`, dy: 30, angle: -90, position: 'insideLeft', fill: "white", fontSize: 10 }}
               />
               <Tooltip cursor={{ strokeDasharray: "3 3" }} formatter={(value: any) => value.toExponential()} content={<CustomTooltip />} />
               <Scatter data={(data || [])} fill="#ffffff">

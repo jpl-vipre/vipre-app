@@ -18,8 +18,9 @@ interface GlobeProps {
   data: any[];
   globeType: string;
   colorField?: string;
+  colorUnits?: string;
 }
-const Globe: FC<GlobeProps> = ({ globeType, data, colorField, id }) => {
+const Globe: FC<GlobeProps> = ({ globeType, data, colorField, id, colorUnits }) => {
   const targetBody = useStore(state => state.targetBodies[state.targetBody])
   const isEditing = useStore(state => state.editingTab !== null);
   const arcs = useStore(state => state.arcs);
@@ -59,14 +60,30 @@ const Globe: FC<GlobeProps> = ({ globeType, data, colorField, id }) => {
         let selectedEntryIndex = selectedEntries.findIndex((selectedEntry) => selectedEntry.id === entry.id);
         let isSelectedEntry = selectedEntryIndex >= 0;
 
-        let altitude = (entry.pos_entry_lat_long_h?.height / entry.target_body.radius) - 1;
+        let altitude = (entry.pos_entry_height / entry.target_body.radius) - 1;
+        let latitude = entry.pos_entry_latitude;
+        let longitude = entry.pos_entry_longitude;
         let color = colorField ? colors(normalizeValue(entry[colorField])) : "#fff";
+
         return {
           entryID: entry.id,
           altitude,
-          latitude: entry.pos_entry_lat_long_h?.latitude,
-          longitude: entry.pos_entry_lat_long_h?.longitude,
-          color: hoverID === entry.id ? "lightblue" : isSelectedEntry ? "blue" : color
+          latitude,
+          longitude,
+          color: hoverID === entry.id ? "lightblue" : isSelectedEntry ? "blue" : color,
+          label: `<div class="globe-tooltip">
+            <div>
+              <span>Entry ID: </span><b>${entry.id}</b>
+            </div>
+            <div>
+              <span>Lat: </span><b>${latitude}</b>
+            </div>
+            <div>
+              <span>Lon: </span><b>${longitude}</b></div>
+            ${colorField && `<div>
+              <span>${colorField}: </span><b>${entry[colorField]}${colorUnits}</b>
+            </div>`}
+          </div>`
         }
       })
     }
@@ -85,13 +102,23 @@ const Globe: FC<GlobeProps> = ({ globeType, data, colorField, id }) => {
     } else {
       return globeObjectsData;
     }
-  }, [globeType, data, arcs, colorField, selectedEntries, maxBound, minBound, hoverID, targetBody])
+  }, [globeType, data, arcs, colorField, selectedEntries, maxBound, minBound, hoverID, targetBody, colorUnits])
 
   return (
     <div
-      style={{ display: "flex", width: "100%", height: "100%", alignItems: "center", background: "black" }}
+      style={{ display: "flex", width: "100%", height: "100%", alignItems: "center", background: "black", position: "relative" }}
       id={id}
     >
+      <div className="globe-color-scale" style={{ position: "absolute", right: "5px", display: "flex", flexDirection: "column", alignItems: "flex-end", zIndex: 1, height: "100%", justifyContent: "center" }}>
+        <div style={{ color: "#a1a1b5", fontSize: "10px" }}>{Math.round(maxBound)} {colorUnits}</div>
+        <div style={{
+          height: "80%",
+          width: "10px",
+          borderRadius: "5px",
+          background: `linear-gradient(0deg, ${colors(0.15)} 0%, ${colors(0.55)} 50%, ${colors(0.95)} 100%)`
+        }}></div>
+        <div style={{ color: "#a1a1b5", fontSize: "10px" }}>{Math.round(minBound)} {colorUnits}</div>
+      </div>
       {isEditing || <ResponsiveContainer>
         <ReactGlobe
           globeImageUrl={targetBody.map}
