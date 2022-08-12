@@ -1,4 +1,4 @@
-import { FC, useMemo, useState } from "react";
+import { FC, useMemo, useRef, useState } from "react";
 import * as THREE from 'three';
 import { ResponsiveContainer } from "recharts";
 
@@ -21,6 +21,8 @@ interface GlobeProps {
   colorUnits?: string;
 }
 const Globe: FC<GlobeProps> = ({ globeType, data, colorField, id, colorUnits }) => {
+  const globeElement = useRef();
+
   const targetBody = useStore(state => state.targetBodies[state.targetBody])
   const isEditing = useStore(state => state.editingTab !== null);
   const arcs = useStore(state => state.arcs);
@@ -28,6 +30,7 @@ const Globe: FC<GlobeProps> = ({ globeType, data, colorField, id, colorUnits }) 
   const [selectedEntries, setSelectedEntries] = useStore(state => [state.selectedEntries, state.setSelectedEntries]);
 
   const [hoverID, setHoverID] = useState(-1);
+  const [initRotate, setInitRotate] = useState(false);
 
   const [minBound, maxBound] = useMemo(() => {
     if (!colorField || !data || !data.length) {
@@ -88,6 +91,13 @@ const Globe: FC<GlobeProps> = ({ globeType, data, colorField, id, colorUnits }) 
       })
     }
 
+    // @ts-ignore
+    if (!initRotate && globeElement && globeElement.current && globeElement.current.pointOfView) {
+      // @ts-ignore
+      globeElement?.current.pointOfView({ lat: 10, lng: 0, altitude: 4 });
+      setInitRotate(true);
+    }
+
     if (targetBody.radius && targetBody.ringInnerRadius && targetBody.ringOuterRadius) {
       let ringLayer = {
         entryID: -1,
@@ -102,7 +112,7 @@ const Globe: FC<GlobeProps> = ({ globeType, data, colorField, id, colorUnits }) 
     } else {
       return globeObjectsData;
     }
-  }, [globeType, data, arcs, colorField, selectedEntries, maxBound, minBound, hoverID, targetBody, colorUnits])
+  }, [globeType, data, arcs, colorField, selectedEntries, maxBound, minBound, hoverID, targetBody, colorUnits, initRotate, setInitRotate]);
 
   return (
     <div
@@ -121,6 +131,8 @@ const Globe: FC<GlobeProps> = ({ globeType, data, colorField, id, colorUnits }) 
       </div>
       {isEditing || <ResponsiveContainer>
         <ReactGlobe
+          ref={globeElement}
+          // rendererConfig={{ pointOfView: { lat: 0, lng: 90, altitude: 0 } }}
           globeImageUrl={targetBody.map}
           objectsData={globeObjects}
           objectAltitude="altitude"
