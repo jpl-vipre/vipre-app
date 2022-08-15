@@ -1,6 +1,6 @@
 {
   "name": "vipre",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "author": "NASA JPL",
   "description": "A tool for visualizing the entry conditions for all safe entry opportunities of a planetary entry probe being released from an interplanetary trajectory.",
