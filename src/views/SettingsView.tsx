@@ -19,6 +19,7 @@ const SettingsView: FC = () => {
   const [tabs, setTabs] = useStore(state => [state.tabs, state.setTabs]);
   const [relayVolumeScale, setRelayVolumeScale] = useStore(state => [state.relayVolumeScale, state.setRelayVolumeScale]);
   const [launchVehicleName, setLaunchVehicle] = useStore(state => [state.launchVehicleName, state.setLaunchVehicle]);
+  const [requestedEntryPointCount, setRequestedEntryPointCount] = useStore(state => [state.requestedEntryPointCount, state.setRequestedEntryPointCount]);
 
   const [isErrorStatus, setIsErrorStatus] = useState<boolean>(false);
   const [statusMessage, setStatusMessage] = useState<string>("");
@@ -147,6 +148,19 @@ const SettingsView: FC = () => {
               value={relayVolumeScale}
               onChange={(evt: any) => {
                 setRelayVolumeScale(evt.target.value);
+              }}
+            />
+          </div>
+          <div style={{ marginTop: "15px" }}>
+            <TextField
+              style={{ width: "200px" }}
+              id="entry-point-count"
+              label="Number of Entry Points"
+              variant="outlined"
+              type="number"
+              value={requestedEntryPointCount}
+              onChange={(evt: any) => {
+                setRequestedEntryPointCount(evt.target.value);
               }}
             />
           </div>

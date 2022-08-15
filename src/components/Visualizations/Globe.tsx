@@ -7,8 +7,6 @@ import ReactGlobe from "react-globe.gl";
 import { colors } from "./ColorScale";
 import useStore from "../../utils/store";
 
-import SaturnRings from "../../assets/maps/saturn_ring_image.png";
-
 import "../../scss/Globe.scss";
 
 const GLOBE_RADIUS = 100;
@@ -106,6 +104,7 @@ const Globe: FC<GlobeProps> = ({ globeType, data, colorField, id, colorUnits }) 
         longitude: 0,
         innerRadius: targetBody.ringInnerRadius / targetBody.radius * GLOBE_RADIUS,
         outerRadius: targetBody.ringOuterRadius / targetBody.radius * GLOBE_RADIUS,
+        ringTexture: targetBody.ringTexture
       };
 
       return [ringLayer, ...globeObjectsData];
@@ -119,20 +118,25 @@ const Globe: FC<GlobeProps> = ({ globeType, data, colorField, id, colorUnits }) 
       style={{ display: "flex", width: "100%", height: "100%", alignItems: "center", background: "black", position: "relative" }}
       id={id}
     >
-      <div className="globe-color-scale" style={{ position: "absolute", right: "5px", display: "flex", flexDirection: "column", alignItems: "flex-end", zIndex: 1, height: "100%", justifyContent: "center" }}>
+      {globeType === "entryPoint" && <div className="globe-color-scale" style={{ position: "absolute", right: "5px", display: "flex", flexDirection: "column", alignItems: "flex-end", zIndex: 1, height: "100%", justifyContent: "center" }}>
+        <div className="globe-scale-label" style={{
+          fontSize: "14px",
+          color: "#a1a1b5"
+        }}>{colorField}</div>
         <div style={{ color: "#a1a1b5", fontSize: "10px" }}>{Math.round(maxBound)} {colorUnits}</div>
-        <div style={{
-          height: "80%",
-          width: "10px",
-          borderRadius: "5px",
-          background: `linear-gradient(0deg, ${colors(0.15)} 0%, ${colors(0.55)} 50%, ${colors(0.95)} 100%)`
-        }}></div>
+        <div style={{ height: "80%", display: "flex" }}>
+          <div style={{
+            height: "100%",
+            width: "10px",
+            borderRadius: "5px",
+            background: `linear-gradient(0deg, ${colors(0.15)} 0%, ${colors(0.55)} 50%, ${colors(0.95)} 100%)`
+          }} />
+        </div>
         <div style={{ color: "#a1a1b5", fontSize: "10px" }}>{Math.round(minBound)} {colorUnits}</div>
-      </div>
+      </div>}
       {isEditing || <ResponsiveContainer>
         <ReactGlobe
           ref={globeElement}
-          // rendererConfig={{ pointOfView: { lat: 0, lng: 90, altitude: 0 } }}
           globeImageUrl={targetBody.map}
           objectsData={globeObjects}
           objectAltitude="altitude"
@@ -141,8 +145,7 @@ const Globe: FC<GlobeProps> = ({ globeType, data, colorField, id, colorUnits }) 
           objectThreeObject={(point: any) => {
             if (point.entryID === -1) {
               const geometry = new THREE.RingGeometry(point.innerRadius, point.outerRadius, 32);
-
-              const texture = new THREE.TextureLoader().load(SaturnRings);
+              const texture = new THREE.TextureLoader().load(point.ringTexture);
               const material = new THREE.MeshLambertMaterial({
                 side: THREE.DoubleSide,
                 map: texture,

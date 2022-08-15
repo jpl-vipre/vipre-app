@@ -211,13 +211,15 @@ export type Store = {
   getLaunchVehicle: () => LaunchVehicle;
   launchVehicleName: string;
   setLaunchVehicle: (launchVehicleName: string) => void;
+  requestedEntryPointCount: number;
+  setRequestedEntryPointCount: (requestedEntryPointCount: number) => void;
 };
 
 const useStore = create<Store>(
   persist(
     {
       key: "vipre-app",
-      allowlist: ["activeTab", "tabs", "filterList", "configPathHistory", "launchVehicleName"],
+      allowlist: ["activeTab", "tabs", "filterList", "configPathHistory", "launchVehicleName", "requestedEntryPointCount"],
     },
     (set, get): Store => ({
       activeTab: 0,
@@ -420,7 +422,7 @@ const useStore = create<Store>(
         }
 
         axios
-          .get(`${constants.API}/trajectories/${selectedTrajectory.id}/entries`)
+          .get(`${constants.API}/trajectories/${selectedTrajectory.id}/entries?limit=${get().requestedEntryPointCount}&offset=0`)
           .then((response) => {
             const filterList = get().filterList;
             const relayVolumeScale = get().relayVolumeScale;
@@ -527,13 +529,15 @@ const useStore = create<Store>(
       },
       // @ts-ignore
       getLaunchVehicle: () => constants.LAUNCH_VEHICLES[get().launchVehicleName],
-      launchVehicleName: "Falcon Heavy",
+      launchVehicleName: "Falcon Heavy Recoverable",
       setLaunchVehicle: (launchVehicleName) => {
         // @ts-ignore
         if (constants.LAUNCH_VEHICLES[launchVehicleName]) {
           set({ launchVehicleName: launchVehicleName })
         }
-      }
+      },
+      requestedEntryPointCount: 10000,
+      setRequestedEntryPointCount: (requestedEntryPointCount) => set({ requestedEntryPointCount })
     })
   )
 );

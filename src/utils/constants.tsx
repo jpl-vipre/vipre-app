@@ -10,6 +10,8 @@ import SaturnIcon from "../assets/icons/saturn.png";
 import NeptuneIcon from "../assets/icons/neptune.png";
 import UranusIcon from "../assets/icons/uranus.png";
 
+import SaturnRings from "../assets/maps/saturn_ring_image.png";
+
 import package_json from "../../package.json";
 
 export const API = process.env.REACT_APP_API ? process.env.REACT_APP_API : "http://localhost:8463";
@@ -27,7 +29,7 @@ export const SCHEMA_NAMES = [
 export const DEFAULT_TARGET_BODY = "Saturn";
 export const TARGET_BODIES = {
   "Venus": { icon: "", map: VenusMap, value: "299" },
-  "Saturn": { icon: SaturnIcon, map: SaturnMap, value: "699", ringInnerRadius: 66970, ringOuterRadius: 139970, ringTexture: "/rings/saturn_ring_image.png" },
+  "Saturn": { icon: SaturnIcon, map: SaturnMap, value: "699", ringInnerRadius: 66970, ringOuterRadius: 139970, ringTexture: SaturnRings },
   "Neptune": { icon: NeptuneIcon, map: NeptuneMap, value: "899" },
   "Uranus": { icon: UranusIcon, map: UranusMap, value: "799" },
   "Jupiter": { icon: "", map: JupiterMap, value: "599" },
@@ -36,10 +38,26 @@ export const TARGET_BODIES = {
 }
 
 export const LAUNCH_VEHICLES = {
-  "Falcon Heavy": {
-    name: "Falcon Heavy",
+  "Falcon Heavy Recoverable": {
+    name: "Falcon Heavy Recoverable",
     polynomial: (c3: number) => (-0.005881 * c3 ^ 3 + 1.362 * c3 ^ 2 - 166.8 * c3 + 6676)
-  }
+  },
+  "Falcon Heavy Expendable": {
+    name: "Falcon Heavy Expendable",
+    polynomial: (c3: number) => (-0.0052 * c3 ^ 3 + 1.3194 * c3 ^ 2 - 166.56 * c3 + 6687)
+  },
+  "Vulcan VC0": {
+    name: "Vulcan VC0",
+    polynomial: (c3: number) => (-0.0069 * c3 ^ 3 + 0.4223 * c3 ^ 2 - 84.16 * c3 + 2110)
+  },
+  "SLS Block 1B": {
+    name: "SLS Block 1B",
+    polynomial: (c3: number) => (-0.00686 * c3 ^ 3 + 2.949 * c3 ^ 2 - 565.017 * c3 + 36533.95)
+  },
+  "SLS Block 2": {
+    name: "SLS Block 2",
+    polynomial: (c3: number) => (-0.01045 * c3 ^ 3 + 4.1419 * c3 ^ 2 - 707.83 * c3 + 43714)
+  },
 }
 
 export const GRAPH_TYPES = {
