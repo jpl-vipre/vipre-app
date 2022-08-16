@@ -12,14 +12,20 @@ const { ipcRenderer } = window.require("electron");
 
 const SettingsView: FC = () => {
   const [selectedConfig, setSelectedConfig] = useState<string>("");
-  const configPathHistory = useStore(state => state.configPathHistory);
-  const setConfigPathHistory = useStore(state => state.setConfigPathHistory);
+  const [configPathHistory, setConfigPathHistory] = useStore(state => [state.configPathHistory, state.setConfigPathHistory]);
+
+  const [activeDatabase, setActiveDatabase] = useStore(state => [state.activeDatabase, state.setActiveDatabase]);
+  const [databaseHistory, setDatabaseHistory] = useStore(state => [state.databaseHistory, state.setDatabaseHistory]);
 
   const [filterList, setFilterList] = useStore(state => [state.filterList, state.setFilterList]);
   const [tabs, setTabs] = useStore(state => [state.tabs, state.setTabs]);
   const [relayVolumeScale, setRelayVolumeScale] = useStore(state => [state.relayVolumeScale, state.setRelayVolumeScale]);
   const [launchVehicleName, setLaunchVehicle] = useStore(state => [state.launchVehicleName, state.setLaunchVehicle]);
   const [requestedEntryPointCount, setRequestedEntryPointCount] = useStore(state => [state.requestedEntryPointCount, state.setRequestedEntryPointCount]);
+  const setSelectedTrajectory = useStore(state => state.setSelectedTrajectory);
+  const searchTrajectories = useStore(state => state.searchTrajectories);
+
+  const apiVersion = useStore(state => state.apiVersion);
 
   const [isErrorStatus, setIsErrorStatus] = useState<boolean>(false);
   const [statusMessage, setStatusMessage] = useState<string>("");
@@ -56,8 +62,22 @@ const SettingsView: FC = () => {
         setStatusMessage("Import Failed. Couldn't find config file.");
       }
     });
-
   }, [configPathHistory, setFilterList, setTabs, setConfigPathHistory]);
+
+
+  useEffect(() => {
+    ipcRenderer.on("database-imported", (evt: any, info: any) => {
+      if (info && info.path) {
+        setActiveDatabase(info.path);
+        setDatabaseHistory(Array.from(new Set([...databaseHistory, info.path])));
+        setSelectedTrajectory(null);
+        searchTrajectories();
+      } else {
+        setIsErrorStatus(true);
+        setStatusMessage("Import Failed. Couldn't find database file.");
+      }
+    });
+  }, [databaseHistory, setActiveDatabase, setDatabaseHistory, setSelectedTrajectory, searchTrajectories]);
 
   return (
     <div className="settings-container">
@@ -120,6 +140,53 @@ const SettingsView: FC = () => {
               </Select>
             </FormControl>
           </div>
+          <div style={{ marginTop: "15px" }}>
+            <FormControl style={{ minWidth: "375px", width: "fit-content" }}>
+              <InputLabel id="config-select-label">Import Database File</InputLabel>
+              <Select
+                id="config-select"
+                value={activeDatabase}
+                placeholder="Import Database File"
+                label="Import Database File"
+                labelId="config-select-label"
+                onChange={(evt) => {
+                  if (evt.target.value === "local") {
+                    ipcRenderer.send("import-database", {
+                      chooseFile: true
+                    });
+                  } else {
+                    setActiveDatabase(evt.target.value);
+                    setDatabaseHistory(Array.from(new Set([...databaseHistory, evt.target.value])))
+                    ipcRenderer.send("import-database", {
+                      path: evt.target.value,
+                      chooseFile: false
+                    });
+                  }
+                }}
+              >
+                <ListSubheader>
+                  Recent
+                  <Button disabled={databaseHistory.length === 0} onClick={() => {
+                    setDatabaseHistory([]);
+                    setActiveDatabase("");
+                  }}>
+                    Clear
+                  </Button>
+                </ListSubheader>
+                {activeDatabase &&
+                  activeDatabase.length > 0 &&
+                  !databaseHistory.includes(activeDatabase) &&
+                  <MenuItem value={activeDatabase}>{activeDatabase}</MenuItem>}
+                {databaseHistory.map((fileName: string) => (
+                  <MenuItem key={`recent-${fileName}`} value={fileName}>
+                    {fileName}
+                  </MenuItem>
+                ))}
+                <Divider />
+                <MenuItem value="local">Choose Database from Computer</MenuItem>
+              </Select>
+            </FormControl>
+          </div>
           <Divider style={{ margin: "15px 0", width: "100%" }} />
           <div style={{ marginTop: "15px" }}>
             <FormControl style={{ width: "200px" }}>
@@ -164,8 +231,9 @@ const SettingsView: FC = () => {
               }}
             />
           </div>
-          <div style={{ marginTop: "auto" }}>
-            Version: {constants.VERSION}
+          <div style={{ marginTop: "auto", display: "flex", flexDirection: "column" }}>
+            <span>UI Version: v{constants.VERSION}</span>
+            <span>API Version: v{apiVersion}</span>
           </div>
         </div>
         <Snackbar open={statusMessage.length > 0} autoHideDuration={3000} onClose={() => {

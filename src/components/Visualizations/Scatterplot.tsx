@@ -25,17 +25,23 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnit
   const [minSelected, setMinSelected] = useState<number>(-1);
   const [maxSelected, setMaxSelected] = useState<number>(-1);
 
+  const targetBody = useStore(state => state.targetBody);
   const confirmedSelectedTrajectory = useStore(state => state.confirmedSelectedTrajectory);
   const setSelectedTrajectory = useStore(state => state.setSelectedTrajectory);
   const selectedTrajectory = useStore((state) => state.selectedTrajectory);
   const [selectedEntries, setSelectedEntries] = useStore(state => [state.selectedEntries, state.setSelectedEntries]);
 
   useEffect(() => {
+    setActiveValues([]);
+    setSelectedEntries([]);
+  }, [targetBody, setSelectedEntries]);
+
+  useEffect(() => {
     if (!isTrajectorySelector) {
       let newActiveValues: number[] = [];
       selectedEntries.forEach((entry) => {
         selectedActiveValues.forEach(i => {
-          if (entry.id === data[i].id) {
+          if (entry?.id === data[i]?.id) {
             newActiveValues.push(i);
           }
         })

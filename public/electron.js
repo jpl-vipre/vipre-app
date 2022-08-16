@@ -21,6 +21,7 @@ emitter.setMaxListeners(100);
 
 let window;
 let api;
+let database = null;
 
 const createWindow = () => {
   window = new BrowserWindow({
@@ -63,7 +64,6 @@ const setupLocalFilesNormalizerProxy = () => {
 
 const launchAPI = () => {
   let apiPath = "";
-  let datasetPath = "";
   if (process.platform === "win32") {
     apiPath = app.isPackaged
       ? path.join(process.resourcesPath, "vipre-data", "winbuild", "server.exe")
@@ -74,34 +74,45 @@ const launchAPI = () => {
       : path.join(__dirname, "..", "vipre-data", "macbuild", "server");
   }
 
-  datasetPath = app.isPackaged
-    ? `sqlite:///${path.join(
-        process.resourcesPath,
-        "vipre-data",
-        "data",
-        "EJS_test_big2.db"
-      )}`
-    : path.join(
-        __dirname,
-        "..",
-        "vipre-data",
-        "vipre_data",
-        "sql",
-        "EJS_test_big2.db"
-      );
+  if (!database) {
+    database = app.isPackaged
+      ? path.join(
+          process.resourcesPath,
+          "vipre-data",
+          "vipre_data",
+          "sql",
+          "E_S_test_big4.db"
+        )
+      : path.join(
+          __dirname,
+          "..",
+          "vipre-data",
+          "vipre_data",
+          "sql",
+          "E_S_test_big4.db"
+        );
+  }
 
   if (!process.env.REACT_APP_STOP_API) {
     let apiCommand =
       process.platform === "win32"
         ? `"${apiPath}"`
-        : `SQL_ALCHEMY_DATABASE_URI=${datasetPath} "${apiPath}"`;
+        : `SQLALCHEMY_DATABASE_URI=sqlite:///${database} "${apiPath}"`;
 
     console.log(`SPAWNING ${apiCommand}`);
+
+    setTimeout(() => {
+      window.webContents.send("database-imported", {
+        path: database,
+        apiPath,
+      });
+    }, 2000);
 
     api = exec(apiCommand, (err, stdout, stderr) => {
       if (err) {
         console.log(err);
         console.log(stderr);
+        window.webContents.send("api-log", { err, stderr });
         return;
       }
 
@@ -118,17 +129,17 @@ app.whenReady().then(async () => {
     if (BrowserWindow.getAllWindows().length === 0) {
       createWindow();
     }
-    if (!api) {
+    if (!api && database !== null) {
       launchAPI();
     }
   });
 
-  if (!api) {
+  if (!api && database !== null) {
     launchAPI();
   }
 
   ipcMain.on("new-window", (evt, url) => {
-    if (!api) {
+    if (!api && database !== null) {
       launchAPI();
     }
     evt.preventDefault();
@@ -186,6 +197,44 @@ app.whenReady().then(async () => {
         path: info.path,
         config: config,
       });
+    }
+  });
+
+  ipcMain.on("import-database", (event, info) => {
+    if (info && info.chooseFile) {
+      dialog
+        .showOpenDialog({
+          properties: ["openFile"],
+          buttonLabel: "Load",
+          filters: [{ name: "Databases", extensions: ["db"] }],
+        })
+        .then((response) => {
+          if (!response.canceled) {
+            if (api) {
+              if (database !== response.filePaths[0]) {
+                database = response.filePaths[0];
+                killAPI();
+                setTimeout(() => {
+                  launchAPI();
+                }, 2000);
+              }
+            } else {
+              launchAPI();
+            }
+          }
+        });
+    } else if (info && info.path !== null) {
+      if (api) {
+        if (database !== info.path) {
+          database = info.path;
+          killAPI();
+          setTimeout(() => {
+            launchAPI();
+          }, 500);
+        }
+      } else {
+        launchAPI();
+      }
     }
   });
 });

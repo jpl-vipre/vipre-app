@@ -213,13 +213,19 @@ export type Store = {
   setLaunchVehicle: (launchVehicleName: string) => void;
   requestedEntryPointCount: number;
   setRequestedEntryPointCount: (requestedEntryPointCount: number) => void;
+  apiVersion: string | null;
+  fetchAPIVersion: () => void;
+  activeDatabase: string;
+  setActiveDatabase: (activeDatabase: string) => void;
+  databaseHistory: string[];
+  setDatabaseHistory: (databaseHistory: string[]) => void;
 };
 
 const useStore = create<Store>(
   persist(
     {
       key: "vipre-app",
-      allowlist: ["activeTab", "tabs", "filterList", "configPathHistory", "launchVehicleName", "requestedEntryPointCount"],
+      allowlist: ["activeTab", "tabs", "filterList", "configPathHistory", "launchVehicleName", "requestedEntryPointCount", "activeDatabase", "databaseHistory"],
     },
     (set, get): Store => ({
       activeTab: 0,
@@ -537,7 +543,19 @@ const useStore = create<Store>(
         }
       },
       requestedEntryPointCount: 10000,
-      setRequestedEntryPointCount: (requestedEntryPointCount) => set({ requestedEntryPointCount })
+      setRequestedEntryPointCount: (requestedEntryPointCount) => set({ requestedEntryPointCount }),
+      apiVersion: null,
+      fetchAPIVersion: () => {
+        axios.get(`${constants.API}/version`).then((response) => {
+          set({ apiVersion: response.data });
+        }).catch(err => {
+          console.error(`Error fetching version: ${err}`)
+        });
+      },
+      activeDatabase: "",
+      setActiveDatabase: (activeDatabase) => set({ activeDatabase }),
+      databaseHistory: [],
+      setDatabaseHistory: (databaseHistory) => set({ databaseHistory })
     })
   )
 );

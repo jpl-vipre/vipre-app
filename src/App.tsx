@@ -1,6 +1,6 @@
 import { FC, useState, useEffect } from "react";
 
-import { createTheme, Palette, PaletteOptions, ThemeProvider } from "@mui/material";
+import { CircularProgress, createTheme, Palette, PaletteOptions, ThemeProvider } from "@mui/material";
 
 import useStore from "./utils/store";
 
@@ -30,11 +30,16 @@ let theme = createTheme({
 
 const App: FC = () => {
   const [view, setView] = useState(0);
+  const [apiStarted, setAPIStarted] = useState(false);
   const fetchFilterFields = useStore((state) => state.fetchFilterFields);
   const fetchFields = useStore((state) => state.fetchFields);
   const fetchSchemas = useStore((state) => state.fetchSchemas);
   const fetchBodies = useStore((state) => state.fetchBodies);
+  const [apiVersion, fetchAPIVersion] = useStore((state) => [state.apiVersion, state.fetchAPIVersion]);
   const searchTrajectories = useStore((state) => state.searchTrajectories);
+
+  const [activeDatabase, setActiveDatabase] = useStore((state) => [state.activeDatabase, state.setActiveDatabase]);
+  const [databaseHistory, setDatabaseHistory] = useStore((state) => [state.databaseHistory, state.setDatabaseHistory]);
 
   useEffectOnce(() => {
     ipcRenderer.on("api-log", (evt: any, info: any) => {
@@ -43,24 +48,55 @@ const App: FC = () => {
   });
 
   useEffect(() => {
-    fetchFilterFields();
-    fetchSchemas();
-    fetchFields();
-    fetchBodies();
-  }, [fetchFilterFields, fetchSchemas, fetchFields, fetchBodies]);
+    if (!apiStarted) {
+      setAPIStarted(true);
+      ipcRenderer.send("import-database", {
+        path: activeDatabase,
+        chooseFile: false
+      });
+    }
+  }, [apiStarted, activeDatabase]);
 
   useEffect(() => {
-    if (view === 0) {
+    const callback = (evt: any, info: any) => {
+      if (info && info.path) {
+        setAPIStarted(true);
+        setActiveDatabase(info.path);
+        setDatabaseHistory(Array.from(new Set([...databaseHistory, info.path])));
+        setTimeout(() => {
+          fetchFilterFields();
+          fetchSchemas();
+          fetchFields();
+          fetchBodies();
+          fetchAPIVersion();
+          searchTrajectories();
+        }, 1000);
+      }
+    }
+
+    ipcRenderer.on("database-imported", callback);
+
+    return () => {
+      ipcRenderer.removeListener("database-imported", callback);
+    }
+  }, [databaseHistory, setActiveDatabase, setDatabaseHistory, fetchFilterFields, fetchSchemas, fetchFields, fetchBodies, fetchAPIVersion, searchTrajectories]);
+
+  useEffect(() => {
+    if (apiStarted && apiVersion && view === 0) {
       searchTrajectories();
     }
-  }, [view, searchTrajectories])
+  }, [view, searchTrajectories, apiStarted, apiVersion]);
 
   return (
     <ThemeProvider theme={theme}>
       <div className="App">
         <Header view={view} setView={setView} />
-        {view === 0 && <DataView />}
-        {view === 1 && <SettingsView />}
+        {apiStarted && apiVersion ? <>
+          {view === 0 && <DataView />}
+          {view === 1 && <SettingsView />}
+        </> : <div style={{ display: "flex", justifyContent: "center", alignItems: "center", width: "100%", height: "calc(100vh - 70px - 38.5px)" }}>
+          <CircularProgress size={100} />
+        </div>}
       </div>
     </ThemeProvider>
   );
