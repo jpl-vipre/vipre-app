@@ -219,6 +219,7 @@ app.whenReady().then(async () => {
                 }, 2000);
               }
             } else {
+              database = response.filePaths[0];
               launchAPI();
             }
           }
@@ -233,9 +234,14 @@ app.whenReady().then(async () => {
           }, 500);
         }
       } else {
+        database = info.path;
         launchAPI();
       }
     }
+  });
+
+  ipcMain.on("stop-api", (event, info) => {
+    killAPI();
   });
 });
 

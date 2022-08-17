@@ -1,6 +1,12 @@
-import { FC, useState, useEffect } from "react";
+import { FC, useState, useEffect, useMemo } from "react";
 
-import { FormControl, InputLabel, MenuItem, Select, ListSubheader, Button, Divider, IconButton, Snackbar, Alert, Tooltip, TextField } from "@mui/material";
+import { FormControl, InputLabel, MenuItem, Select, ListSubheader, Button, Divider, IconButton, Snackbar, Alert, Tooltip, TextField, CircularProgress } from "@mui/material";
+
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import RefreshIcon from '@mui/icons-material/Refresh';
+import PlayCircleFilledWhiteIcon from '@mui/icons-material/PlayCircleFilledWhite';
+import StopCircleIcon from '@mui/icons-material/StopCircle';
+import ErrorIcon from "@mui/icons-material/Error";
 
 import useStore from "../utils/store";
 import constants from "../utils/constants";
@@ -9,11 +15,13 @@ import FileDownloadIcon from "@mui/icons-material/FileDownload";
 
 // @ts-ignore
 const { ipcRenderer } = window.require("electron");
+const path = window.require("path");
 
 const SettingsView: FC = () => {
   const [selectedConfig, setSelectedConfig] = useState<string>("");
   const [configPathHistory, setConfigPathHistory] = useStore(state => [state.configPathHistory, state.setConfigPathHistory]);
 
+  const [databaseSelectOpen, setDatabaseSelectOpen] = useState<boolean>(false);
   const [activeDatabase, setActiveDatabase] = useStore(state => [state.activeDatabase, state.setActiveDatabase]);
   const [databaseHistory, setDatabaseHistory] = useStore(state => [state.databaseHistory, state.setDatabaseHistory]);
 
@@ -22,13 +30,19 @@ const SettingsView: FC = () => {
   const [relayVolumeScale, setRelayVolumeScale] = useStore(state => [state.relayVolumeScale, state.setRelayVolumeScale]);
   const [launchVehicleName, setLaunchVehicle] = useStore(state => [state.launchVehicleName, state.setLaunchVehicle]);
   const [requestedEntryPointCount, setRequestedEntryPointCount] = useStore(state => [state.requestedEntryPointCount, state.setRequestedEntryPointCount]);
-  const setSelectedTrajectory = useStore(state => state.setSelectedTrajectory);
+
   const searchTrajectories = useStore(state => state.searchTrajectories);
 
-  const apiVersion = useStore(state => state.apiVersion);
+  const [lastClickedAction, setLastClickedAction] = useState<string>("");
+  const [apiVersion, fetchAPIVersion] = useStore(state => [state.apiVersion, state.fetchAPIVersion]);
+  const loadingAPI = useStore(state => state.loadingAPI);
+
+  const resetData = useStore(state => state.resetData);
 
   const [isErrorStatus, setIsErrorStatus] = useState<boolean>(false);
   const [statusMessage, setStatusMessage] = useState<string>("");
+
+  const isValidAPI = useMemo(() => apiVersion && apiVersion.length > 0, [apiVersion]);
 
   useEffect(() => {
     ipcRenderer.on("config-exported", (evt: any, info: any) => {
@@ -70,14 +84,18 @@ const SettingsView: FC = () => {
       if (info && info.path) {
         setActiveDatabase(info.path);
         setDatabaseHistory(Array.from(new Set([...databaseHistory, info.path])));
-        setSelectedTrajectory(null);
+        resetData();
         searchTrajectories();
+        setIsErrorStatus(false);
+        setStatusMessage(`Successfully loaded database ${info.path}`);
       } else {
         setIsErrorStatus(true);
         setStatusMessage("Import Failed. Couldn't find database file.");
       }
+
+      fetchAPIVersion();
     });
-  }, [databaseHistory, setActiveDatabase, setDatabaseHistory, setSelectedTrajectory, searchTrajectories]);
+  }, [databaseHistory, setActiveDatabase, setDatabaseHistory, searchTrajectories, resetData, fetchAPIVersion]);
 
   return (
     <div className="settings-container">
@@ -140,15 +158,18 @@ const SettingsView: FC = () => {
               </Select>
             </FormControl>
           </div>
-          <div style={{ marginTop: "15px" }}>
-            <FormControl style={{ minWidth: "375px", width: "fit-content" }}>
+          <div style={{ marginTop: "15px", display: "flex", justifyContent: "center" }}>
+            <FormControl style={{ minWidth: "100px" }}>
               <InputLabel id="config-select-label">Import Database File</InputLabel>
               <Select
+                autoWidth
                 id="config-select"
+                open={databaseSelectOpen}
                 value={activeDatabase}
                 placeholder="Import Database File"
                 label="Import Database File"
                 labelId="config-select-label"
+                onClick={() => setDatabaseSelectOpen(!databaseSelectOpen)}
                 onChange={(evt) => {
                   if (evt.target.value === "local") {
                     ipcRenderer.send("import-database", {
@@ -176,16 +197,91 @@ const SettingsView: FC = () => {
                 {activeDatabase &&
                   activeDatabase.length > 0 &&
                   !databaseHistory.includes(activeDatabase) &&
-                  <MenuItem value={activeDatabase}>{activeDatabase}</MenuItem>}
+                  <MenuItem value={activeDatabase}>{!databaseSelectOpen ? activeDatabase : activeDatabase.slice(activeDatabase.lastIndexOf(path.sep) + 1)}</MenuItem>}
                 {databaseHistory.map((fileName: string) => (
                   <MenuItem key={`recent-${fileName}`} value={fileName}>
-                    {fileName}
+                    {!databaseSelectOpen ? fileName.slice(fileName.lastIndexOf(path.sep) + 1) : fileName}
                   </MenuItem>
                 ))}
                 <Divider />
                 <MenuItem value="local">Choose Database from Computer</MenuItem>
               </Select>
             </FormControl>
+            <div className="api-actions" style={{ display: "flex" }}>
+              <Tooltip title="Test API Connection">
+                <IconButton
+                  color={isValidAPI ? "success" : "warning"}
+                  aria-label="test api connection"
+                  component="span"
+                  className="config-btn"
+                  disabled={loadingAPI}
+                  onClick={() => {
+                    fetchAPIVersion();
+                    setLastClickedAction("test-api-connection");
+                  }}
+                >
+                  {loadingAPI && lastClickedAction === "test-api-connection" ? (
+                    <CircularProgress disableShrink />
+                  ) : isValidAPI ? (
+                    <CheckCircleIcon fontSize="large" />
+                  ) : (
+                    <ErrorIcon fontSize="large" />
+                  )}
+                </IconButton>
+              </Tooltip>
+              <Divider orientation="vertical" variant="middle" flexItem />
+              <Tooltip title={isValidAPI ? "Refresh API" : "Start API"}>
+                <IconButton
+                  color={isValidAPI ? "primary" : "success"}
+                  aria-label={isValidAPI ? "Refresh API" : "Start API"}
+                  component="span"
+                  className="config-btn"
+                  disabled={loadingAPI}
+                  onClick={() => {
+                    setLastClickedAction("start-api");
+                    if (isValidAPI) {
+                      resetData();
+                      searchTrajectories();
+                      fetchAPIVersion();
+                    } else {
+                      ipcRenderer.send("import-database", {
+                        path: activeDatabase,
+                        chooseFile: false
+                      });
+                    }
+                  }}
+                >
+                  {loadingAPI && lastClickedAction === "start-api" ? (
+                    <CircularProgress disableShrink />
+                  ) : isValidAPI ? (
+                    <RefreshIcon fontSize="large" />
+                  ) : (
+                    <PlayCircleFilledWhiteIcon fontSize="large" />
+                  )}
+                </IconButton>
+              </Tooltip>
+              <Tooltip title="Stop API">
+                <IconButton
+                  color={isValidAPI ? "error" : "success"}
+                  aria-label="stop api"
+                  component="span"
+                  className="config-btn"
+                  disabled={loadingAPI || !isValidAPI}
+                  onClick={() => {
+                    setLastClickedAction("stop-api");
+                    ipcRenderer.send("stop-api");
+                    fetchAPIVersion();
+                    setTimeout(() => {
+                      fetchAPIVersion();
+                    }, 1000);
+                  }}
+                >
+                  {loadingAPI && lastClickedAction === "stop-api" ? (
+                    <CircularProgress disableShrink />
+                  ) : <StopCircleIcon fontSize="large" />}
+                </IconButton>
+              </Tooltip>
+            </div>
           </div>
           <Divider style={{ margin: "15px 0", width: "100%" }} />
           <div style={{ marginTop: "15px" }}>
@@ -232,8 +328,8 @@ const SettingsView: FC = () => {
             />
           </div>
           <div style={{ marginTop: "auto", display: "flex", flexDirection: "column" }}>
-            <span>UI Version: v{constants.VERSION}</span>
-            <span>API Version: v{apiVersion}</span>
+            <span>UI Version: {constants.VERSION}</span>
+            <span>API Version: {apiVersion || "N/A"}</span>
           </div>
         </div>
         <Snackbar open={statusMessage.length > 0} autoHideDuration={3000} onClose={() => {

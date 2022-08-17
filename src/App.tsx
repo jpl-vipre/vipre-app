@@ -64,12 +64,13 @@ const App: FC = () => {
         setActiveDatabase(info.path);
         setDatabaseHistory(Array.from(new Set([...databaseHistory, info.path])));
         setTimeout(() => {
-          fetchFilterFields();
-          fetchSchemas();
-          fetchFields();
-          fetchBodies();
-          fetchAPIVersion();
-          searchTrajectories();
+          fetchAPIVersion(5, () => {
+            fetchFilterFields();
+            fetchSchemas();
+            fetchFields();
+            fetchBodies();
+            searchTrajectories();
+          });
         }, 1000);
       }
     }
@@ -91,7 +92,7 @@ const App: FC = () => {
     <ThemeProvider theme={theme}>
       <div className="App">
         <Header view={view} setView={setView} />
-        {apiStarted && apiVersion ? <>
+        {apiStarted ? <>
           {view === 0 && <DataView />}
           {view === 1 && <SettingsView />}
         </> : <div style={{ display: "flex", justifyContent: "center", alignItems: "center", width: "100%", height: "calc(100vh - 70px - 38.5px)" }}>

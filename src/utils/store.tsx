@@ -214,7 +214,9 @@ export type Store = {
   requestedEntryPointCount: number;
   setRequestedEntryPointCount: (requestedEntryPointCount: number) => void;
   apiVersion: string | null;
-  fetchAPIVersion: () => void;
+  loadingAPI: boolean;
+  fetchAPIVersion: (retryCounter?: number, callback?: () => void) => void;
+  resetData: () => void;
   activeDatabase: string;
   setActiveDatabase: (activeDatabase: string) => void;
   databaseHistory: string[];
@@ -516,7 +518,7 @@ const useStore = create<Store>(
       schemas: {},
       fetchSchemas: () => {
         let schemas: Record<string, SchemaField> = {};
-        constants.SCHEMA_NAMES.forEach((schemaName) => {
+        constants.SCHEMA_NAMES.forEach((schemaName: string) => {
           let schema = require(`../../vipre-schemas/models/vipre_schema-${schemaName}.json`);
           if (schema && schema.fields) {
             schema.fields.forEach((field: SchemaField) => {
@@ -545,12 +547,28 @@ const useStore = create<Store>(
       requestedEntryPointCount: 10000,
       setRequestedEntryPointCount: (requestedEntryPointCount) => set({ requestedEntryPointCount }),
       apiVersion: null,
-      fetchAPIVersion: () => {
+      loadingAPI: false,
+      fetchAPIVersion: (retryCounter = 3, callback = () => { }) => {
+        set({ loadingAPI: true });
         axios.get(`${constants.API}/version`).then((response) => {
           set({ apiVersion: response.data });
+          setTimeout(() => {
+            set({ loadingAPI: false });
+          }, 500);
+          callback();
         }).catch(err => {
-          console.error(`Error fetching version: ${err}`)
+          if (retryCounter <= 0) {
+            console.error(`Error fetching version: ${err}`);
+            set({ apiVersion: null, loadingAPI: false });
+          } else {
+            setTimeout(() => {
+              get().fetchAPIVersion(retryCounter - 1);
+            }, 1000);
+          }
         });
+      },
+      resetData: () => {
+        set({ trajectories: [], selectedTrajectory: null, confirmedSelectedTrajectory: false, entries: [], selectedEntries: [], arcs: [] });
       },
       activeDatabase: "",
       setActiveDatabase: (activeDatabase) => set({ activeDatabase }),
