@@ -24,7 +24,7 @@ const DialogGraphRow: FC<DialogGraphRowProps> = ({ modifiedTab, setModifiedTab, 
             return (
               <OutlinedContainer
                 key={`${rowName}-${i}`}
-                label={`Graph ${i}`}
+                label={`Graph ${i + 1}`}
                 className="graph-edit-group"
                 style={{ minWidth: "300px", maxWidth: "400px", width: "100%" }}
               >

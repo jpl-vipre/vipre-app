@@ -23,7 +23,7 @@ const EditTabDialog: FC<EditTabDialogProps> = ({ open, setOpen, modifiedTab, set
 
   return (
     <Dialog open={open} onClose={() => setOpen(false)} className="tab-dialog">
-      <DialogTitle className="dialog-title">Tab {modifiedTab.id}</DialogTitle>
+      <DialogTitle className="dialog-title">Tab {modifiedTab.id + 1}</DialogTitle>
       <DialogContent className="tab-content">
         <TextField
           autoFocus
