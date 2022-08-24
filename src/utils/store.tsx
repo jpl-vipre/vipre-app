@@ -504,7 +504,14 @@ const useStore = create<Store>(
                     entryID: selectedEntry.id,
                     altitude,
                     color: constants.TRAJECTORY_COLORS[i % constants.TRAJECTORY_COLORS.length],
-                    label: `<div class="globe-tooltip">Radius: ${point.height}</div>`
+                    label: `<div class="globe-tooltip">
+                      <div>
+                        <span>Entry ID: </span><b>${selectedEntry.id}</b>
+                      </div>
+                      <div>
+                        <span>Radius: </span><b>${point.height}</b>
+                      </div>
+                    </div>`
                   }
                 });
                 set({ arcs: [...arcs, ...arc] });
