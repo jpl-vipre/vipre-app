@@ -86,7 +86,7 @@ const ColorScale: FC<ColorScaleProps> = ({
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%", width: "50px" }} className="color-scale">
       <Tooltip title={`${maxBound.toExponential()} ${units}`}>
-        <span style={{ color: "#a1a1b5", fontSize: "10px", marginBottom: "5px", whiteSpace: "pre" }}>
+        <span className="color-scale-label" style={{ color: "#a1a1b5", fontSize: "10px", marginBottom: "5px", whiteSpace: "pre", alignSelf: "flex-end" }}>
           {`${Math.round(maxBound)}`} {units}
         </span>
       </Tooltip>
@@ -169,7 +169,7 @@ const ColorScale: FC<ColorScaleProps> = ({
         })}
       </div>
       <Tooltip title={`${minBound.toExponential()} ${units}`}>
-        <span style={{ color: "#a1a1b5", fontSize: "10px", marginTop: "5px", whiteSpace: "pre" }}>
+        <span className="color-scale-label" style={{ color: "#a1a1b5", fontSize: "10px", marginTop: "5px", whiteSpace: "pre", alignSelf: "flex-end" }}>
           {Math.round(minBound)} {units}
         </span>
       </Tooltip>

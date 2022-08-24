@@ -26,7 +26,7 @@ const DialogGraphRow: FC<DialogGraphRowProps> = ({ modifiedTab, setModifiedTab, 
                 key={`${rowName}-${i}`}
                 label={`Graph ${i}`}
                 className="graph-edit-group"
-                style={{ minWidth: "300px", maxWidth: "400px" }}
+                style={{ minWidth: "300px", maxWidth: "400px", width: "100%" }}
               >
                 <div style={{ display: "flex" }}>
                   <FormControl fullWidth style={{ marginBottom: "5px" }}>
@@ -105,8 +105,8 @@ const DialogGraphRow: FC<DialogGraphRowProps> = ({ modifiedTab, setModifiedTab, 
                     </RadioGroup>
                   </FormControl>}
                 </div>
-                <div className="additional-options" style={{ display: "flex", flexWrap: "wrap", maxWidth: "400px" }}>
-                  <div style={{ display: "flex", flex: 1, maxWidth: "400px" }}>
+                <div className="additional-options" style={{ display: "flex", flexWrap: "wrap", maxWidth: "400px", width: "100%" }}>
+                  <div style={{ display: "flex", flex: 1, maxWidth: "400px", width: "100%" }}>
                     {[
                       ["xAxis", "X Axis", "xUnits"],
                       ["yAxis", "Y Axis", "yUnits"],
@@ -150,7 +150,7 @@ const DialogGraphRow: FC<DialogGraphRowProps> = ({ modifiedTab, setModifiedTab, 
                         );
                       })}
                   </div>
-                  <div style={{ display: "flex", flex: 1, maxWidth: "400px" }} className="axis-units">
+                  <div style={{ display: "flex", flex: 1, maxWidth: "400px", width: "100%" }} className="axis-units">
                     {[
                       ["xAxis", "xUnits", "X Units"],
                       ["yAxis", "yUnits", "Y Units"],

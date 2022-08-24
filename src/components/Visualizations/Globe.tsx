@@ -152,9 +152,10 @@ const Globe: FC<GlobeProps> = ({ globeType, data, colorField, id, colorUnits }) 
                 transparent: true
               });
 
-              let globeMesh = new THREE.Mesh(geometry, material);
-              globeMesh.rotation.x = Math.PI / 2;
-              return globeMesh;
+              let ringMesh = new THREE.Mesh(geometry, material);
+              ringMesh.rotation.x = Math.PI / 2;
+              // ringMesh.rotation.y = Math.PI / 2;
+              return ringMesh;
             } else {
               const geometry = new THREE.SphereGeometry(5, 32, 16);
               const material = new THREE.MeshBasicMaterial({ color: point.color });

@@ -138,7 +138,7 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnit
       id={id}
     >
       <div style={{ display: "flex", flexDirection: "column", width: "100%", height: "100%", position: "relative" }}>
-        <h4 style={{ margin: 0, color: "#a1a1b5", fontSize: "12px", position: "absolute", top: -5 }}>{isTrajectorySelector ? "Trajectory" : "Entry"}</h4>
+        <h4 style={{ margin: 0, color: "#a1a1b5", fontSize: "12px", position: "absolute", bottom: -5 }}>{isTrajectorySelector ? "Trajectory" : "Entry"}</h4>
         <h4 style={{ margin: 0, color: "white", fontSize: "12px" }}>
           <MuiTooltip title={`X Axis: ${xFieldLabel} (${xUnits || "No Units"})`}>
             <b style={{ fontWeight: 900 }}>{xFieldLabel} </b>

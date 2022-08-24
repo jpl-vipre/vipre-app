@@ -22,6 +22,7 @@ emitter.setMaxListeners(100);
 let window;
 let api;
 let database = null;
+let defaultDatabase = "E_S_test_big5.db";
 
 const createWindow = () => {
   window = new BrowserWindow({
@@ -81,7 +82,7 @@ const launchAPI = () => {
           "vipre-data",
           "vipre_data",
           "sql",
-          "E_S_test_big4.db"
+          defaultDatabase
         )
       : path.join(
           __dirname,
@@ -89,7 +90,7 @@ const launchAPI = () => {
           "vipre-data",
           "vipre_data",
           "sql",
-          "E_S_test_big4.db"
+          defaultDatabase
         );
   }
 
