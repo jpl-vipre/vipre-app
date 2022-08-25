@@ -1176,6 +1176,39 @@
     ajv "^6.12.0"
     ajv-keywords "^3.4.1"
 
+"@devexpress/dx-core@3.0.5":
+  version "3.0.5"
+  resolved "https://registry.npmjs.org/@devexpress/dx-core/-/dx-core-3.0.5.tgz#96231f333b3634990801cd93cd760566e26c4093"
+  integrity sha512-LIMzInUVtc2u8ajI4Dn0WJOrCrHfq6KE+D5sOoJlR/5TWxQ46C4FT9qrryJwYp1SlYQO2auAybcmPzmM82svsQ==
+
+"@devexpress/dx-grid-core@3.0.5":
+  version "3.0.5"
+  resolved "https://registry.npmjs.org/@devexpress/dx-grid-core/-/dx-grid-core-3.0.5.tgz#b9391f7577ae677ffd5ac7099097d777886ce402"
+  integrity sha512-WIVsuHAnGcoM6ryWJI9FcP2C7h6g+R4vaSpPyO9lVCHWNV1AiwSaTe6kQ9ja2ILXhjmiLO0EyfG2N0ER5qsdnA==
+
+"@devexpress/dx-react-core@^3.0.5":
+  version "3.0.5"
+  resolved "https://registry.npmjs.org/@devexpress/dx-react-core/-/dx-react-core-3.0.5.tgz#fdd9c2647dd61a71e0b7f417f299258327606fc1"
+  integrity sha512-YvqSZ3bwtP/3T97ahXAt6brvrAZ/BGDjqJGOcvXowFtN/Yz8EIh1x5CiQa35iT0oGJrvByp+M+/QNuryLvvRJw==
+  dependencies:
+    "@devexpress/dx-core" "3.0.5"
+    prop-types "^15.7.2"
+
+"@devexpress/dx-react-grid-material-ui@^3.0.5":
+  version "3.0.5"
+  resolved "https://registry.npmjs.org/@devexpress/dx-react-grid-material-ui/-/dx-react-grid-material-ui-3.0.5.tgz#16d3095aa8971f72200733acbbf70eb36460490f"
+  integrity sha512-QrUMy+u5WyEmJt5Xq4V0h/cwRMT6yD9XphcrOk7G9W+j0q0jKeCM9mU/axFVXWuMcUtQeQD+ZBpiKvTthxIJQg==
+  dependencies:
+    clsx "^1.0.4"
+    prop-types "^15.7.2"
+
+"@devexpress/dx-react-grid@^3.0.5":
+  version "3.0.5"
+  resolved "https://registry.npmjs.org/@devexpress/dx-react-grid/-/dx-react-grid-3.0.5.tgz#0859026f9fbcc4478f643d1c2513d1226a41c6d8"
+  integrity sha512-AwO7WAR4Ke1/DROl+zsd7r5v3Kab15G5Ca5gKCAsFoaZ+gQi/x+IsBj5Ougapq4/g1RfquoYbBrTxnnputHL3Q==
+  dependencies:
+    "@devexpress/dx-grid-core" "3.0.5"
+
 "@electron/get@^1.13.0":
   version "1.13.1"
   resolved "https://registry.npmjs.org/@electron/get/-/get-1.13.1.tgz#42a0aa62fd1189638bd966e23effaebb16108368"
@@ -3835,6 +3868,11 @@ clone-response@^1.0.2:
   dependencies:
     mimic-response "^1.0.0"
 
+clsx@^1.0.4:
+  version "1.2.1"
+  resolved "https://registry.npmjs.org/clsx/-/clsx-1.2.1.tgz#0ddc4a20a549b59c93a4116bb26f5294ca17dc12"
+  integrity sha512-EcR6r5a8bj6pu3ycsa/E/cKVGuTgZJZdsyUYHOksG/UHIiKfjxzRxYJpyVBwYaQeOvghal9fcc4PidlgzugAQg==
+
 clsx@^1.1.1:
   version "1.1.1"
   resolved "https://registry.npmjs.org/clsx/-/clsx-1.1.1.tgz#98b3134f9abbdf23b2663491ace13c5c03a73188"
@@ -3922,7 +3960,7 @@ commander@^2.20.0:
   resolved "https://registry.npmjs.org/commander/-/commander-2.20.3.tgz#fd485e84c03eb4881c20722ba48035e8531aeb33"
   integrity sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ==
 
-commander@^5.0.0:
+commander@^5.0.0, commander@^5.1.0:
   version "5.1.0"
   resolved "https://registry.npmjs.org/commander/-/commander-5.1.0.tgz#46abbd1652f8e059bddaef99bbdcb2ad9cf179ae"
   integrity sha512-P0CysNDQ7rtVw4QIQtm+MRxV66vKFSvlsQvGYXZWR3qFU0jlMKHZZZgw8e+8DSah4UDKMqnknRDQz+xuQXQ/Zg==
@@ -5730,6 +5768,15 @@ find-cache-dir@^3.3.1:
     commondir "^1.0.1"
     make-dir "^3.0.2"
     pkg-dir "^4.1.0"
+
+find-process@^1.4.7:
+  version "1.4.7"
+  resolved "https://registry.npmjs.org/find-process/-/find-process-1.4.7.tgz#8c76962259216c381ef1099371465b5b439ea121"
+  integrity sha512-/U4CYp1214Xrp3u3Fqr9yNynUrr5Le4y0SsJh2lMDDSbpwYSz3M2SMWQC+wqcx79cN8PQtHQIL8KnuY9M66fdg==
+  dependencies:
+    chalk "^4.0.0"
+    commander "^5.1.0"
+    debug "^4.1.1"
 
 find-root@^1.1.0:
   version "1.1.0"

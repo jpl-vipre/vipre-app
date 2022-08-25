@@ -34,7 +34,7 @@ const SettingsView: FC = () => {
   const searchTrajectories = useStore(state => state.searchTrajectories);
 
   const [lastClickedAction, setLastClickedAction] = useState<string>("");
-  const [apiVersion, fetchAPIVersion] = useStore(state => [state.apiVersion, state.fetchAPIVersion]);
+  const [apiVersion, databaseMetadata, fetchAPIVersion] = useStore(state => [state.apiVersion, state.databaseMetadata, state.fetchAPIVersion]);
   const loadingAPI = useStore(state => state.loadingAPI);
 
   const resetData = useStore(state => state.resetData);
@@ -327,9 +327,14 @@ const SettingsView: FC = () => {
               }}
             />
           </div>
-          <div style={{ marginTop: "auto", display: "flex", flexDirection: "column" }}>
-            <span>UI Version: {constants.VERSION}</span>
-            <span>API Version: {apiVersion || "N/A"}</span>
+          <div style={{ marginTop: "auto", display: "flex", flexDirection: "column", alignItems: "center" }}>
+            <Divider />
+            <div style={{ display: "flex", justifyContent: "space-between", width: "fit-content" }}>
+              <span>UI Version: {constants.VERSION}</span>
+              <span style={{ margin: "0 15px" }}>API Version: {apiVersion || "N/A"}</span>
+              <span>Database Schema Version: {databaseMetadata.schema_version || "N/A"}</span>
+            </div>
+            <span>Loaded Database Path: {databaseMetadata.database || "N/A"}</span>
           </div>
         </div>
         <Snackbar open={statusMessage.length > 0} autoHideDuration={3000} onClose={() => {

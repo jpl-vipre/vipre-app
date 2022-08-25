@@ -9,6 +9,7 @@ const {
 const EventEmitter = require("events");
 
 const { exec } = require("child_process");
+const find_process = require("find-process");
 
 const emitter = new EventEmitter();
 
@@ -22,6 +23,7 @@ emitter.setMaxListeners(100);
 let window;
 let api;
 let database = null;
+let apiName = process.platform === "win32" ? "server.exe" : "vipre-data";
 let defaultDatabase = "E_S_test_big5.db";
 
 const createWindow = () => {
@@ -63,16 +65,16 @@ const setupLocalFilesNormalizerProxy = () => {
   );
 };
 
-const launchAPI = () => {
+const launchAPI = async () => {
   let apiPath = "";
   if (process.platform === "win32") {
     apiPath = app.isPackaged
-      ? path.join(process.resourcesPath, "vipre-data", "winbuild", "server.exe")
-      : path.join(__dirname, "..", "vipre-data", "winbuild", "server.exe");
+      ? path.join(process.resourcesPath, "vipre-data", "winbuild", apiName)
+      : path.join(__dirname, "..", "vipre-data", "winbuild", apiName);
   } else {
     apiPath = app.isPackaged
-      ? path.join(process.resourcesPath, "vipre-data", "macbuild", "server")
-      : path.join(__dirname, "..", "vipre-data", "macbuild", "server");
+      ? path.join(process.resourcesPath, "vipre-data", "macbuild", apiName)
+      : path.join(__dirname, "..", "vipre-data", "macbuild", apiName);
   }
 
   if (!database) {
@@ -95,6 +97,12 @@ const launchAPI = () => {
   }
 
   if (!process.env.REACT_APP_STOP_API) {
+    const processes = await find_process("name", apiName);
+    if (processes.length > 0) {
+      api = null;
+      killAPI();
+    }
+
     let apiCommand =
       process.platform === "win32"
         ? `"${apiPath}"`
@@ -109,15 +117,25 @@ const launchAPI = () => {
       });
     }, 2000);
 
-    api = exec(apiCommand, (err, stdout, stderr) => {
+    api = exec(apiCommand, async (err, stdout, stderr) => {
       if (err) {
         console.log(err);
         console.log(stderr);
         window.webContents.send("api-log", { err, stderr });
+
+        const processes = await find_process("pid", api.pid);
+        if (processes.length === 0) {
+          api = null;
+          killAPI();
+        }
         return;
       }
 
       console.log(stdout);
+    });
+
+    [("SIGINT", "SIGHUP")].forEach(function (signal) {
+      process.addListener(signal, killAPI);
     });
   }
 };
@@ -246,10 +264,21 @@ app.whenReady().then(async () => {
   });
 });
 
-const killAPI = () => {
+const killAPI = async () => {
   if (!process.env.REACT_APP_STOP_API && api) {
+    const processes = await find_process("pid", api.pid);
+
+    if (processes[0] && processes[0].name.toLowerCase().includes(apiName)) {
+      process.kill(processes[0].pid);
+    }
+
     api.kill("SIGINT");
     api = null;
+  } else if (!process.env.REACT_APP_STOP_API && !api) {
+    const processes = await find_process("name", apiName);
+    if (processes.length > 0) {
+      process.kill(processes[0].pid);
+    }
   }
 };
 

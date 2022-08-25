@@ -27,7 +27,7 @@ export const SCHEMA_NAMES = [
 ]
 
 export const DEFAULT_TARGET_BODY = "Saturn";
-export const TARGET_BODIES = {
+export const TARGET_BODIES: Record<string, { icon: string; map: string; value: string | number; ringInnerRadius?: number; ringOuterRadius?: number; ringTexture?: string; }> = {
   "Venus": { icon: "", map: VenusMap, value: "299" },
   "Saturn": { icon: SaturnIcon, map: SaturnMap, value: "699", ringInnerRadius: 66970, ringOuterRadius: 139970, ringTexture: SaturnRings },
   "Neptune": { icon: NeptuneIcon, map: NeptuneMap, value: "899" },
@@ -37,7 +37,7 @@ export const TARGET_BODIES = {
   "Mars": { icon: "", map: MarsMap, value: "499" },
 }
 
-export const LAUNCH_VEHICLES = {
+export const LAUNCH_VEHICLES: Record<string, { name: string; polynomial: (c3: number) => number; }> = {
   "Falcon Heavy Recoverable": {
     name: "Falcon Heavy Recoverable",
     polynomial: (c3: number) => (-0.005881 * c3 ^ 3 + 1.362 * c3 ^ 2 - 166.8 * c3 + 6676)
@@ -72,6 +72,12 @@ export const GRAPH_TYPES = {
     xAxis: false,
     yAxis: false,
     color: true,
+  },
+  table: {
+    label: "Table",
+    xAxis: false,
+    yAxis: false,
+    color: false,
   },
 };
 

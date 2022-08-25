@@ -170,6 +170,12 @@ export type LaunchVehicle = {
   polynomial: (c3: number) => number;
 }
 
+export type DatabaseMetadata = {
+  database: string;
+  tables: string[];
+  schema_version: string;
+}
+
 export type Store = {
   activeTab: number;
   setActiveTab: (activeTab: number) => void;
@@ -217,6 +223,7 @@ export type Store = {
   requestedEntryPointCount: number;
   setRequestedEntryPointCount: (requestedEntryPointCount: number) => void;
   apiVersion: string | null;
+  databaseMetadata: DatabaseMetadata;
   loadingAPI: boolean;
   fetchAPIVersion: (retryCounter?: number, callback?: () => void) => void;
   resetData: () => void;
@@ -557,11 +564,18 @@ const useStore = create<Store>(
       requestedEntryPointCount: 10000,
       setRequestedEntryPointCount: (requestedEntryPointCount) => set({ requestedEntryPointCount }),
       apiVersion: null,
+      databaseMetadata: { database: "", tables: [], schema_version: "" },
       loadingAPI: false,
       fetchAPIVersion: (retryCounter = 3, callback = () => { }) => {
         set({ loadingAPI: true });
         axios.get(`${constants.API}/version`).then((response) => {
           set({ apiVersion: response.data });
+          axios.get(`${constants.API}/database`).then((response) => {
+            set({ databaseMetadata: response.data });
+          }).catch(err => {
+            set({ databaseMetadata: { database: "", tables: [], schema_version: "" } });
+            console.error(`Error loading database info: ${err}`);
+          })
           setTimeout(() => {
             set({ loadingAPI: false });
           }, 500);
@@ -569,7 +583,7 @@ const useStore = create<Store>(
         }).catch(err => {
           if (retryCounter <= 0) {
             console.error(`Error fetching version: ${err}`);
-            set({ apiVersion: null, loadingAPI: false });
+            set({ apiVersion: null, loadingAPI: false, databaseMetadata: { database: "", tables: [], schema_version: "" } });
           } else {
             setTimeout(() => {
               get().fetchAPIVersion(retryCounter - 1);

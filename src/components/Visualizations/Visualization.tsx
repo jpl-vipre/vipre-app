@@ -4,6 +4,7 @@ import Scatterplot from "./Scatterplot";
 import Globe from "./Globe";
 
 import "../../scss/Visualization.scss";
+import TableViz from "./TableViz";
 
 interface VisualizationProps {
   config: GraphConfig;
@@ -53,6 +54,13 @@ const Visualization: FC<VisualizationProps> = ({ config, id }) => {
           colorUnits={config.colorUnits}
           data={entryData}
           id={`${id}-globe`}
+        />
+      )}
+      {config.type === "table" && (
+        <TableViz
+          dataSource={dataSource}
+          data={data as any[]}
+          id={`${id}-table`}
         />
       )}
     </div>

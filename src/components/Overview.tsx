@@ -63,7 +63,8 @@ const Overview: FC = () => {
       let pos_target_arr = math.matrix([selectedTrajectory.pos_target_arr_x, selectedTrajectory.pos_target_arr_y, selectedTrajectory.pos_target_arr_z]);
       let pos_target_earth = math.subtract(pos_target_arr, pos_earth_arr);
 
-      sunEarthBodyAngle = math.round(math.acos(math.dot(math.multiply(pos_earth_arr, -1), pos_target_earth) / pos_earth_mag / pos_target_earth_mag), 2).toString();
+      // @ts-ignore
+      sunEarthBodyAngle = math.round(math.multiply(math.acos(math.dot(math.multiply(pos_earth_arr, -1), pos_target_earth) / pos_earth_mag / pos_target_earth_mag), (180 / Math.PI)), 2).toString();
     }
 
     // lv_poly(c3) / exp(total_dv / gIsp).lv_poly is a polynomial in c3 and gIsp is 3.2 km / s for a bi - prop engine. (For Falcon Heavy lv_poly = -0.005881 * c3 ^ 3 + 1.362 * c3 ^ 2 - 166.8 * c3 + 6676)
