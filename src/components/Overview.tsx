@@ -3,6 +3,7 @@ import { FC, useMemo } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import CheckIcon from "@mui/icons-material/Check";
 
+import * as math from 'mathjs'
 
 import useStore from "../utils/store";
 
@@ -54,9 +55,15 @@ const Overview: FC = () => {
     let distanceToEarth: string | number = "N/A";
     let sunEarthBodyAngle: string | number = "N/A";
     if (selectedTrajectory?.pos_earth_arr_x && selectedTrajectory?.pos_earth_arr_y && selectedTrajectory?.pos_earth_arr_z) {
-      distanceToEarth = Math.sqrt(Math.pow(selectedTrajectory.pos_earth_arr_x, 2) + Math.pow(selectedTrajectory.pos_earth_arr_y, 2) + Math.pow(selectedTrajectory.pos_earth_arr_z, 2));
+      distanceToEarth = Math.sqrt(Math.pow(selectedTrajectory.pos_earth_arr_x, 2) + Math.pow(selectedTrajectory.pos_earth_arr_y, 2) + Math.pow(selectedTrajectory.pos_earth_arr_z, 2)) / 1.496e+8;
+      let pos_earth_mag = selectedTrajectory.pos_earth_arr_mag;
+      let pos_target_earth_mag = selectedTrajectory.pos_target_arr_mag;
 
-      // Sun_Earth_Body angle: acos[dot(-pos_earth_arr, pos_target_earth) / pos_earth_mag / pos_target_earth_mag], where pos_target_earth = pos_target_arr - pos_earth_arr
+      let pos_earth_arr = math.matrix([selectedTrajectory.pos_earth_arr_x, selectedTrajectory.pos_earth_arr_y, selectedTrajectory.pos_earth_arr_z]);
+      let pos_target_arr = math.matrix([selectedTrajectory.pos_target_arr_x, selectedTrajectory.pos_target_arr_y, selectedTrajectory.pos_target_arr_z]);
+      let pos_target_earth = math.subtract(pos_target_arr, pos_earth_arr);
+
+      sunEarthBodyAngle = math.round(math.acos(math.dot(math.multiply(pos_earth_arr, -1), pos_target_earth) / pos_earth_mag / pos_target_earth_mag), 2).toString();
     }
 
     // lv_poly(c3) / exp(total_dv / gIsp).lv_poly is a polynomial in c3 and gIsp is 3.2 km / s for a bi - prop engine. (For Falcon Heavy lv_poly = -0.005881 * c3 ^ 3 + 1.362 * c3 ^ 2 - 166.8 * c3 + 6676)
@@ -80,8 +87,8 @@ const Overview: FC = () => {
       { display_name: "Delivered Mass", units: "kg", value: deliveredMass, tooltip: deliveredMassTooltip },
       { display_name: "Arrival V ∞ Magnitude", units: "km/s", value: vInfMag },
       { display_name: "Arrival V ∞ Declination", units: "km/s", value: vInfDeclination },
-      { display_name: "Distance to Earth", units: "km", value: distanceToEarth },
-      { display_name: "Sun/Earth Body Angle", units: "degrees", value: sunEarthBodyAngle },
+      { display_name: "Distance to Earth", units: "AU", value: distanceToEarth },
+      { display_name: "Sun/Earth Angle", units: "degrees", value: sunEarthBodyAngle },
     ];
 
     return overview;

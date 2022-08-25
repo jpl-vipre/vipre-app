@@ -71,17 +71,20 @@ export type Trajectory = {
   v_inf_arr_x: number;
   v_inf_arr_y: number;
   v_inf_arr_z: number;
+  v_inf_arr_mag: number;
   c3: number;
   dv_total: number;
   pos_earth_arr_x: number;
   pos_earth_arr_y: number;
   pos_earth_arr_z: number;
+  pos_earth_arr_mag: number;
   pos_sc_arr_x: number;
   pos_sc_arr_y: number;
   pos_sc_arr_z: number;
   pos_target_arr_x: number;
   pos_target_arr_y: number;
   pos_target_arr_z: number;
+  pos_target_arr_mag: number;
   target_body?: TargetBodyInfo;
 }
 

@@ -130,7 +130,10 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnit
     return [xField, yField, colorField].map(field => {
       return field === "dv_total" ? "total_interplanterary_dv" : field;
     })
-  }, [xField, yField, colorField])
+  }, [xField, yField, colorField]);
+
+  let xFieldLabelWithUnits = `${xFieldLabel} (${xUnits})`;
+  let yFieldLabelWithUnits = `${yFieldLabel} (${yUnits})`;
 
   return (
     <div
@@ -138,8 +141,8 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnit
       id={id}
     >
       <div style={{ display: "flex", flexDirection: "column", width: "100%", height: "100%", position: "relative" }}>
-        <h4 style={{ margin: 0, color: "#a1a1b5", fontSize: "12px", position: "absolute", bottom: -5 }}>{isTrajectorySelector ? "Trajectory" : "Entry"}</h4>
-        <h4 style={{ margin: 0, color: "white", fontSize: "12px" }}>
+        <h4 style={{ margin: 0, color: "#a1a1b5", fontSize: "16px", position: "absolute", bottom: -5 }}>{isTrajectorySelector ? "Trajectory" : "Entry"}</h4>
+        <h4 style={{ margin: 0, color: "white", fontSize: "16px" }}>
           <MuiTooltip title={`X Axis: ${xFieldLabel} (${xUnits || "No Units"})`}>
             <b style={{ fontWeight: 900 }}>{xFieldLabel} </b>
           </MuiTooltip>
@@ -165,13 +168,12 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnit
                 type="number"
                 dataKey={xField}
                 name={xField}
-                // unit={xUnits || ""}
                 domain={["auto", "auto"]}
                 tickFormatter={(value) => value.toPrecision(2)}
                 fill="#ffffff"
                 style={{ fill: "#ffffff" }}
               >
-                <Label value={`${xFieldLabel} (${xUnits})`} offset={2} position="insideBottom" fill="white" fontSize={10} />
+                <Label value={xFieldLabelWithUnits} offset={2} position="insideBottom" fill="white" fontSize={14} />
               </XAxis>
               <YAxis
                 type="number"
@@ -179,10 +181,9 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnit
                 name={yField}
                 domain={["auto", "auto"]}
                 tickFormatter={(value) => value.toPrecision(2)}
-                // unit={yUnits || ""}
                 fill="#ffffff"
                 style={{ fill: "#ffffff" }}
-                label={{ value: `${yFieldLabel} (${yUnits})`, dy: 30, angle: -90, position: 'insideLeft', fill: "white", fontSize: 10 }}
+                label={{ value: yFieldLabelWithUnits, dy: yFieldLabelWithUnits.length * 3, angle: -90, position: 'insideLeft', fill: "white", fontSize: 14 }}
               />
               <Tooltip cursor={{ strokeDasharray: "3 3" }} formatter={(value: any) => value.toExponential()} content={<CustomTooltip />} />
               <Scatter data={(data || [])} fill="#ffffff">
