@@ -630,8 +630,7 @@ const useStore = create<Store>(
           set({ dataRates: response.data });
         }).catch((err) => {
           console.error(`Error fetching data rates for Entry ${entryID}: ${err}`);
-          set({ dataRates: [{ time: 12, rate: 15 }, { time: 13, rate: 35 }, { time: 14, rate: 25 }, { time: 16, rate: 20 }] });
-          // set({ dataRates: [] });
+          set({ dataRates: [] });
         })
       }
     })

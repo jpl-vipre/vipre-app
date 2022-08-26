@@ -89,7 +89,8 @@ const VizTabButton: FC<VizTabButtonProps> = ({ tab }) => {
               textOverflow: "ellipsis",
               display: "inline-block",
               whiteSpace: "nowrap",
-              overflow: "hidden"
+              overflow: "hidden",
+              fontSize: "16px"
             }} onClick={() => setActiveTab(tab.id)}>
               {modifiedTab.label}
             </h5>
