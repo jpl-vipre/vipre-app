@@ -79,6 +79,10 @@ export type Trajectory = {
   pos_earth_arr_y: number;
   pos_earth_arr_z: number;
   pos_earth_arr_mag: number;
+  pos_earth_arr_lat: number;
+  pos_earth_arr_lon: number;
+  pos_sun_arr_lat: number;
+  pos_sun_arr_lon: number;
   pos_sc_arr_x: number;
   pos_sc_arr_y: number;
   pos_sc_arr_z: number;

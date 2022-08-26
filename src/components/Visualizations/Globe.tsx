@@ -25,6 +25,7 @@ const Globe: FC<GlobeProps> = ({ globeType, data, colorField, id, colorUnits }) 
   const isEditing = useStore(state => state.editingTab !== null);
   const arcs = useStore(state => state.arcs);
 
+  const selectedTrajectory = useStore(state => state.selectedTrajectory)
   const [selectedEntries, setSelectedEntries] = useStore(state => [state.selectedEntries, state.setSelectedEntries]);
 
   const [hoverID, setHoverID] = useState(-1);
@@ -96,6 +97,8 @@ const Globe: FC<GlobeProps> = ({ globeType, data, colorField, id, colorUnits }) 
       setInitRotate(true);
     }
 
+    let extraObjects: any[] = [];
+
     if (targetBody.radius && targetBody.ringInnerRadius && targetBody.ringOuterRadius) {
       let ringLayer = {
         entryID: -1,
@@ -106,12 +109,48 @@ const Globe: FC<GlobeProps> = ({ globeType, data, colorField, id, colorUnits }) 
         outerRadius: targetBody.ringOuterRadius / targetBody.radius * GLOBE_RADIUS,
         ringTexture: targetBody.ringTexture
       };
-
-      return [ringLayer, ...globeObjectsData];
-    } else {
-      return globeObjectsData;
+      extraObjects.push(ringLayer);
     }
+
+    return [...extraObjects, ...globeObjectsData];
   }, [globeType, data, arcs, colorField, selectedEntries, maxBound, minBound, hoverID, targetBody, colorUnits, initRotate, setInitRotate]);
+
+  let pointData = useMemo(() => {
+    let points = [];
+    if (selectedTrajectory && selectedTrajectory.pos_earth_arr_lat && selectedTrajectory.pos_earth_arr_lon) {
+      let earthArrowLayer = {
+        id: "earth",
+        color: 0x00ff00,
+        altitude: 100,
+        latitude: selectedTrajectory.pos_earth_arr_lat,
+        longitude: selectedTrajectory.pos_earth_arr_lon,
+        label: `<div class="globe-tooltip">
+            <div>
+              <span>Arrow to Earth</b>
+            </div>
+          </div>`
+      };
+      points.push(earthArrowLayer);
+    }
+
+    if (selectedTrajectory && selectedTrajectory.pos_sun_arr_lat && selectedTrajectory.pos_sun_arr_lon) {
+      let sunArrowLayer = {
+        id: "sun",
+        color: 0xffff00,
+        altitude: 100,
+        latitude: selectedTrajectory.pos_sun_arr_lat,
+        longitude: selectedTrajectory.pos_sun_arr_lon,
+        label: `<div class="globe-tooltip">
+            <div>
+              <span>Arrow to Sun</b>
+            </div>
+          </div>`
+      };
+      points.push(sunArrowLayer);
+    }
+
+    return points;
+  }, [selectedTrajectory])
 
   return (
     <div
@@ -143,6 +182,7 @@ const Globe: FC<GlobeProps> = ({ globeType, data, colorField, id, colorUnits }) 
           objectLat="latitude"
           objectLng="longitude"
           objectThreeObject={(point: any) => {
+            // Ring Layer
             if (point.entryID === -1) {
               const geometry = new THREE.RingGeometry(point.innerRadius, point.outerRadius, 32);
               const texture = new THREE.TextureLoader().load(point.ringTexture);
@@ -154,13 +194,30 @@ const Globe: FC<GlobeProps> = ({ globeType, data, colorField, id, colorUnits }) 
 
               let ringMesh = new THREE.Mesh(geometry, material);
               ringMesh.rotation.x = Math.PI / 2;
-              // ringMesh.rotation.y = Math.PI / 2;
               return ringMesh;
-            } else if (point?.pointType && point.pointType === "carrier") {
+            }
+            // Earth Layer
+            else if (point.entryID === -3) {
+              const geometry = new THREE.ConeGeometry(5, 40, 32);
+              const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+              let earthMesh = new THREE.Mesh(geometry, material);
+              earthMesh.lookAt(0, 0, 0);
+              return earthMesh;
+            }
+            // Sun Layer
+            else if (point.entryID === -2) {
+              const geometry = new THREE.DodecahedronBufferGeometry(10, 0);
+              const material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+              return new THREE.Mesh(geometry, material);
+            }
+            // Carrier Arc
+            else if (point?.pointType && point.pointType === "carrier") {
               const geometry = new THREE.DodecahedronBufferGeometry(10, 0);
               const material = new THREE.MeshBasicMaterial({ color: point.color, side: THREE.BackSide, wireframe: true });
               return new THREE.Mesh(geometry, material);
-            } else {
+            }
+            // Probe Arc
+            else {
               const geometry = new THREE.SphereGeometry(5, 32, 16);
               const material = new THREE.MeshBasicMaterial({ color: point.color });
               return new THREE.Mesh(geometry, material);
@@ -189,6 +246,13 @@ const Globe: FC<GlobeProps> = ({ globeType, data, colorField, id, colorUnits }) 
               }
             }
           }}
+          pointsData={pointData}
+          pointLat="latitude"
+          pointLng="longitude"
+          pointAltitude="altitude"
+          pointColor="color"
+          pointRadius={1}
+          pointLabel="label"
         />
       </ResponsiveContainer>}
     </div>

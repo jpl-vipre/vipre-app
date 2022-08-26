@@ -130,7 +130,7 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnit
       id={id}
     >
       <div style={{ display: "flex", flexDirection: "column", width: "100%", height: "100%", position: "relative" }}>
-        <h4 style={{ margin: 0, color: "#a1a1b5", fontSize: "16px", position: "absolute", bottom: -5 }}>{dataSource ? `${dataSource[0].toUpperCase()}${dataSource.slice(1)}` : ""}</h4>
+        <h4 style={{ margin: 0, color: "#a1a1b5", fontSize: "16px", position: "absolute", bottom: -7 }}>{dataSource ? `${dataSource[0].toUpperCase()}${dataSource.slice(1)}` : ""}</h4>
         <h4 style={{ margin: 0, color: "white", fontSize: "16px" }}>
           <MuiTooltip title={`X Axis: ${xFieldLabelWithUnits}`}>
             <b style={{ fontWeight: 900 }}>{xFieldLabel} </b>
@@ -144,7 +144,7 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnit
           </MuiTooltip>}
         </h4>
         <div style={{ width: "calc(100% - 15px)", height: "100%" }} className="scatterplot-container">
-          <ResponsiveContainer width="100%" height="100%">
+          <ResponsiveContainer width="100%" height="97%">
             <ScatterChart
               margin={{
                 top: 10,
