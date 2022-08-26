@@ -74,6 +74,7 @@ export type Trajectory = {
   v_inf_arr_mag: number;
   c3: number;
   dv_total: number;
+  interplanetary_dv: number;
   pos_earth_arr_x: number;
   pos_earth_arr_y: number;
   pos_earth_arr_z: number;
@@ -142,6 +143,7 @@ export type Coordinate = {
   entryID: number;
   latitude: number;
   longitude: number;
+  pointType: string;
   height?: number;
   size?: number;
   color?: string;
@@ -174,6 +176,11 @@ export type DatabaseMetadata = {
   database: string;
   tables: string[];
   schema_version: string;
+}
+
+export type DataRate = {
+  time: number;
+  rate: number
 }
 
 export type Store = {
@@ -231,6 +238,8 @@ export type Store = {
   setActiveDatabase: (activeDatabase: string) => void;
   databaseHistory: string[];
   setDatabaseHistory: (databaseHistory: string[]) => void;
+  dataRates: DataRate[];
+  fetchDataRates: (entryID: number) => void;
 };
 
 const useStore = create<Store>(
@@ -255,7 +264,7 @@ const useStore = create<Store>(
           set({ tabs: [...tabs.slice(0, tabIndex), tab, ...tabs.slice(tabIndex + 1)] });
         }
       },
-      relayVolumeScale: 1,
+      relayVolumeScale: 6e10,
       setRelayVolumeScale: (relayVolumeScale) => set({ relayVolumeScale }),
       configPathHistory: [],
       setConfigPathHistory: (configPathHistory) => set({ configPathHistory }),
@@ -278,7 +287,7 @@ const useStore = create<Store>(
         })
       },
       targetBody: constants.DEFAULT_TARGET_BODY as TargetBodyName,
-      setTargetBody: (targetBody) => set({ targetBody, trajectories: [], entries: [], arcs: [], selectedTrajectory: null, selectedEntries: [], confirmedSelectedTrajectory: false }),
+      setTargetBody: (targetBody) => set({ targetBody, trajectories: [], entries: [], arcs: [], selectedTrajectory: null, selectedEntries: [], confirmedSelectedTrajectory: false, dataRates: [] }),
       setFilter: (filter: FilterItem) => {
         let filterList = get().filterList;
         let filterIndex = filterList.findIndex((existingFilter) => existingFilter.id === filter.id);
@@ -340,13 +349,13 @@ const useStore = create<Store>(
       },
       selectedTrajectory: null,
       setSelectedTrajectory: (selectedTrajectory, refetch = false) => {
-        set({ selectedTrajectory, entries: [], selectedEntries: [], arcs: [] })
+        set({ selectedTrajectory, entries: [], selectedEntries: [], dataRates: [], arcs: [] })
         if (refetch) {
           get().fetchSelectedTrajectory();
         }
       },
       confirmedSelectedTrajectory: false,
-      setConfirmedSelectedTrajectory: (confirmedSelectedTrajectory) => set({ confirmedSelectedTrajectory, selectedEntries: [], arcs: [] }),
+      setConfirmedSelectedTrajectory: (confirmedSelectedTrajectory) => set({ confirmedSelectedTrajectory, selectedEntries: [], arcs: [], dataRates: [] }),
       trajectories: [],
       setTrajectories: (trajectories) => set({ trajectories }),
       searchTrajectories: () => {
@@ -405,7 +414,7 @@ const useStore = create<Store>(
               return trajectory;
             })
             if (!isSelectedTrajectoryVisible) {
-              set({ trajectories: filteredData, selectedTrajectory: null, confirmedSelectedTrajectory: false, entries: [], selectedEntries: [], arcs: [] });
+              set({ trajectories: filteredData, selectedTrajectory: null, confirmedSelectedTrajectory: false, entries: [], selectedEntries: [], dataRates: [], arcs: [] });
             } else {
               set({ trajectories: filteredData });
             }
@@ -489,6 +498,11 @@ const useStore = create<Store>(
       setSelectedEntries: (selectedEntries) => {
         set({ selectedEntries });
         get().fetchArcs();
+        if (selectedEntries.length >= 1) {
+          get().fetchDataRates(selectedEntries[selectedEntries.length - 1].id);
+        } else {
+          set({ dataRates: [] });
+        }
       },
       arcs: [],
       fetchArcs: () => {
@@ -505,26 +519,34 @@ const useStore = create<Store>(
                 "ta_step": 50
               })
               .then((response) => {
-                let arc: Coordinate[] = response.data.map((point: any) => {
-                  // @ts-ignore
-                  let altitude = (point.height / selectedEntry.target_body.radius) - 1;
 
-                  return {
-                    ...point,
-                    entryID: selectedEntry.id,
-                    altitude,
-                    color: constants.TRAJECTORY_COLORS[i % constants.TRAJECTORY_COLORS.length],
-                    label: `<div class="globe-tooltip">
+                let pointData: Coordinate[] = [];
+                Object.entries(response.data).forEach(([pointType, data]: [string, any]) => {
+                  data.forEach((point: any) => {
+                    // @ts-ignore
+                    let altitude = (point.height / selectedEntry.target_body.radius) - 1;
+
+                    pointData.push({
+                      ...point,
+                      entryID: selectedEntry.id,
+                      pointType,
+                      altitude,
+                      color: constants.TRAJECTORY_COLORS[i % constants.TRAJECTORY_COLORS.length],
+                      label: `<div class="globe-tooltip">
                       <div>
                         <span>Entry ID: </span><b>${selectedEntry.id}</b>
+                      </div>
+                      <div>
+                        <span>Type: </span><b>${pointType}</b>
                       </div>
                       <div>
                         <span>Radius: </span><b>${point.height}</b>
                       </div>
                     </div>`
-                  }
-                });
-                set({ arcs: [...arcs, ...arc] });
+                    });
+                  });
+                })
+                set({ arcs: [...arcs, ...pointData] });
               })
               .catch((err) => {
                 console.error(err);
@@ -592,12 +614,26 @@ const useStore = create<Store>(
         });
       },
       resetData: () => {
-        set({ trajectories: [], selectedTrajectory: null, confirmedSelectedTrajectory: false, entries: [], selectedEntries: [], arcs: [] });
+        set({ trajectories: [], selectedTrajectory: null, confirmedSelectedTrajectory: false, entries: [], selectedEntries: [], arcs: [], dataRates: [] });
       },
       activeDatabase: "",
       setActiveDatabase: (activeDatabase) => set({ activeDatabase }),
       databaseHistory: [],
-      setDatabaseHistory: (databaseHistory) => set({ databaseHistory })
+      setDatabaseHistory: (databaseHistory) => set({ databaseHistory }),
+      dataRates: [],
+      fetchDataRates: (entryID) => {
+        if (entryID === null) {
+          return;
+        }
+
+        axios.get(`${constants.API}/entries/${entryID}/datarates`).then((response) => {
+          set({ dataRates: response.data });
+        }).catch((err) => {
+          console.error(`Error fetching data rates for Entry ${entryID}: ${err}`);
+          set({ dataRates: [{ time: 12, rate: 15 }, { time: 13, rate: 35 }, { time: 14, rate: 25 }, { time: 16, rate: 20 }] });
+          // set({ dataRates: [] });
+        })
+      }
     })
   )
 );

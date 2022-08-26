@@ -2,6 +2,8 @@ import { FC, useMemo } from "react";
 import { FormControl, InputLabel, MenuItem, Select, ListSubheader } from "@mui/material";
 import useStore from "../utils/store";
 
+const DATA_RATE_OPTIONS = ["time", "rate"];
+
 interface AllFieldsSelectProps {
   value?: string;
   label: string;
@@ -45,7 +47,7 @@ const AllFieldsSelect: FC<AllFieldsSelectProps> = ({ value, label, onChange, opt
         variant="standard"
         style={{ textAlign: "left", paddingLeft: "5px" }}
         labelId={`${label.replace(/ /g, "-").toLowerCase()}-graph-type-label`}
-        value={value && (trajectoryOptions.includes(value) || entryOptions.includes(value)) ? value : ""}
+        value={value && (trajectoryOptions.includes(value) || entryOptions.includes(value) || DATA_RATE_OPTIONS.includes(value)) ? value : ""}
         label={label}
         onChange={(evt: any) => {
           if (onChange) onChange(evt.target.value as string);
@@ -63,6 +65,12 @@ const AllFieldsSelect: FC<AllFieldsSelectProps> = ({ value, label, onChange, opt
         {!options && (!source || source === "entries") && <ListSubheader>Entry Fields</ListSubheader>}
         {!options && (!source || source === "entries") &&
           entryOptions.map((option: any, i: number) => (
+            <MenuItem key={`entry-${label}-${option}-${i}`} value={option}>
+              {option.replace(/^entry./, "")}
+            </MenuItem>
+          ))}
+        {!options && (source === "dataRates") &&
+          DATA_RATE_OPTIONS.map((option: any, i: number) => (
             <MenuItem key={`entry-${label}-${option}-${i}`} value={option}>
               {option.replace(/^entry./, "")}
             </MenuItem>

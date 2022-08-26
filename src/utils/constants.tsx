@@ -78,10 +78,10 @@ export const GRAPH_TYPES = {
     xAxis: false,
     yAxis: false,
     color: false,
-  },
+  }
 };
 
-export const GRAPH_SOURCES = ["trajectories", "entries"];
+export const GRAPH_SOURCES = ["trajectories", "entries", "dataRates"];
 
 export const DEFAULT_TABS = [
   {

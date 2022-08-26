@@ -15,8 +15,7 @@ const Visualization: FC<VisualizationProps> = ({ config, id }) => {
   const data = useStore((state) => state[dataSource]);
   const entryData = useStore(state => state.entries);
 
-  const stripSource = (field: string | undefined | null): string => field ? field.replace(/^[a-z]+./, "") : "";
-
+  const stripSource = (field: string | undefined | null): string => field ? field.replace(/^[a-z]+\./, "") : "";
   return (
     <div
       className="visualization-card"
@@ -36,7 +35,9 @@ const Visualization: FC<VisualizationProps> = ({ config, id }) => {
     >
       {config.type === "scatterplot" && (
         <Scatterplot
+          dataSource={dataSource}
           isTrajectorySelector={dataSource === "trajectories"}
+          isSelectable={!["dataRates"].includes(dataSource)}
           data={data as any[]}
           xField={stripSource(config.xAxis)}
           xUnits={config.xUnits}

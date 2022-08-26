@@ -68,6 +68,12 @@ const DialogGraphRow: FC<DialogGraphRowProps> = ({ modifiedTab, setModifiedTab, 
                       onChange={(evt) => {
                         let row = [...(modifiedTab[rowName] as GraphConfig[])];
                         row[i] = { ...row[i], source: evt.target.value };
+                        if (evt.target.value === "dataRates") {
+                          row[i]["xAxis"] = "time";
+                          row[i]["xUnits"] = "years past 2000";
+                          row[i]["yAxis"] = "rate";
+                          row[i]["yUnits"] = "Kb";
+                        }
                         let newTab = { ...modifiedTab };
                         // @ts-ignore
                         newTab[rowName] = row;

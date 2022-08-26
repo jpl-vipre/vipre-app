@@ -18,7 +18,8 @@ import {
     SearchPanel,
     TableSelection,
     TableColumnVisibility,
-    ColumnChooser
+    ColumnChooser,
+    TableColumnResizing
 } from '@devexpress/dx-react-grid-material-ui';
 import Tooltip from "@mui/material/Tooltip";
 
@@ -67,7 +68,7 @@ const TableViz: FC<TableVizProps> = ({ id, data, dataSource }) => {
 
         let flattendColumns: Column[] = [];
         if (flattenedRows.length > 0) {
-            flattendColumns = Object.keys(flattenedRows[0]).map((column) => ({ name: column, title: column }));
+            flattendColumns = Object.keys(flattenedRows[0]).map((column) => ({ name: column, title: column, wordWrapEnabled: true }));
         }
 
         return [flattenedRows, flattendColumns];
@@ -88,7 +89,7 @@ const TableViz: FC<TableVizProps> = ({ id, data, dataSource }) => {
         return (
             <Tooltip title={`${row.column.title}: ${row.value}`} style={{ zIndex: 999 }}>
                 <span>
-                    {math.round(row.value, 3)}
+                    {typeof row.value === "number" ? math.round(row.value, 3) : row.value}
                 </span>
             </Tooltip>
         );

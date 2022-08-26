@@ -9,6 +9,7 @@ import useStore from "../utils/store";
 
 import "../scss/Overview.scss";
 import { Tooltip } from "@mui/material";
+import { digitToSuperScript } from "../utils/helpers";
 
 // Launch date: formatted string of t_launch
 // Flight time: (t_arr - t_launch) / 365.25 yr
@@ -54,8 +55,8 @@ const Overview: FC = () => {
 
     let distanceToEarth: string | number = "N/A";
     let sunEarthBodyAngle: string | number = "N/A";
-    if (selectedTrajectory?.pos_earth_arr_x && selectedTrajectory?.pos_earth_arr_y && selectedTrajectory?.pos_earth_arr_z) {
-      distanceToEarth = Math.sqrt(Math.pow(selectedTrajectory.pos_earth_arr_x, 2) + Math.pow(selectedTrajectory.pos_earth_arr_y, 2) + Math.pow(selectedTrajectory.pos_earth_arr_z, 2)) / 1.496e+8;
+    if (selectedTrajectory?.pos_earth_arr_x && selectedTrajectory?.pos_earth_arr_y && selectedTrajectory?.pos_earth_arr_z && selectedTrajectory?.pos_earth_arr_mag) {
+      distanceToEarth = selectedTrajectory.pos_earth_arr_mag / 1.496e+8;
       let pos_earth_mag = selectedTrajectory.pos_earth_arr_mag;
       let pos_target_earth_mag = selectedTrajectory.pos_target_arr_mag;
 
@@ -71,9 +72,9 @@ const Overview: FC = () => {
     // Default polynomial set to Falcon Heavy
     let deliveredMass: string | number = "N/A";
     let deliveredMassTooltip: string | number = "";
-    if (selectedTrajectory?.c3 && selectedTrajectory?.dv_total && launchVehicle && launchVehicle.polynomial) {
+    if (selectedTrajectory?.c3 && selectedTrajectory?.interplanetary_dv && launchVehicle && launchVehicle.polynomial) {
       let launchVehiclePolynomial = launchVehicle.polynomial(selectedTrajectory.c3);
-      let lvDeliveredMass = launchVehiclePolynomial / Math.exp(selectedTrajectory.dv_total / 3.2);
+      let lvDeliveredMass = launchVehiclePolynomial / Math.exp(selectedTrajectory.interplanetary_dv / 3.2);
       if (lvDeliveredMass >= 0) {
         deliveredMass = lvDeliveredMass;
       } else {
@@ -83,13 +84,13 @@ const Overview: FC = () => {
     }
 
     let overview = [
-      { display_name: "Launch Date", units: "Years Past 2000", value: launchDate },
-      { display_name: "Flight Time", units: "Years", value: flightTime },
-      { display_name: "Delivered Mass", units: "kg", value: deliveredMass, tooltip: deliveredMassTooltip },
-      { display_name: "Arrival V ∞ Magnitude", units: "km/s", value: vInfMag },
-      { display_name: "Arrival V ∞ Declination", units: "km/s", value: vInfDeclination },
-      { display_name: "Distance to Earth", units: "AU", value: distanceToEarth },
-      { display_name: "Sun/Earth Angle", units: "degrees", value: sunEarthBodyAngle },
+      { display_name: "Launch Date", units: "Years Past 2000", value: launchDate, precision: 2 },
+      { display_name: "Flight Time", units: "Years", value: flightTime, precision: 2 },
+      { display_name: "Delivered Mass", units: "kg", value: deliveredMass, tooltip: deliveredMassTooltip, precision: 0 },
+      { display_name: "Arrival V ∞ Magnitude", units: "km/s", value: vInfMag, precision: 3 },
+      { display_name: "Arrival V ∞ Declination", units: "km/s", value: vInfDeclination, precision: 3 },
+      { display_name: "Distance to Earth", units: "AU", value: distanceToEarth, precision: 2 },
+      { display_name: "Sun/Earth Angle", units: "degrees", value: sunEarthBodyAngle, precision: 2 },
     ];
 
     return overview;
@@ -137,7 +138,7 @@ const Overview: FC = () => {
         {overviewFields.map((overviewField, i) => {
           let value: string | number = overviewField.value;
           if (typeof overviewField.value === "number") {
-            value = Math.round(overviewField.value * 100) / 100;
+            value = math.round(overviewField.value, overviewField?.precision);
             if (`${value}`.length >= 10) {
               value = value.toPrecision(5);
             }
@@ -153,7 +154,7 @@ const Overview: FC = () => {
               <div key={overviewField.display_name} className="overview-field">
                 <h2>{value}</h2>
                 <h5>{overviewField.display_name}</h5>
-                <h6>{overviewField.units}</h6>
+                <h6>{overviewField.units.replace(/\^[0-9]/g, digitToSuperScript)}</h6>
               </div>
             </Tooltip>
           );

@@ -1,7 +1,11 @@
 import { FC, useEffect, useMemo, useState } from "react";
 import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, Cell, ResponsiveContainer, Label } from "recharts";
 import MuiTooltip from "@mui/material/Tooltip";
+import * as math from "mathjs";
+
 import constants from "../../utils/constants";
+
+import { digitToSuperScript } from "../../utils/helpers";
 
 import ColorScale, { colors } from "./ColorScale";
 
@@ -18,8 +22,10 @@ interface ScatterplotProps {
   colorField?: string;
   colorUnits?: string;
   isTrajectorySelector: boolean;
+  isSelectable: boolean;
+  dataSource?: string;
 }
-const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnits, colorField, colorUnits, id, isTrajectorySelector = false }) => {
+const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnits, colorField, colorUnits, id, isTrajectorySelector = false, isSelectable = true, dataSource = "" }) => {
   const [selectedActiveValues, setActiveValues] = useState<number[]>([]);
   const [hoverValue, setHoverValue] = useState<number>(-1);
   const [minSelected, setMinSelected] = useState<number>(-1);
@@ -31,15 +37,15 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnit
   const [selectedEntries, setSelectedEntries] = useStore(state => [state.selectedEntries, state.setSelectedEntries]);
 
   useEffect(() => {
-    if (!isTrajectorySelector) {
+    if (!isTrajectorySelector && isSelectable) {
       setActiveValues(selectedEntries.map(entry => data.findIndex(row => row.id === entry.id)));
     }
-  }, [selectedEntries, data, isTrajectorySelector])
+  }, [selectedEntries, data, isTrajectorySelector, isSelectable])
 
   const selectedTrajectoryIdx = useMemo(() => {
-    if (!data || selectedTrajectory === null || !isTrajectorySelector) return -1;
+    if (!data || selectedTrajectory === null || !isTrajectorySelector || !isSelectable) return -1;
     return data.findIndex((d) => d.id === selectedTrajectory.id);
-  }, [data, selectedTrajectory, isTrajectorySelector]);
+  }, [data, selectedTrajectory, isTrajectorySelector, isSelectable]);
 
   const activeValues = useMemo(() => {
     if (selectedTrajectoryIdx === -1) return selectedActiveValues;
@@ -75,7 +81,7 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnit
 
   const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: any[]; label?: string; }) => {
     if (active && payload && payload.length) {
-      let fields = [[xField, xUnits], [yField, yUnits], [colorField, colorUnits]].filter(([field]) => !!field);
+      let fields = [[xField, xUnits], [yField, yUnits], [colorField, colorUnits]].filter(([field]) => !!field).map(([field, units]) => ([field, units?.replace(/\^[0-9]/g, digitToSuperScript)]));
       let otherFields: [string, string][] = [];
       if (payload && payload[0]?.payload) {
         otherFields = Object.entries(payload[0].payload || {}).filter(([field, value]) => ![xField, yField, colorField].includes(field) && typeof value !== "object").map(([field]) => ([field, ""]))
@@ -85,7 +91,7 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnit
         <div className="chart-tooltip">
           {fields.map(([field, units], i) => {
             let value: number = field && payload[0].payload && payload[0].payload[field] !== undefined ? payload[0].payload[field] : null;
-            let displayValue: string = value !== null ? value.toExponential() : "";
+            let displayValue: string = value !== null ? math.round(value, 3).toString() : "";
             return (
               <p key={`chart-tooltip-${field}-${i}`} className="label">
                 {field}: <b>{displayValue}{units ? ` ${units}` : ""}</b>
@@ -95,7 +101,7 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnit
           <div className="tooltip-split"></div>
           {otherFields.map(([field, units], i) => {
             let value: number = field && payload[0].payload && payload[0].payload[field] !== undefined ? payload[0].payload[field] : null;
-            let displayValue: string = value !== null && typeof value === "number" ? value.toExponential() : "";
+            let displayValue: string = value !== null && typeof value === "number" ? math.round(value, 3).toString() : "";
             return (
               <p key={`chart-tooltip-other-${field}-${i}`} className="label">
                 {field}: <b>{displayValue}{units ? ` ${units}` : ""}</b>
@@ -111,12 +117,12 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnit
 
   const [xFieldLabel, yFieldLabel, colorFieldLabel] = useMemo(() => {
     return [xField, yField, colorField].map(field => {
-      return field === "dv_total" ? "total_interplanterary_dv" : field;
+      return field;
     })
   }, [xField, yField, colorField]);
 
-  let xFieldLabelWithUnits = `${xFieldLabel} (${xUnits})`;
-  let yFieldLabelWithUnits = `${yFieldLabel} (${yUnits})`;
+  let xFieldLabelWithUnits = `${xFieldLabel} (${xUnits?.replace(/\^[0-9]/g, digitToSuperScript)})`;
+  let yFieldLabelWithUnits = `${yFieldLabel} (${yUnits?.replace(/\^[0-9]/g, digitToSuperScript)})`;
 
   return (
     <div
@@ -124,16 +130,16 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnit
       id={id}
     >
       <div style={{ display: "flex", flexDirection: "column", width: "100%", height: "100%", position: "relative" }}>
-        <h4 style={{ margin: 0, color: "#a1a1b5", fontSize: "16px", position: "absolute", bottom: -5 }}>{isTrajectorySelector ? "Trajectory" : "Entry"}</h4>
+        <h4 style={{ margin: 0, color: "#a1a1b5", fontSize: "16px", position: "absolute", bottom: -5 }}>{dataSource ? `${dataSource[0].toUpperCase()}${dataSource.slice(1)}` : ""}</h4>
         <h4 style={{ margin: 0, color: "white", fontSize: "16px" }}>
-          <MuiTooltip title={`X Axis: ${xFieldLabel} (${xUnits || "No Units"})`}>
+          <MuiTooltip title={`X Axis: ${xFieldLabelWithUnits}`}>
             <b style={{ fontWeight: 900 }}>{xFieldLabel} </b>
           </MuiTooltip>
           vs
-          <MuiTooltip title={`Y Axis: ${yFieldLabel} (${yUnits || "No Units"})`}>
+          <MuiTooltip title={`Y Axis: ${yFieldLabelWithUnits}`}>
             <b style={{ fontWeight: 900 }}> {yFieldLabel}</b>
           </MuiTooltip>
-          {colorField && <MuiTooltip title={`Color Field: ${colorFieldLabel} (${colorUnits || "No Units"})`}>
+          {colorField && <MuiTooltip title={`Color Field: ${colorFieldLabel} (${colorUnits?.replace(/\^[0-9]/g, digitToSuperScript) || "No Units"})`}>
             <span> (<b style={{ fontWeight: 900 }}>{colorFieldLabel}</b>)</span>
           </MuiTooltip>}
         </h4>
@@ -170,19 +176,20 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnit
               />
               <Tooltip cursor={{ strokeDasharray: "3 3" }} formatter={(value: any) => value.toExponential()} content={<CustomTooltip />} />
               <Scatter data={(data || [])} fill="#ffffff">
-                {((confirmedSelectedTrajectory || isTrajectorySelector) && data ? data : []).map((entry, index) => {
+                {((confirmedSelectedTrajectory || isTrajectorySelector || !isSelectable) && data ? data : []).map((entry, index) => {
                   let fill = "white";
                   let stroke = "white";
                   let isWithinThreshold = activeValues.includes(index);
 
-                  let selectedEntryIndex = selectedEntries.findIndex((selectedEntry) => selectedEntry.id === entry.id);
+
+                  let selectedEntryIndex = isSelectable && entry?.id ? selectedEntries.findIndex((selectedEntry) => selectedEntry.id === entry.id) : -1;
                   let isSelectedEntry = !isTrajectorySelector && selectedEntryIndex >= 0;
                   if (isSelectedEntry) {
                     fill = "black";
                     stroke = constants.TRAJECTORY_COLORS[selectedEntryIndex % constants.TRAJECTORY_COLORS.length];
                   }
 
-                  let isSelectedTrajectory = index === selectedTrajectoryIdx;
+                  let isSelectedTrajectory = isSelectable && index === selectedTrajectoryIdx;
                   if (colorField && !isWithinThreshold && typeof entry[colorField] === "number") {
                     isWithinThreshold =
                       (hoverValue >= 0 && Math.abs(entry[colorField] - hoverValue) <= 0.05) ||
@@ -196,15 +203,17 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnit
                       fill={isSelectedTrajectory ? "blue" : fill}
                       style={{ stroke: isWithinThreshold || isSelectedEntry || isSelectedTrajectory ? stroke : "", strokeWidth: isSelectedEntry || isSelectedTrajectory ? 6 : isWithinThreshold ? 3 : 0 }}
                       onClick={() => {
-                        if (activeValues.includes(index) && (!isTrajectorySelector || confirmedSelectedTrajectory)) {
-                          setActiveValues(activeValues.filter((value) => value !== index));
-                          setSelectedEntries(selectedEntries.filter(selectedEntry => selectedEntry.id !== data[index].id));
-                        } else {
-                          if (isTrajectorySelector && !confirmedSelectedTrajectory) {
-                            setSelectedTrajectory(entry, true);
-                          } else if (!isTrajectorySelector && confirmedSelectedTrajectory) {
-                            setActiveValues([...activeValues, index]);
-                            setSelectedEntries([...selectedEntries, entry]);
+                        if (isSelectable) {
+                          if (activeValues.includes(index) && (!isTrajectorySelector || confirmedSelectedTrajectory)) {
+                            setActiveValues(activeValues.filter((value) => value !== index));
+                            setSelectedEntries(selectedEntries.filter(selectedEntry => selectedEntry.id !== data[index].id));
+                          } else {
+                            if (isTrajectorySelector && !confirmedSelectedTrajectory) {
+                              setSelectedTrajectory(entry, true);
+                            } else if (!isTrajectorySelector && confirmedSelectedTrajectory) {
+                              setActiveValues([...activeValues, index]);
+                              setSelectedEntries([...selectedEntries, entry]);
+                            }
                           }
                         }
                       }}

@@ -57,7 +57,7 @@ const Globe: FC<GlobeProps> = ({ globeType, data, colorField, id, colorUnits }) 
     if (globeType === "arc") {
       globeObjectsData = arcs.map(obj => ({ ...obj }));
     } else {
-      globeObjectsData = data.map((entry) => {
+      globeObjectsData = data.filter(entry => entry.pos_entry_height !== null && entry.pos_entry_latitude !== null && entry.pos_entry_longitude !== null).map((entry) => {
         let selectedEntryIndex = selectedEntries.findIndex((selectedEntry) => selectedEntry.id === entry.id);
         let isSelectedEntry = selectedEntryIndex >= 0;
 
@@ -156,6 +156,10 @@ const Globe: FC<GlobeProps> = ({ globeType, data, colorField, id, colorUnits }) 
               ringMesh.rotation.x = Math.PI / 2;
               // ringMesh.rotation.y = Math.PI / 2;
               return ringMesh;
+            } else if (point?.pointType && point.pointType === "carrier") {
+              const geometry = new THREE.DodecahedronBufferGeometry(10, 0);
+              const material = new THREE.MeshBasicMaterial({ color: point.color, side: THREE.BackSide, wireframe: true });
+              return new THREE.Mesh(geometry, material);
             } else {
               const geometry = new THREE.SphereGeometry(5, 32, 16);
               const material = new THREE.MeshBasicMaterial({ color: point.color });
