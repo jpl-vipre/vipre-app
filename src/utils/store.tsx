@@ -278,7 +278,7 @@ const useStore = create<Store>(
         })
       },
       targetBody: constants.DEFAULT_TARGET_BODY as TargetBodyName,
-      setTargetBody: (targetBody) => set({ targetBody, trajectories: [], entries: [], arcs: [], selectedTrajectory: null }),
+      setTargetBody: (targetBody) => set({ targetBody, trajectories: [], entries: [], arcs: [], selectedTrajectory: null, selectedEntries: [], confirmedSelectedTrajectory: false }),
       setFilter: (filter: FilterItem) => {
         let filterList = get().filterList;
         let filterIndex = filterList.findIndex((existingFilter) => existingFilter.id === filter.id);

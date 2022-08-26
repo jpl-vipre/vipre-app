@@ -1,4 +1,10 @@
 .table-container {
-    width: 100%;
+    margin: 5px;
+    width: calc(100% - 10px);
     height: 100%;
+    max-height: calc(100% - 15px);
+
+    .Layout-root {
+        height: 100%;
+    }
 }

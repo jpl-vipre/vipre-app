@@ -17,7 +17,8 @@ const VizContent: FC<VizContentProps> = ({ tab }) => {
             margin: "5px",
             marginTop: "10px",
             maxWidth: "100%",
-            maxHeight: "50%"
+            maxHeight: tab.bottomRow.length > 0 ? "50%" : "100%",
+            justifyContent: "space-between"
           }}
         >
           {tab.topRow.map((graphConfig, i) => {
@@ -31,7 +32,8 @@ const VizContent: FC<VizContentProps> = ({ tab }) => {
                   justifyContent: "center",
                   margin: "5px",
                   height: "100%",
-                  maxWidth: "100%",
+                  width: `calc(100% / ${tab.topRow.length} - 10px)`,
+                  maxWidth: `calc(100% / ${tab.bottomRow.length} - 10px)`,
                 }}
               >
                 <Visualization config={graphConfig} id={`${tab.id}-top-row-${i}`} />
@@ -41,7 +43,16 @@ const VizContent: FC<VizContentProps> = ({ tab }) => {
         </div>
       )}
       {tab.bottomRow.length > 0 && (
-        <div style={{ display: "flex", flex: 1, alignItems: "center", margin: "5px", marginBottom: "10px", maxHeight: "50%" }}>
+        <div
+          style={{
+            display: "flex",
+            flex: 1,
+            alignItems: "center",
+            margin: "5px",
+            marginBottom: "10px",
+            maxHeight: tab.bottomRow.length > 0 ? "50%" : "100%",
+            justifyContent: "space-between"
+          }}>
           {tab.bottomRow.map((graphConfig, i) => {
             return (
               <div
@@ -52,8 +63,10 @@ const VizContent: FC<VizContentProps> = ({ tab }) => {
                   alignItems: "center",
                   justifyContent: "center",
                   margin: "5px",
-                  maxWidth: "calc(100% - 10px)",
-                  height: "calc(100% - 10px)"
+                  width: `calc(100% / ${tab.bottomRow.length} - 10px)`,
+                  maxWidth: `calc(100% / ${tab.bottomRow.length} - 10px)`,
+                  height: "calc(100% - 10px)",
+
                 }}
               >
                 <Visualization config={graphConfig} id={`${tab.id}-bottom-row-${i}`} />
