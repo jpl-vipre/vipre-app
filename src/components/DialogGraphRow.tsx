@@ -163,7 +163,10 @@ const DialogGraphRow: FC<DialogGraphRowProps> = ({ modifiedTab, setModifiedTab, 
                       ["color", "colorUnits", "Color Units"],
                     ]
                       .filter(([option]: any) => (constants.GRAPH_TYPES as any)[graphConfig.type as any][option] && (graphConfig.type !== "globe" || (option !== "color" || !graphConfig.globeType || graphConfig.globeType === "entryPoint")))
-                      .map(([_, option, label]) => {
+                      .map(([field, option, label]) => {
+                        let row = [...(modifiedTab[rowName] as GraphConfig[])];
+                        let modifiedGraphConfig: GraphConfig = { ...row[i] };
+
                         return (
                           <TextField
                             style={{ margin: "5px", minWidth: "100px" }}
@@ -171,6 +174,8 @@ const DialogGraphRow: FC<DialogGraphRowProps> = ({ modifiedTab, setModifiedTab, 
                             label={label}
                             type="text"
                             variant="standard"
+                            // @ts-ignore
+                            disabled={modifiedGraphConfig[option] && schemas[graphConfig[field]] && schemas[graphConfig[field]]["units"]}
                             value={graphConfig[option as keyof GraphConfig]}
                             onChange={(evt: any) => {
                               let row = [...(modifiedTab[rowName] as GraphConfig[])];
