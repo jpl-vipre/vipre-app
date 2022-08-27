@@ -56,13 +56,17 @@ const Overview: FC = () => {
     let distanceToEarth: string | number = "N/A";
     let sunEarthBodyAngle: string | number = "N/A";
     if (selectedTrajectory?.pos_earth_arr_x && selectedTrajectory?.pos_earth_arr_y && selectedTrajectory?.pos_earth_arr_z && selectedTrajectory?.pos_earth_arr_mag) {
-      distanceToEarth = selectedTrajectory.pos_earth_arr_mag / 1.496e+8;
       let pos_earth_mag = selectedTrajectory.pos_earth_arr_mag;
       let pos_target_earth_mag = selectedTrajectory.pos_target_arr_mag;
 
       let pos_earth_arr = math.matrix([selectedTrajectory.pos_earth_arr_x, selectedTrajectory.pos_earth_arr_y, selectedTrajectory.pos_earth_arr_z]);
       let pos_target_arr = math.matrix([selectedTrajectory.pos_target_arr_x, selectedTrajectory.pos_target_arr_y, selectedTrajectory.pos_target_arr_z]);
-      let pos_target_earth = math.subtract(pos_target_arr, pos_earth_arr);
+
+      let pos_target_earth: math.Matrix = math.subtract(pos_target_arr, pos_earth_arr);
+      let pos_target_earth_pow: math.Matrix = math.dotPow(pos_target_earth, 2) as math.Matrix;
+
+      // @ts-ignore
+      distanceToEarth = math.round(math.divide(math.sqrt(math.sum(pos_target_earth_pow)), 1.496e+8), 2).toString();
 
       // @ts-ignore
       sunEarthBodyAngle = math.round(math.multiply(math.acos(math.dot(math.multiply(pos_earth_arr, -1), pos_target_earth) / pos_earth_mag / pos_target_earth_mag), (180 / Math.PI)), 2).toString();
