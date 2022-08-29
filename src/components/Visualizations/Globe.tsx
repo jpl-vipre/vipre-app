@@ -155,7 +155,6 @@ const Globe: FC<GlobeProps> = ({ globeType, data, colorField, id, colorUnits }) 
 
     return points;
   }, [selectedTrajectory, globeType])
-
   return (
     <div
       style={{ display: "flex", width: "100%", height: "100%", alignItems: "center", background: "black", position: "relative" }}
@@ -200,23 +199,9 @@ const Globe: FC<GlobeProps> = ({ globeType, data, colorField, id, colorUnits }) 
               ringMesh.rotation.x = Math.PI / 2;
               return ringMesh;
             }
-            // Earth Layer
-            else if (point.entryID === -3) {
-              const geometry = new THREE.ConeGeometry(5, 40, 32);
-              const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-              let earthMesh = new THREE.Mesh(geometry, material);
-              earthMesh.lookAt(0, 0, 0);
-              return earthMesh;
-            }
-            // Sun Layer
-            else if (point.entryID === -2) {
-              const geometry = new THREE.DodecahedronBufferGeometry(10, 0);
-              const material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
-              return new THREE.Mesh(geometry, material);
-            }
             // Carrier Arc
             else if (point?.pointType && point.pointType === "carrier") {
-              const geometry = new THREE.DodecahedronBufferGeometry(10, 0);
+              const geometry = new THREE.DodecahedronBufferGeometry(200, 0);
               const material = new THREE.MeshBasicMaterial({ color: point.color, side: THREE.BackSide, wireframe: true });
               return new THREE.Mesh(geometry, material);
             }

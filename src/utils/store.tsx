@@ -554,7 +554,7 @@ const useStore = create<Store>(
                     </div>`
                     });
                   });
-                })
+                });
                 set({ arcs: [...arcs, ...pointData] });
               })
               .catch((err) => {
