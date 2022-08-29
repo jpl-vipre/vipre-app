@@ -11,6 +11,7 @@ import SettingsView from "./views/SettingsView";
 import { useEffectOnce } from "usehooks-ts";
 
 import "./App.css";
+import { STOP_API } from "./utils/constants";
 
 const { ipcRenderer } = window.require("electron");
 
@@ -56,6 +57,21 @@ const App: FC = () => {
       });
     }
   }, [apiStarted, activeDatabase]);
+
+  useEffectOnce(() => {
+    if (STOP_API) {
+      setAPIStarted(true);
+      setTimeout(() => {
+        fetchAPIVersion(5, () => {
+          fetchFilterFields();
+          fetchSchemas();
+          fetchFields();
+          fetchBodies();
+          searchTrajectories();
+        });
+      }, 1000);
+    }
+  })
 
   useEffect(() => {
     const callback = (evt: any, info: any) => {

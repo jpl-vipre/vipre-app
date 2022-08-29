@@ -3,6 +3,8 @@ import { configurePersist } from "zustand-persist";
 
 import axios from "axios";
 
+import * as math from "mathjs";
+
 import constants from "./constants";
 
 const { persist } = configurePersist({
@@ -115,8 +117,8 @@ export type Entry = {
   vel_entry_y: number;
   vel_entry_z: number;
   vel_entry_mag: number;
-  pos_entry_latitude: number;
-  os_entry_longitude: number;
+  pos_entry_lat: number;
+  pos_entry_lon: number;
   pos_entry_height: number;
   flight_path_angle: number;
 }
@@ -523,7 +525,8 @@ const useStore = create<Store>(
           if (arcs.findIndex((arc) => arc.entryID === selectedEntry.id) < 0) {
             axios
               .post(`${constants.API}/visualizations/get_entry_arc/${selectedEntry.id}`, {
-                "ta_step": 100
+                "probe_ta_step": 50,
+                "carrier_ta_step": 500
               })
               .then((response) => {
 
@@ -547,7 +550,7 @@ const useStore = create<Store>(
                         <span>Type: </span><b>${pointType}</b>
                       </div>
                       <div>
-                        <span>Radius: </span><b>${point.height}</b>
+                        <span>Radius: </span><b>${math.round(point.height, 3)}</b>
                       </div>
                     </div>`
                     });

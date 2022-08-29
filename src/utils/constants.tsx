@@ -14,7 +14,10 @@ import SaturnRings from "../assets/maps/saturn_ring_image.png";
 
 import package_json from "../../package.json";
 
+import { TARGET_BODY_CODES } from "./targetBodies";
+
 export const API = process.env.REACT_APP_API ? process.env.REACT_APP_API : "http://localhost:8463";
+export const STOP_API = process.env.REACT_APP_STOP_API === "true";
 
 export const SCHEMA_NAMES = [
   "architecture",
@@ -24,7 +27,7 @@ export const SCHEMA_NAMES = [
   "maneuver",
   "occultation",
   "trajectory"
-]
+];
 
 export const DEFAULT_TARGET_BODY = "Saturn";
 export const TARGET_BODIES: Record<string, { icon: string; map: string; value: string | number; ringInnerRadius?: number; ringOuterRadius?: number; ringTexture?: string; radius?: number; }> = {
@@ -242,5 +245,5 @@ export const TRAJECTORY_COLORS = [
 
 export const VERSION = package_json.version;
 
-const constants = { API, VERSION, SCHEMA_NAMES, TARGET_BODIES, DEFAULT_TABS, FILTERS, GRAPH_TYPES, FILTER_TYPES, DEFAULT_TARGET_BODY, GRAPH_SOURCES, TRAJECTORY_COLORS, LAUNCH_VEHICLES };
+const constants = { API, STOP_API, VERSION, SCHEMA_NAMES, TARGET_BODIES, TARGET_BODY_CODES, DEFAULT_TABS, FILTERS, GRAPH_TYPES, FILTER_TYPES, DEFAULT_TARGET_BODY, GRAPH_SOURCES, TRAJECTORY_COLORS, LAUNCH_VEHICLES };
 export default constants;

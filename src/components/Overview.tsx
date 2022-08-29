@@ -10,6 +10,7 @@ import useStore from "../utils/store";
 import "../scss/Overview.scss";
 import { Tooltip } from "@mui/material";
 import { digitToSuperScript } from "../utils/helpers";
+import constants from "../utils/constants";
 
 // Launch date: formatted string of t_launch
 // Flight time: (t_arr - t_launch) / 365.25 yr
@@ -104,7 +105,7 @@ const Overview: FC = () => {
     // @ts-ignore
     if (selectedTrajectory && selectedTrajectory?.architecture && selectedTrajectory?.architecture?.sequence) {
       // @ts-ignore
-      return selectedTrajectory.architecture.sequence;
+      return selectedTrajectory.architecture.sequence.replace(/[0-9]{3,3}/g, (code) => constants.TARGET_BODY_CODES[Number(code)]);
     } else {
       return "N/A";
     }

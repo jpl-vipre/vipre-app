@@ -58,13 +58,13 @@ const Globe: FC<GlobeProps> = ({ globeType, data, colorField, id, colorUnits }) 
     if (globeType === "arc") {
       globeObjectsData = arcs.map(obj => ({ ...obj }));
     } else {
-      globeObjectsData = data.filter(entry => entry.pos_entry_height !== null && entry.pos_entry_latitude !== null && entry.pos_entry_longitude !== null).map((entry) => {
+      globeObjectsData = data.filter(entry => entry.pos_entry_mag !== null && entry.pos_entry_lat !== null && entry.pos_entry_lon !== null).map((entry) => {
         let selectedEntryIndex = selectedEntries.findIndex((selectedEntry) => selectedEntry.id === entry.id);
         let isSelectedEntry = selectedEntryIndex >= 0;
 
-        let altitude = (entry.pos_entry_height / entry.target_body.radius) - 1;
-        let latitude = entry.pos_entry_latitude;
-        let longitude = entry.pos_entry_longitude;
+        let altitude = (entry.pos_entry_mag / entry.target_body.radius) - 1;
+        let latitude = entry.pos_entry_lat;
+        let longitude = entry.pos_entry_lon;
         let color = colorField ? colors(normalizeValue(entry[colorField])) : "#fff";
 
         return {
@@ -87,7 +87,7 @@ const Globe: FC<GlobeProps> = ({ globeType, data, colorField, id, colorUnits }) 
             </div>`}
           </div>`
         }
-      })
+      });
     }
 
     // @ts-ignore
@@ -116,17 +116,21 @@ const Globe: FC<GlobeProps> = ({ globeType, data, colorField, id, colorUnits }) 
   }, [globeType, data, arcs, colorField, selectedEntries, maxBound, minBound, hoverID, targetBody, colorUnits, initRotate, setInitRotate]);
 
   let pointData = useMemo(() => {
+    if (globeType === "arc") {
+      return [];
+    }
+
     let points = [];
     if (selectedTrajectory && selectedTrajectory.pos_earth_arr_lat && selectedTrajectory.pos_earth_arr_lon) {
       let earthArrowLayer = {
         id: "earth",
         color: 0x00ff00,
-        altitude: 100,
+        altitude: 3,
         latitude: selectedTrajectory.pos_earth_arr_lat,
         longitude: selectedTrajectory.pos_earth_arr_lon,
         label: `<div class="globe-tooltip">
             <div>
-              <span>Arrow to Earth</b>
+              <span>Direction of Earth</b>
             </div>
           </div>`
       };
@@ -137,12 +141,12 @@ const Globe: FC<GlobeProps> = ({ globeType, data, colorField, id, colorUnits }) 
       let sunArrowLayer = {
         id: "sun",
         color: 0xffff00,
-        altitude: 100,
+        altitude: 3,
         latitude: selectedTrajectory.pos_sun_arr_lat,
         longitude: selectedTrajectory.pos_sun_arr_lon,
         label: `<div class="globe-tooltip">
             <div>
-              <span>Arrow to Sun</b>
+              <span>Direction of Sun</b>
             </div>
           </div>`
       };
@@ -150,7 +154,7 @@ const Globe: FC<GlobeProps> = ({ globeType, data, colorField, id, colorUnits }) 
     }
 
     return points;
-  }, [selectedTrajectory])
+  }, [selectedTrajectory, globeType])
 
   return (
     <div
