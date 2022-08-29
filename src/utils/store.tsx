@@ -119,7 +119,6 @@ export type Entry = {
   vel_entry_mag: number;
   pos_entry_lat: number;
   pos_entry_lon: number;
-  pos_entry_height: number;
   flight_path_angle: number;
 }
 
