@@ -26,7 +26,7 @@ const DialogGraphRow: FC<DialogGraphRowProps> = ({ modifiedTab, setModifiedTab, 
                 key={`${rowName}-${i}`}
                 label={`Graph ${i + 1}`}
                 className="graph-edit-group"
-                style={{ minWidth: "300px", maxWidth: "400px", width: "100%" }}
+                style={{ minWidth: "300px", maxWidth: "305px", width: "100%" }}
               >
                 <div style={{ display: "flex" }}>
                   <FormControl fullWidth style={{ marginBottom: "5px" }}>
@@ -111,8 +111,8 @@ const DialogGraphRow: FC<DialogGraphRowProps> = ({ modifiedTab, setModifiedTab, 
                     </RadioGroup>
                   </FormControl>}
                 </div>
-                <div className="additional-options" style={{ display: "flex", flexWrap: "wrap", maxWidth: "400px", width: "100%" }}>
-                  <div style={{ display: "flex", flex: 1, maxWidth: "400px", width: "100%" }}>
+                <div className="additional-options" style={{ display: "flex", flexWrap: "wrap", maxWidth: "305px", width: "100%" }}>
+                  <div style={{ display: "flex", flex: 1, maxWidth: "305px", width: "100%" }}>
                     {[
                       ["xAxis", "X Axis", "xUnits"],
                       ["yAxis", "Y Axis", "yUnits"],
@@ -125,7 +125,7 @@ const DialogGraphRow: FC<DialogGraphRowProps> = ({ modifiedTab, setModifiedTab, 
 
                         return (
                           <AllFieldsSelect
-                            style={{ minWidth: "100px" }}
+                            style={{ minWidth: "75px" }}
                             disabled={!modifiedGraphConfig.source && graphConfig.type !== "globe"}
                             source={modifiedGraphConfig.source ? modifiedGraphConfig.source : graphConfig.type === "globe" ? "entries" : "trajectories"}
                             key={`${option}-axis`}
@@ -169,7 +169,7 @@ const DialogGraphRow: FC<DialogGraphRowProps> = ({ modifiedTab, setModifiedTab, 
 
                         return (
                           <TextField
-                            style={{ margin: "5px", minWidth: "100px" }}
+                            style={{ margin: "5px", minWidth: "75px" }}
                             key={`${option}-axis-units`}
                             label={label}
                             type="text"

@@ -111,7 +111,7 @@ const Globe: FC<GlobeProps> = ({ globeType, data, colorField, id, colorUnits }) 
       };
       extraObjects.push(ringLayer);
     }
-
+    console.log(globeObjectsData)
     return [...extraObjects, ...globeObjectsData];
   }, [globeType, data, arcs, colorField, selectedEntries, maxBound, minBound, hoverID, targetBody, colorUnits, initRotate, setInitRotate]);
 

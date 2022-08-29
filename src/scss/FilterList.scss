@@ -16,3 +16,11 @@ div.filter-container {
     display: none;
   }
 }
+
+.MuiPaper-root::-webkit-scrollbar {
+  display: none;
+}
+
+.MuiDialogContent-root.filters-content::-webkit-scrollbar {
+  display: none
+}

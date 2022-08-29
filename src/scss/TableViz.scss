@@ -8,3 +8,7 @@
         height: 100%;
     }
 }
+
+.TableContainer-root::-webkit-scrollbar {
+    display: none;
+}

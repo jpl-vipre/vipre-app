@@ -384,6 +384,7 @@ const useStore = create<Store>(
               }
             }),
           fields: filterList.map((filter) => filter.dataField),
+          "limit": 1000
         };
 
         let targetID = get().targetBodies[get().targetBody].value;
