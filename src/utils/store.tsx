@@ -183,6 +183,9 @@ export type DatabaseMetadata = {
 }
 
 export type DataRate = {
+  id: number;
+  entry_id: number;
+  order: number;
   time: number;
   rate: number
 }
@@ -250,7 +253,7 @@ const useStore = create<Store>(
   persist(
     {
       key: "vipre-app",
-      allowlist: ["activeTab", "tabs", "filterList", "configPathHistory", "launchVehicleName", "requestedEntryPointCount", "activeDatabase", "databaseHistory"],
+      allowlist: ["activeTab", "tabs", "filterList", "configPathHistory", "launchVehicleName", "requestedEntryPointCount", "activeDatabase", "databaseHistory", "relayVolumeScale"],
     },
     (set, get): Store => ({
       activeTab: 0,
@@ -520,7 +523,7 @@ const useStore = create<Store>(
           if (arcs.findIndex((arc) => arc.entryID === selectedEntry.id) < 0) {
             axios
               .post(`${constants.API}/visualizations/get_entry_arc/${selectedEntry.id}`, {
-                "ta_step": 50
+                "ta_step": 100
               })
               .then((response) => {
 
@@ -631,7 +634,18 @@ const useStore = create<Store>(
         }
 
         axios.get(`${constants.API}/entries/${entryID}/datarates`).then((response) => {
-          set({ dataRates: response.data });
+          let relayVolumeScale = get().relayVolumeScale || 1;
+          let scaledDataRates = response.data.map((dataRate: DataRate) => {
+            return {
+              rate: dataRate.rate * relayVolumeScale,
+              time: dataRate.time,
+              id: dataRate.id,
+              entry_id: dataRate.entry_id,
+              order: dataRate.order,
+              scale: relayVolumeScale
+            };
+          })
+          set({ dataRates: scaledDataRates });
         }).catch((err) => {
           console.error(`Error fetching data rates for Entry ${entryID}: ${err}`);
           set({ dataRates: [] });

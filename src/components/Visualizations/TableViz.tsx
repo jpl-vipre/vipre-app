@@ -18,8 +18,7 @@ import {
     SearchPanel,
     TableSelection,
     TableColumnVisibility,
-    ColumnChooser,
-    TableColumnResizing
+    ColumnChooser
 } from '@devexpress/dx-react-grid-material-ui';
 import Tooltip from "@mui/material/Tooltip";
 
@@ -27,6 +26,13 @@ import useStore, { Entry, Trajectory } from "../../utils/store";
 import "../../scss/TableViz.scss";
 
 import * as math from "mathjs";
+import withStyles from "@mui/styles/withStyles";
+
+const styles = (theme: any) => ({
+    tableStriped: {},
+    toolbar: {},
+});
+
 
 interface TableVizProps {
     id: string;
@@ -103,6 +109,22 @@ const TableViz: FC<TableVizProps> = ({ id, data, dataSource }) => {
         />
     );
 
+    const ToolbarComponentBase = ({ classes, ...restProps }: any) => {
+        let title = "";
+        if (dataSource && dataSource.length > 0) {
+            title = `${dataSource[0].toUpperCase()}${dataSource.slice(1)}`
+        }
+        return (
+            <Toolbar.Root {...restProps} className={classes.toolbar}>
+                <h4>{title}</h4>
+                {restProps.children}
+            </Toolbar.Root>
+        );
+    };
+
+    // @ts-ignore
+    const ToolbarComponent = withStyles(styles, { name: "TableComponent" })(ToolbarComponentBase);
+
     return <div className="table-container" id={id}>
         <Grid
             rows={rows}
@@ -131,7 +153,7 @@ const TableViz: FC<TableVizProps> = ({ id, data, dataSource }) => {
                 highlightRow
                 showSelectionColumn={false}
             />
-            <Toolbar />
+            <Toolbar rootComponent={ToolbarComponent} />
             <SearchPanel />
             <ColumnChooser />
         </Grid>

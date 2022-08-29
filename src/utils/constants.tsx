@@ -27,9 +27,9 @@ export const SCHEMA_NAMES = [
 ]
 
 export const DEFAULT_TARGET_BODY = "Saturn";
-export const TARGET_BODIES: Record<string, { icon: string; map: string; value: string | number; ringInnerRadius?: number; ringOuterRadius?: number; ringTexture?: string; }> = {
+export const TARGET_BODIES: Record<string, { icon: string; map: string; value: string | number; ringInnerRadius?: number; ringOuterRadius?: number; ringTexture?: string; radius?: number; }> = {
   "Venus": { icon: "", map: VenusMap, value: "299" },
-  "Saturn": { icon: SaturnIcon, map: SaturnMap, value: "699", ringInnerRadius: 66970, ringOuterRadius: 139970, ringTexture: SaturnRings },
+  "Saturn": { icon: SaturnIcon, map: SaturnMap, value: "699", ringInnerRadius: 66970, ringOuterRadius: 139970, radius: 60330, ringTexture: SaturnRings },
   "Neptune": { icon: NeptuneIcon, map: NeptuneMap, value: "899" },
   "Uranus": { icon: UranusIcon, map: UranusMap, value: "799" },
   "Jupiter": { icon: "", map: JupiterMap, value: "599" },
