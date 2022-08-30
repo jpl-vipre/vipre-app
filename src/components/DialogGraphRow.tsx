@@ -70,9 +70,9 @@ const DialogGraphRow: FC<DialogGraphRowProps> = ({ modifiedTab, setModifiedTab, 
                         row[i] = { ...row[i], source: evt.target.value };
                         if (evt.target.value === "dataRates") {
                           row[i]["xAxis"] = "time";
-                          row[i]["xUnits"] = "years past 2000";
-                          row[i]["yAxis"] = "rate";
-                          row[i]["yUnits"] = "Kb";
+                          row[i]["xUnits"] = "seconds past entry";
+                          row[i]["yAxis"] = "data_rate";
+                          row[i]["yUnits"] = "kbps";
                         }
                         let newTab = { ...modifiedTab };
                         // @ts-ignore

@@ -201,7 +201,7 @@ const Globe: FC<GlobeProps> = ({ globeType, data, colorField, id, colorUnits }) 
             }
             // Carrier Arc
             else if (point?.pointType && point.pointType === "carrier") {
-              const geometry = new THREE.DodecahedronBufferGeometry(200, 0);
+              const geometry = new THREE.DodecahedronBufferGeometry(10, 0);
               const material = new THREE.MeshBasicMaterial({ color: point.color, side: THREE.BackSide, wireframe: true });
               return new THREE.Mesh(geometry, material);
             }

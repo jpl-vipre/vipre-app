@@ -2,7 +2,7 @@ import { FC, useMemo } from "react";
 import { FormControl, InputLabel, MenuItem, Select, ListSubheader } from "@mui/material";
 import useStore from "../utils/store";
 
-const DATA_RATE_OPTIONS = ["time", "rate"];
+const DATA_RATE_OPTIONS = ["time", "data_rate"];
 
 interface AllFieldsSelectProps {
   value?: string;
@@ -48,7 +48,7 @@ const AllFieldsSelect: FC<AllFieldsSelectProps> = ({ value, label, onChange, opt
         style={{ textAlign: "left", paddingLeft: "5px" }}
         labelId={`${label.replace(/ /g, "-").toLowerCase()}-graph-type-label`}
         value={value && (trajectoryOptions.includes(value) || entryOptions.includes(value) || DATA_RATE_OPTIONS.includes(value)) ? value : ""}
-        label={label}
+        placeholder={label}
         onChange={(evt: any) => {
           if (onChange) onChange(evt.target.value as string);
         }}

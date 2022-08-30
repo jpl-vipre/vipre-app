@@ -640,7 +640,7 @@ const useStore = create<Store>(
           let relayVolumeScale = get().relayVolumeScale || 1;
           let scaledDataRates = response.data.map((dataRate: DataRate) => {
             return {
-              rate: dataRate.rate * relayVolumeScale,
+              data_rate: dataRate.rate * relayVolumeScale,
               time: dataRate.time,
               id: dataRate.id,
               entry_id: dataRate.entry_id,
