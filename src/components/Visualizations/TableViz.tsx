@@ -85,7 +85,7 @@ const TableViz: FC<TableVizProps> = ({ id, data, dataSource }) => {
             let entries = ids.map((id: string | number) => data[data.findIndex((row) => row.id === id)] as unknown as Entry);
             setSelectedEntries(entries);
         } else if (dataSource === "trajectories" && !confirmedSelectedTrajectory) {
-            setSelectedTrajectory(data[data.findIndex((row) => row.id === ids[ids.length - 1])] as unknown as Trajectory);
+            setSelectedTrajectory(data[data.findIndex((row) => row.id === ids[ids.length - 1])] as unknown as Trajectory, true);
         }
     };
 
