@@ -43,23 +43,23 @@ export const TARGET_BODIES: Record<string, { icon: string; map: string; value: s
 export const LAUNCH_VEHICLES: Record<string, { name: string; polynomial: (c3: number) => number; }> = {
   "Falcon Heavy Recoverable": {
     name: "Falcon Heavy Recoverable",
-    polynomial: (c3: number) => (-0.005881 * c3 ^ 3 + 1.362 * c3 ^ 2 - 166.8 * c3 + 6676)
+    polynomial: (c3: number) => (-0.005881 * Math.pow(c3, 3) + 1.362 * Math.pow(c3, 2) - 166.8 * c3 + 6676)
   },
   "Falcon Heavy Expendable": {
     name: "Falcon Heavy Expendable",
-    polynomial: (c3: number) => (-0.0052 * c3 ^ 3 + 1.3194 * c3 ^ 2 - 166.56 * c3 + 6687)
+    polynomial: (c3: number) => (-0.0052 * Math.pow(c3, 3) + 1.3194 * Math.pow(c3, 2) - 166.56 * c3 + 6687)
   },
   "Vulcan VC0": {
     name: "Vulcan VC0",
-    polynomial: (c3: number) => (-0.0069 * c3 ^ 3 + 0.4223 * c3 ^ 2 - 84.16 * c3 + 2110)
+    polynomial: (c3: number) => (-0.0069 * Math.pow(c3, 3) + 0.4223 * Math.pow(c3, 2) - 84.16 * c3 + 2110)
   },
   "SLS Block 1B": {
     name: "SLS Block 1B",
-    polynomial: (c3: number) => (-0.00686 * c3 ^ 3 + 2.949 * c3 ^ 2 - 565.017 * c3 + 36533.95)
+    polynomial: (c3: number) => (-0.00686 * Math.pow(c3, 3) + 2.949 * Math.pow(c3, 2) - 565.017 * c3 + 36533.95)
   },
   "SLS Block 2": {
     name: "SLS Block 2",
-    polynomial: (c3: number) => (-0.01045 * c3 ^ 3 + 4.1419 * c3 ^ 2 - 707.83 * c3 + 43714)
+    polynomial: (c3: number) => (-0.01045 * Math.pow(c3, 3) + 4.1419 * Math.pow(c3, 2) - 707.83 * c3 + 43714)
   },
 }
 
