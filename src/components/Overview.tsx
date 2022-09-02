@@ -47,10 +47,8 @@ const Overview: FC = () => {
     if (selectedTrajectory?.v_inf_arr_x !== undefined && selectedTrajectory?.v_inf_arr_y !== undefined && selectedTrajectory?.v_inf_arr_z !== undefined) {
       vInfMag = Math.sqrt(Math.pow(selectedTrajectory.v_inf_arr_x, 2) + Math.pow(selectedTrajectory.v_inf_arr_y, 2) + Math.pow(selectedTrajectory.v_inf_arr_z, 2));
       if (selectedTrajectory?.target_body?.pole_vec_x && selectedTrajectory?.target_body?.pole_vec_y && selectedTrajectory?.target_body?.pole_vec_z) {
-        let poleVecX = selectedTrajectory.target_body.pole_vec_x;
-        let poleVecY = selectedTrajectory.target_body.pole_vec_y;
-        let poleVecZ = selectedTrajectory.target_body.pole_vec_z;
-        vInfDeclination = Math.asin((poleVecX * selectedTrajectory.v_inf_arr_x + poleVecY * selectedTrajectory.v_inf_arr_y + poleVecZ * selectedTrajectory.v_inf_arr_z) / vInfMag);
+        let { pole_vec_x, pole_vec_y, pole_vec_z } = selectedTrajectory.target_body;
+        vInfDeclination = Math.asin((pole_vec_x * selectedTrajectory.v_inf_arr_x + pole_vec_y * selectedTrajectory.v_inf_arr_y + pole_vec_z * selectedTrajectory.v_inf_arr_z) / vInfMag);
         vInfDeclination *= 180 / Math.PI;
       }
     }

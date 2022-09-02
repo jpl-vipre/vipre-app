@@ -23,7 +23,7 @@ const SliderRangeFilter: FC<SliderRangeFilterProps> = ({ filter }) => {
       <div style={{ display: "flex", flexDirection: "column" }}>
         <FormControl style={{ flex: 1, margin: "0 15px" }}>
           <Slider
-            value={filter.value ? filter.value : filter.defaultValue}
+            value={filter.value ? filter.value : filter.defaultValue || [0, 0]}
             onChange={(evt, newValue) => {
               setFilter({ ...filter, value: newValue });
             }}

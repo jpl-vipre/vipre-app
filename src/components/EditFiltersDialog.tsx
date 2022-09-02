@@ -126,7 +126,7 @@ const EditFilter: FC<{ filter: FilterItem; setFilter: (filter: FilterItem) => vo
             onChange={(evt) => {
               let value = isNaN(parseFloat(evt.target.value)) ? evt.target.value : parseFloat(evt.target.value);
               // @ts-ignore
-              setFilter({ ...filter, min: value });
+              setFilter({ ...filter, min: value, value: [value, filter.max || 0] });
             }}
           />
         )}
@@ -143,7 +143,7 @@ const EditFilter: FC<{ filter: FilterItem; setFilter: (filter: FilterItem) => vo
             onChange={(evt) => {
               let value = isNaN(parseFloat(evt.target.value)) ? evt.target.value : parseFloat(evt.target.value);
               // @ts-ignore
-              setFilter({ ...filter, max: value });
+              setFilter({ ...filter, max: value, value: [filter.min || 0, value] });
             }}
           />
         )}

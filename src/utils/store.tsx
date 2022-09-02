@@ -526,7 +526,7 @@ const useStore = create<Store>(
             axios
               .post(`${constants.API}/visualizations/get_entry_arc/${selectedEntry.id}`, {
                 "probe_ta_step": 50,
-                "carrier_ta_step": 500
+                "carrier_ta_step": 100
               })
               .then((response) => {
 

@@ -73,7 +73,7 @@
     "react-start": "react-scripts start",
     "react-build": "react-scripts build",
     "build": "yarn version && yarn react-build && yarn electron-build",
-    "electron-build": "electron-builder -mwl",
+    "electron-build": "electron-builder -mw",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "electron:start": "concurrently -k \"cross-env BROWSER=none yarn react-start\" \"wait-on http://localhost:3000 && electronmon .\"",

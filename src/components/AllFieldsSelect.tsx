@@ -15,7 +15,7 @@ interface AllFieldsSelectProps {
   clearable?: boolean;
   style?: any;
 }
-const AllFieldsSelect: FC<AllFieldsSelectProps> = ({ value, label, onChange, options, disabled, source, useFilterFields = true, clearable = false, style = {} }) => {
+const AllFieldsSelect: FC<AllFieldsSelectProps> = ({ value, label, onChange, options, source = null, disabled = false, useFilterFields = true, clearable = false, style = {} }) => {
   const entryFields = useStore((state) => state.entryFields);
   const entryFilters = useStore((state) => state.entryFilters);
   const trajectoryFields = useStore((state) => state.trajectoryFields);
@@ -41,7 +41,7 @@ const AllFieldsSelect: FC<AllFieldsSelectProps> = ({ value, label, onChange, opt
   }, [entryFields, useFilterFields, entryFilters]);
 
   return (
-    <FormControl fullWidth style={{ margin: "5px", ...style }} disabled={disabled}>
+    <FormControl fullWidth style={{ margin: "5px", ...style }} disabled={disabled || false}>
       <InputLabel id={`${label.replace(/ /g, "-").toLowerCase()}-graph-type-label`}>{label}</InputLabel>
       <Select
         variant="standard"
