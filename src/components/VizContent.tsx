@@ -33,7 +33,7 @@ const VizContent: FC<VizContentProps> = ({ tab }) => {
                   margin: "5px",
                   height: "100%",
                   width: `calc(100% / ${tab.topRow.length} - 10px)`,
-                  maxWidth: `calc(100% / ${tab.bottomRow.length} - 10px)`,
+                  maxWidth: `calc(100% / ${tab.topRow.length} - 10px)`,
                 }}
               >
                 <Visualization config={graphConfig} id={`${tab.id}-top-row-${i}`} />

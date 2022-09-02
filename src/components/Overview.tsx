@@ -94,7 +94,7 @@ const Overview: FC = () => {
       { display_name: "Flight Time", units: "Years", value: flightTime, precision: 2 },
       { display_name: "Delivered Mass", units: "kg", value: deliveredMass, tooltip: deliveredMassTooltip, precision: 0 },
       { display_name: "Arrival V ∞ Magnitude", units: "km/s", value: vInfMag, precision: 3 },
-      { display_name: "Arrival V ∞ Declination", units: "degrees", value: vInfDeclination, precision: 3 },
+      { display_name: "Arrival V ∞ Declination", units: "degrees", value: vInfDeclination, precision: 2 },
       { display_name: "Distance to Earth", units: "AU", value: distanceToEarth, precision: 2 },
       { display_name: "Sun/Earth Angle", units: "degrees", value: sunEarthBodyAngle, precision: 2 },
     ];
