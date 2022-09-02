@@ -45,12 +45,13 @@ const Overview: FC = () => {
     let vInfMag: string | number = "N/A";
     let vInfDeclination: string | number = "N/A";
     if (selectedTrajectory?.v_inf_arr_x !== undefined && selectedTrajectory?.v_inf_arr_y !== undefined && selectedTrajectory?.v_inf_arr_z !== undefined) {
-      vInfMag = Math.sqrt(Math.pow(selectedTrajectory.v_inf_arr_x, 2) + Math.pow(selectedTrajectory.v_inf_arr_y, 2) + Math.pow(selectedTrajectory.v_inf_arr_z, 2))
+      vInfMag = Math.sqrt(Math.pow(selectedTrajectory.v_inf_arr_x, 2) + Math.pow(selectedTrajectory.v_inf_arr_y, 2) + Math.pow(selectedTrajectory.v_inf_arr_z, 2));
       if (selectedTrajectory?.target_body?.pole_vec_x && selectedTrajectory?.target_body?.pole_vec_y && selectedTrajectory?.target_body?.pole_vec_z) {
         let poleVecX = selectedTrajectory.target_body.pole_vec_x;
         let poleVecY = selectedTrajectory.target_body.pole_vec_y;
         let poleVecZ = selectedTrajectory.target_body.pole_vec_z;
-        vInfDeclination = Math.asin((poleVecX * selectedTrajectory.v_inf_arr_x + poleVecY * selectedTrajectory.v_inf_arr_y + poleVecZ * selectedTrajectory.v_inf_arr_z) / vInfMag)
+        vInfDeclination = Math.asin((poleVecX * selectedTrajectory.v_inf_arr_x + poleVecY * selectedTrajectory.v_inf_arr_y + poleVecZ * selectedTrajectory.v_inf_arr_z) / vInfMag);
+        vInfDeclination *= 180 / Math.PI;
       }
     }
 
@@ -93,7 +94,7 @@ const Overview: FC = () => {
       { display_name: "Flight Time", units: "Years", value: flightTime, precision: 2 },
       { display_name: "Delivered Mass", units: "kg", value: deliveredMass, tooltip: deliveredMassTooltip, precision: 0 },
       { display_name: "Arrival V ∞ Magnitude", units: "km/s", value: vInfMag, precision: 3 },
-      { display_name: "Arrival V ∞ Declination", units: "km/s", value: vInfDeclination, precision: 3 },
+      { display_name: "Arrival V ∞ Declination", units: "degrees", value: vInfDeclination, precision: 3 },
       { display_name: "Distance to Earth", units: "AU", value: distanceToEarth, precision: 2 },
       { display_name: "Sun/Earth Angle", units: "degrees", value: sunEarthBodyAngle, precision: 2 },
     ];
