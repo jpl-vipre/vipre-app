@@ -11,7 +11,7 @@ import SettingsView from "./views/SettingsView";
 import { useEffectOnce } from "usehooks-ts";
 
 import "./App.css";
-import { STOP_API } from "./utils/constants";
+import constants, { STOP_API } from "./utils/constants";
 
 const { ipcRenderer } = window.require("electron");
 
@@ -32,7 +32,10 @@ let theme = createTheme({
 const App: FC = () => {
   const [view, setView] = useState(0);
   const [apiStarted, setAPIStarted] = useState(false);
+  const [tabs, setTabs] = useStore(state => [state.tabs, state.setTabs]);
   const fetchFilterFields = useStore((state) => state.fetchFilterFields);
+  const filtersInitialized = useStore(state => state.filtersInitialized);
+  const [filterList, setFilterList] = useStore(state => [state.filterList, state.setFilterList]);
   const fetchFields = useStore((state) => state.fetchFields);
   const fetchSchemas = useStore((state) => state.fetchSchemas);
   const fetchBodies = useStore((state) => state.fetchBodies);
@@ -57,6 +60,20 @@ const App: FC = () => {
       });
     }
   }, [apiStarted, activeDatabase]);
+
+  useEffect(() => {
+    if (filtersInitialized && tabs.length === 0) {
+      console.log("DEFAULT TABS")
+      setTabs(constants.DEFAULT_TABS);
+    }
+  }, [filtersInitialized, setTabs, tabs]);
+
+  useEffect(() => {
+    if (filtersInitialized && filterList.length === 0) {
+      console.log("DEFAULT FILTERS")
+      setFilterList(constants.FILTERS.map((filter, i) => ({ ...filter, id: i })));
+    }
+  }, [filtersInitialized, filterList, setFilterList]);
 
   useEffectOnce(() => {
     if (STOP_API) {

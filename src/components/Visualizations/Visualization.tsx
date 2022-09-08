@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useMemo } from "react";
 import useStore, { GraphConfig, Store } from "../../utils/store";
 import Scatterplot from "./Scatterplot";
 import Globe from "./Globe";
@@ -11,7 +11,7 @@ interface VisualizationProps {
   id: string;
 }
 const Visualization: FC<VisualizationProps> = ({ config, id }) => {
-  const dataSource = (config.source || "trajectories") as keyof Store;
+  const dataSource = useMemo(() => (config.source || "trajectories") as keyof Store, [config]);
   const data = useStore((state) => state[dataSource]);
   const entryData = useStore(state => state.entries);
 

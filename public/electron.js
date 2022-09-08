@@ -103,11 +103,7 @@ const launchAPI = async () => {
       killAPI();
     }
 
-    let apiCommand =
-      process.platform === "win32"
-        ? `"${apiPath}"`
-        : `SQLALCHEMY_DATABASE_URI=sqlite:///${database} "${apiPath}"`;
-
+    let apiCommand = `SQLALCHEMY_DATABASE_URI=sqlite:///${database} "${apiPath}"`;
     console.log(`SPAWNING ${apiCommand}`);
 
     setTimeout(() => {

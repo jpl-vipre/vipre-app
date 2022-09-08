@@ -2,6 +2,8 @@ import { FC, useMemo, useRef, useState } from "react";
 import * as THREE from 'three';
 import { ResponsiveContainer } from "recharts";
 
+import * as math from "mathjs";
+
 import ReactGlobe from "react-globe.gl";
 
 import { colors } from "./ColorScale";
@@ -59,9 +61,6 @@ const Globe: FC<GlobeProps> = ({ globeType, data, colorField, id, colorUnits }) 
       globeObjectsData = arcs.map(obj => ({ ...obj }));
     } else {
       globeObjectsData = data.filter(entry => entry.pos_entry_mag !== null && entry.pos_entry_lat !== null && entry.pos_entry_lon !== null).map((entry) => {
-        let selectedEntryIndex = selectedEntries.findIndex((selectedEntry) => selectedEntry.id === entry.id);
-        let isSelectedEntry = selectedEntryIndex >= 0;
-
         let altitude = (entry.pos_entry_mag / entry.target_body.radius) - 1;
         let latitude = entry.pos_entry_lat;
         let longitude = entry.pos_entry_lon;
@@ -72,18 +71,18 @@ const Globe: FC<GlobeProps> = ({ globeType, data, colorField, id, colorUnits }) 
           altitude,
           latitude,
           longitude,
-          color: hoverID === entry.id ? "lightblue" : isSelectedEntry ? "blue" : color,
+          color,
           label: `<div class="globe-tooltip">
             <div>
               <span>Entry ID: </span><b>${entry.id}</b>
             </div>
             <div>
-              <span>Lat: </span><b>${latitude}</b>
+              <span>Lat: </span><b>${math.round(latitude, 3)} degrees</b>
             </div>
             <div>
-              <span>Lon: </span><b>${longitude}</b></div>
+              <span>Lon: </span><b>${math.round(longitude, 3)} degrees</b></div>
             ${colorField && `<div>
-              <span>${colorField}: </span><b>${entry[colorField]}${colorUnits}</b>
+              <span>${colorField}: </span><b>${math.round(entry[colorField], 3)} ${colorUnits}</b>
             </div>`}
           </div>`
         }
@@ -113,7 +112,7 @@ const Globe: FC<GlobeProps> = ({ globeType, data, colorField, id, colorUnits }) 
     }
 
     return [...extraObjects, ...globeObjectsData];
-  }, [globeType, data, arcs, colorField, selectedEntries, maxBound, minBound, hoverID, targetBody, colorUnits, initRotate, setInitRotate]);
+  }, [globeType, data, arcs, colorField, maxBound, minBound, targetBody, colorUnits, initRotate, setInitRotate]);
 
   let pointData = useMemo(() => {
     if (globeType === "arc") {
@@ -207,8 +206,12 @@ const Globe: FC<GlobeProps> = ({ globeType, data, colorField, id, colorUnits }) 
             }
             // Probe Arc
             else {
+              let isEntryPoint = globeType === "entryPoint";
+              let isHoverPoint = isEntryPoint && point.entryID === hoverID;
+              let isSelectedEntry = isEntryPoint && !isHoverPoint && selectedEntries.findIndex((selectedEntry) => selectedEntry.id === point.entryID) >= 0;
+
               const geometry = new THREE.SphereGeometry(5, 32, 16);
-              const material = new THREE.MeshBasicMaterial({ color: point.color });
+              const material = new THREE.MeshBasicMaterial({ color: isHoverPoint ? "lightblue" : isSelectedEntry ? "blue" : point.color });
               return new THREE.Mesh(geometry, material);
             }
           }}
@@ -230,7 +233,8 @@ const Globe: FC<GlobeProps> = ({ globeType, data, colorField, id, colorUnits }) 
                 // @ts-ignore
                 let entryIndex = data.findIndex(selectedEntry => selectedEntry.id === selected.entryID);
                 if (entryIndex >= 0) {
-                  setSelectedEntries([...selectedEntries, data[entryIndex]])
+                  let selectedEntry = data[entryIndex];
+                  setSelectedEntries([...selectedEntries, selectedEntry]);
                 }
               }
             }

@@ -6,6 +6,7 @@ interface VizContentProps {
   tab: VizTab;
 }
 const VizContent: FC<VizContentProps> = ({ tab }) => {
+
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%", maxWidth: "100%" }}>
       {tab.topRow.length > 0 && (

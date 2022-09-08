@@ -34,20 +34,17 @@ const FilterComponent: FC<{ filter: FilterItem }> = ({ filter }) => {
 const FilterList: FC = () => {
   const filterList = useStore((state) => state.filterList);
   const searchTrajectories = useStore((state) => state.searchTrajectories);
+  const filtersInitialized = useStore(state => state.filtersInitialized);
   const fetchEntries = useStore((state) => state.fetchEntries)
   const [openEditFilters, setOpenEditFilters] = useState(false);
 
   const debouncedFilterList = useDebounce(filterList, 1000);
 
-  useEffectOnce(() => {
-    searchTrajectories();
-  })
-
   useEffect(() => {
-    if (debouncedFilterList.length > 0) {
+    if (debouncedFilterList.length > 0 && filtersInitialized) {
       searchTrajectories();
     }
-  }, [searchTrajectories, fetchEntries, debouncedFilterList]);
+  }, [searchTrajectories, fetchEntries, debouncedFilterList, filtersInitialized]);
   return (
     <div className="filter-container">
       <div

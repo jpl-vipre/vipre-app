@@ -175,7 +175,7 @@ const DialogGraphRow: FC<DialogGraphRowProps> = ({ modifiedTab, setModifiedTab, 
                             type="text"
                             variant="standard"
                             // @ts-ignore
-                            disabled={modifiedGraphConfig[option] && schemas[graphConfig[field]] && schemas[graphConfig[field]]["units"]}
+                            disabled={!!(modifiedGraphConfig[option] && schemas[graphConfig[field]] && schemas[graphConfig[field]]["units"])}
                             value={graphConfig[option as keyof GraphConfig]}
                             onChange={(evt: any) => {
                               let row = [...(modifiedTab[rowName] as GraphConfig[])];

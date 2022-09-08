@@ -45,7 +45,7 @@ const SettingsView: FC = () => {
   const isValidAPI = useMemo(() => apiVersion && apiVersion.length > 0, [apiVersion]);
 
   useEffect(() => {
-    ipcRenderer.on("config-exported", (evt: any, info: any) => {
+    const callback = (evt: any, info: any) => {
       if (info && info.path) {
         setSelectedConfig(info.path);
         setIsErrorStatus(false);
@@ -54,9 +54,17 @@ const SettingsView: FC = () => {
         setIsErrorStatus(true);
         setStatusMessage("Error exporting config, please retry.");
       }
-    });
+    };
 
-    ipcRenderer.on("config-imported", (evt: any, info: any) => {
+    ipcRenderer.on("config-exported", callback);
+
+    return () => {
+      ipcRenderer.removeListener("config-exported", callback);
+    }
+  }, []);
+
+  useEffect(() => {
+    const callback = (evt: any, info: any) => {
       if (info && info.path) {
         setSelectedConfig(info.path);
         setConfigPathHistory(Array.from(new Set([...configPathHistory, info.path])))
@@ -75,12 +83,18 @@ const SettingsView: FC = () => {
         setIsErrorStatus(true);
         setStatusMessage("Import Failed. Couldn't find config file.");
       }
-    });
+    };
+
+    ipcRenderer.on("config-imported", callback);
+
+    return () => {
+      ipcRenderer.removeListener("config-imported", callback);
+    }
   }, [configPathHistory, setFilterList, setTabs, setConfigPathHistory]);
 
 
   useEffect(() => {
-    ipcRenderer.on("database-imported", (evt: any, info: any) => {
+    const callback = (evt: any, info: any) => {
       if (info && info.path) {
         setActiveDatabase(info.path);
         setDatabaseHistory(Array.from(new Set([...databaseHistory, info.path])));
@@ -94,7 +108,12 @@ const SettingsView: FC = () => {
       }
 
       fetchAPIVersion();
-    });
+    };
+    ipcRenderer.on("database-imported", callback);
+
+    return () => {
+      ipcRenderer.removeListener("database-imported", callback);
+    }
   }, [databaseHistory, setActiveDatabase, setDatabaseHistory, searchTrajectories, resetData, fetchAPIVersion]);
 
   return (

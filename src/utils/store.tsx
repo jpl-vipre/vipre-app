@@ -212,6 +212,7 @@ export type Store = {
   setFilter: (filter: FilterItem) => void;
   trajectoryFilters: FilterField[];
   entryFilters: FilterField[];
+  filtersInitialized: boolean;
   fetchFilterFields: () => void;
   trajectoryFields: string[];
   entryFields: string[];
@@ -261,7 +262,7 @@ const useStore = create<Store>(
       setActiveTab: (activeTab: number) => set(() => ({ activeTab })),
       editingTab: null,
       setEditingTab: (editingTab) => set(() => ({ editingTab })),
-      tabs: constants.DEFAULT_TABS,
+      tabs: [],
       setTabs: (tabs: VizTab[]) => set({ tabs }),
       setTab: (tab: VizTab) => {
         let tabs = get().tabs;
@@ -276,7 +277,7 @@ const useStore = create<Store>(
       setRelayVolumeScale: (relayVolumeScale) => set({ relayVolumeScale }),
       configPathHistory: [],
       setConfigPathHistory: (configPathHistory) => set({ configPathHistory }),
-      filterList: constants.FILTERS.map((filter, i) => ({ ...filter, id: i })),
+      filterList: [],
       setFilterList: (filterList: FilterItem[]) => set({ filterList }),
       targetBodies: constants.TARGET_BODIES,
       fetchBodies: () => {
@@ -307,11 +308,13 @@ const useStore = create<Store>(
       },
       trajectoryFilters: [],
       entryFilters: [],
+      filtersInitialized: false,
       fetchFilterFields: () => {
         axios.get(`${constants.API}/filters`).then((response) => {
           set({
             trajectoryFilters: response.data.TrajectoryFilters,
             entryFilters: response.data.EntryFilters,
+            filtersInitialized: true
           });
         }).catch(() => {
           setTimeout(() => {
@@ -319,15 +322,17 @@ const useStore = create<Store>(
               set({
                 trajectoryFilters: res.data.TrajectoryFilters,
                 entryFilters: res.data.EntryFilters,
+                filtersInitialized: true
               });
               get().searchTrajectories();
             }).catch(() => {
               set({
                 trajectoryFilters: [],
                 entryFilters: [],
-              })
+                filtersInitialized: false,
+              });
             })
-          }, 5000)
+          }, 5000);
         });
       },
       trajectoryFields: [],
@@ -367,6 +372,10 @@ const useStore = create<Store>(
       trajectories: [],
       setTrajectories: (trajectories) => set({ trajectories }),
       searchTrajectories: () => {
+        if (!get().filtersInitialized) {
+          return;
+        }
+
         const filterList = get().filterList;
         let query = {
           filters: filterList
@@ -550,7 +559,7 @@ const useStore = create<Store>(
                         <span>Type: </span><b>${pointType}</b>
                       </div>
                       <div>
-                        <span>Radius: </span><b>${math.round(point.height, 3)}</b>
+                        <span>Radius: </span><b>${math.round(point.height, 3)} km</b>
                       </div>
                     </div>`
                     });
