@@ -37,7 +37,7 @@ const VizContent: FC<VizContentProps> = ({ tab }) => {
                   maxWidth: `calc(100% / ${tab.topRow.length} - 10px)`,
                 }}
               >
-                <Visualization config={graphConfig} id={`${tab.id}-top-row-${i}`} />
+                <Visualization config={graphConfig} id={`viz-${tab.id}-top-row-${i}`} />
               </div>
             );
           })}
@@ -70,7 +70,7 @@ const VizContent: FC<VizContentProps> = ({ tab }) => {
 
                 }}
               >
-                <Visualization config={graphConfig} id={`${tab.id}-bottom-row-${i}`} />
+                <Visualization config={graphConfig} id={`viz-${tab.id}-bottom-row-${i}`} />
               </div>
             );
           })}

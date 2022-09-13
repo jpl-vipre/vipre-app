@@ -22,17 +22,82 @@ import {
 } from '@devexpress/dx-react-grid-material-ui';
 import Tooltip from "@mui/material/Tooltip";
 
-import useStore, { Entry, Trajectory } from "../../utils/store";
-import "../../scss/TableViz.scss";
+import ArrowDownward from '@mui/icons-material/ArrowDownward';
+import ArrowUpward from '@mui/icons-material/ArrowUpward';
 
 import * as math from "mathjs";
 import withStyles from "@mui/styles/withStyles";
+
+import useStore, { Entry, Trajectory } from "../../utils/store";
+import "../../scss/TableViz.scss";
+import { TextField } from "@mui/material";
 
 const styles = (theme: any) => ({
     tableStriped: {},
     toolbar: {},
 });
 
+const SortingIcon = ({ direction }: { direction: string; }) => (
+    direction === 'asc'
+        ? <ArrowUpward style={{ fontSize: '18px' }} />
+        : <ArrowDownward style={{ fontSize: '18px' }} />
+);
+
+const SortLabel = ({ onSort, children, direction }: { onSort: () => void; children: any; direction: string; }) => (
+    <Tooltip title={children}>
+        <div onClick={onSort} style={{ display: "flex", alignItems: "center", maxWidth: "100px", cursor: "pointer" }}>
+            {children}
+            {(direction && <SortingIcon direction={direction} />)}
+        </div>
+    </Tooltip>
+);
+
+const TooltipFormatter = (row: any) => {
+    return (
+        <Tooltip title={`${row.column.title}: ${row.value}`} style={{ zIndex: 999 }}>
+            <span>
+                {typeof row.value === "number" ? math.round(row.value, 3) : row.value}
+            </span>
+        </Tooltip>
+    );
+};
+
+const CellTooltip = ({ columns, ...props }: any) => (
+    <DataTypeProvider
+        for={columns.map(({ name }: { name: string }) => name)}
+        formatterComponent={TooltipFormatter}
+        {...props}
+    />
+);
+
+const ToolbarComponentBase = ({ classes, dataSource, ...restProps }: any) => {
+    let title = "";
+    if (dataSource && dataSource.length > 0) {
+        title = `${dataSource[0].toUpperCase()}${dataSource.slice(1)}`
+    }
+    return (
+        <Toolbar.Root {...restProps} className={classes.toolbar}>
+            <h4>{title}</h4>
+            {restProps.children}
+        </Toolbar.Root>
+    );
+};
+
+// @ts-ignore
+const SearchPanelInput = ({ value, onValueChange }) => {
+    return (
+        <TextField
+            placeholder="Search..."
+            variant="standard"
+            autoFocus={value.length > 0}
+            value={value}
+            onChange={(evt) => onValueChange(evt.target.value)}
+        />
+    )
+}
+
+// @ts-ignore
+const ToolbarComponent = withStyles(styles, { name: "TableComponent" })(ToolbarComponentBase);
 
 interface TableVizProps {
     id: string;
@@ -45,6 +110,8 @@ const TableViz: FC<TableVizProps> = ({ id, data, dataSource }) => {
     const setSelectedTrajectory = useStore(state => state.setSelectedTrajectory);
     const confirmedSelectedTrajectory = useStore(state => state.confirmedSelectedTrajectory);
     const [selectedEntries, setSelectedEntries] = useStore(state => [state.selectedEntries, state.setSelectedEntries]);
+
+    const [searchValue, setSearchValue] = useState("");
 
     const selection = useMemo(() => {
         if (dataSource === "entries") {
@@ -89,72 +156,37 @@ const TableViz: FC<TableVizProps> = ({ id, data, dataSource }) => {
         }
     };
 
-    const [searchValue, setSearchValue] = useState("");
-
-    const TooltipFormatter = (row: any) => {
-        return (
-            <Tooltip title={`${row.column.title}: ${row.value}`} style={{ zIndex: 999 }}>
-                <span>
-                    {typeof row.value === "number" ? math.round(row.value, 3) : row.value}
-                </span>
-            </Tooltip>
-        );
-    };
-
-    const CellTooltip = (props: any) => (
-        <DataTypeProvider
-            for={columns.map(({ name }) => name)}
-            formatterComponent={TooltipFormatter}
-            {...props}
-        />
-    );
-
-    const ToolbarComponentBase = ({ classes, ...restProps }: any) => {
-        let title = "";
-        if (dataSource && dataSource.length > 0) {
-            title = `${dataSource[0].toUpperCase()}${dataSource.slice(1)}`
-        }
-        return (
-            <Toolbar.Root {...restProps} className={classes.toolbar}>
-                <h4>{title}</h4>
-                {restProps.children}
-            </Toolbar.Root>
-        );
-    };
-
-    // @ts-ignore
-    const ToolbarComponent = withStyles(styles, { name: "TableComponent" })(ToolbarComponentBase);
-
     return <div className="table-container" id={id}>
         <Grid
             rows={rows}
             columns={columns}
             getRowId={(row) => row.id}
         >
-            <SelectionState
-                selection={selection}
-                onSelectionChange={setSelection}
-            />
             <SearchState
                 value={searchValue}
                 onValueChange={setSearchValue}
+            />
+            <SelectionState
+                selection={selection}
+                onSelectionChange={setSelection}
             />
             <IntegratedFiltering />
             <SortingState
                 defaultSorting={[{ columnName: 'id', direction: 'asc' }]}
             />
             <IntegratedSorting />
-            <CellTooltip />
+            <CellTooltip columns={columns} />
             <VirtualTable />
-            <TableHeaderRow showSortingControls />
+            {/* @ts-ignore */}
+            <TableHeaderRow showSortingControls sortLabelComponent={SortLabel} />
             <TableColumnVisibility />
             <TableSelection
                 selectByRowClick
                 highlightRow
                 showSelectionColumn={false}
             />
-            <Toolbar rootComponent={ToolbarComponent} />
-            <SearchPanel />
+            <Toolbar rootComponent={(props) => <ToolbarComponent {...props} dataSource={dataSource} />} />
+            <SearchPanel inputComponent={SearchPanelInput} />
             <ColumnChooser />
         </Grid>
     </div>;
