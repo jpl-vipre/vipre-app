@@ -104,10 +104,12 @@ const EditFilter: FC<{ filter: FilterItem; setFilter: (filter: FilterItem) => vo
             type="number"
             fullWidth
             variant="standard"
-            value={filter.step || 1}
+            value={filter.step !== null ? filter.step : 1}
             style={{ margin: "5px" }}
             onChange={(evt) => {
-              setFilter({ ...filter, step: parseFloat(evt.target.value) as number });
+              let value = isNaN(parseFloat(evt.target.value)) ? evt.target.value : parseFloat(evt.target.value);
+              // @ts-ignore
+              setFilter({ ...filter, step: value });
             }}
           />
         )}

@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useMemo } from "react";
 import { FormControl, FormLabel, Slider, Input } from "@mui/material";
 
 import useStore, { FilterItem } from "../../utils/store";
@@ -11,6 +11,21 @@ interface SliderRangeFilterProps {
 
 const SliderRangeFilter: FC<SliderRangeFilterProps> = ({ filter }) => {
   const setFilter = useStore((state) => state.setFilter);
+  const relayVolumeScale = useStore(state => state.relayVolumeScale);
+
+  const scaleByRelayVolume = useMemo(() => filter.dataField === "entry.relay_volume", [filter]);
+
+  const sliderValues = useMemo(() => {
+    if (filter.value && filter.value.length > 0) {
+      if (scaleByRelayVolume) {
+        return filter.value.map((val: number) => val * relayVolumeScale);
+      } else {
+        return filter.value;
+      }
+    } else {
+      return filter.defaultValue || [0, 0];
+    }
+  }, [filter, scaleByRelayVolume, relayVolumeScale]);
 
   return (
     <div style={{ marginBottom: "25px", textAlign: "left" }} className="slider-range">
@@ -23,9 +38,13 @@ const SliderRangeFilter: FC<SliderRangeFilterProps> = ({ filter }) => {
       <div style={{ display: "flex", flexDirection: "column" }}>
         <FormControl style={{ flex: 1, margin: "0 15px" }}>
           <Slider
-            value={filter.value ? filter.value : filter.defaultValue || [0, 0]}
+            value={sliderValues}
             onChange={(evt, newValue) => {
-              setFilter({ ...filter, value: newValue });
+              if (scaleByRelayVolume && Array.isArray(newValue)) {
+                setFilter({ ...filter, value: newValue.map((val: number) => val / relayVolumeScale) });
+              } else {
+                setFilter({ ...filter, value: newValue });
+              }
             }}
             valueLabelDisplay="auto"
             min={filter.min}
@@ -37,12 +56,18 @@ const SliderRangeFilter: FC<SliderRangeFilterProps> = ({ filter }) => {
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <FormControl>
             <Input
-              style={{ minWidth: "62px", textAlign: "center", marginTop: "-5px" }}
-              value={filter.value ? filter.value[0] : filter.defaultValue[0]}
+              style={{ minWidth: "62px", maxWidth: "62px", textAlign: "center", marginTop: "-5px" }}
+              value={sliderValues[0]}
               size="small"
               onChange={(evt: any) => {
                 let endValue = filter.value ? filter.value[1] : filter.defaultValue[1];
-                setFilter({ ...filter, value: [evt.target.value, endValue] });
+
+                let targetValue = evt.target.value;
+                if (!isNaN(targetValue) && scaleByRelayVolume) {
+                  setFilter({ ...filter, value: [Number(targetValue) / relayVolumeScale, endValue] });
+                } else {
+                  setFilter({ ...filter, value: [evt.target.value, endValue] });
+                }
               }}
               error={filter.value && (filter.value[0] < filter.min! || filter.value[0] > filter.value[1])}
               onBlur={() => {
@@ -64,12 +89,17 @@ const SliderRangeFilter: FC<SliderRangeFilterProps> = ({ filter }) => {
           </FormControl>
           <FormControl>
             <Input
-              style={{ minWidth: "62px", textAlign: "center", marginTop: "-5px" }}
-              value={filter.value ? filter.value[1] : filter.defaultValue[1]}
+              style={{ minWidth: "62px", maxWidth: "62px", textAlign: "center", marginTop: "-5px" }}
+              value={sliderValues[1]}
               size="small"
               onChange={(evt: any) => {
                 let startValue = filter.value ? filter.value[0] : filter.defaultValue[0];
-                setFilter({ ...filter, value: [startValue, evt.target.value] });
+                let targetValue = evt.target.value;
+                if (!isNaN(targetValue) && scaleByRelayVolume) {
+                  setFilter({ ...filter, value: [startValue, Number(targetValue) / relayVolumeScale] });
+                } else {
+                  setFilter({ ...filter, value: [startValue, evt.target.value] });
+                }
               }}
               error={filter.value && (filter.value[1] > filter.max! || filter.value[1] < filter.value[0])}
               onBlur={() => {

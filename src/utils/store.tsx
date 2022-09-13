@@ -274,7 +274,15 @@ const useStore = create<Store>(
         }
       },
       relayVolumeScale: 6e10,
-      setRelayVolumeScale: (relayVolumeScale) => set({ relayVolumeScale }),
+      setRelayVolumeScale: (relayVolumeScale) => {
+        set({ relayVolumeScale });
+        let selectedEntries = get().selectedEntries;
+        if (get().dataRates.length > 0 && selectedEntries.length > 0) {
+          get().fetchDataRates(selectedEntries[selectedEntries.length - 1].id);
+        } else if (get().dataRates.length > 0 && selectedEntries.length === 0) {
+          set({ dataRates: [] });
+        }
+      },
       configPathHistory: [],
       setConfigPathHistory: (configPathHistory) => set({ configPathHistory }),
       filterList: [],
@@ -368,7 +376,7 @@ const useStore = create<Store>(
         }
       },
       confirmedSelectedTrajectory: false,
-      setConfirmedSelectedTrajectory: (confirmedSelectedTrajectory) => set({ confirmedSelectedTrajectory, selectedEntries: [], arcs: [], dataRates: [] }),
+      setConfirmedSelectedTrajectory: (confirmedSelectedTrajectory) => set({ confirmedSelectedTrajectory, entries: [], selectedEntries: [], arcs: [], dataRates: [] }),
       trajectories: [],
       setTrajectories: (trajectories) => set({ trajectories }),
       searchTrajectories: () => {
@@ -435,9 +443,8 @@ const useStore = create<Store>(
               set({ trajectories: filteredData, selectedTrajectory: null, confirmedSelectedTrajectory: false, entries: [], selectedEntries: [], dataRates: [], arcs: [] });
             } else {
               set({ trajectories: filteredData });
+              get().fetchEntries();
             }
-
-            get().fetchEntries();
           })
           .catch((err) => {
             console.error(err, query);
@@ -461,7 +468,7 @@ const useStore = create<Store>(
       entries: [],
       fetchEntries: () => {
         let selectedTrajectory = get().selectedTrajectory;
-        if (selectedTrajectory === null || !selectedTrajectory.id) {
+        if (selectedTrajectory === null || selectedTrajectory.id === null || !get().confirmedSelectedTrajectory) {
           set({ entries: [] });
           return;
         }
@@ -469,6 +476,12 @@ const useStore = create<Store>(
         axios
           .get(`${constants.API}/trajectories/${selectedTrajectory.id}/entries?limit=${get().requestedEntryPointCount}&offset=0`)
           .then((response) => {
+            let selectedTrajectory = get().selectedTrajectory;
+            if (selectedTrajectory === null || selectedTrajectory.id === null || !get().confirmedSelectedTrajectory) {
+              set({ entries: [] });
+              return;
+            }
+
             const filterList = get().filterList;
             const relayVolumeScale = get().relayVolumeScale;
 
@@ -503,6 +516,12 @@ const useStore = create<Store>(
 
               return entry;
             });
+
+            if (filteredSelectedEntries.length > 0) {
+              get().fetchDataRates(filteredSelectedEntries[filteredSelectedEntries.length - 1].id);
+            } else if (get().dataRates.length > 0) {
+              set({ dataRates: [] });
+            }
 
             set({ entries: filteredData, selectedEntries: filteredSelectedEntries })
             // Fetch arcs on successful fetch of entries
@@ -645,8 +664,9 @@ const useStore = create<Store>(
           return;
         }
 
+        let relayVolumeScale = get().relayVolumeScale || 1;
+
         axios.get(`${constants.API}/entries/${entryID}/datarates`).then((response) => {
-          let relayVolumeScale = get().relayVolumeScale || 1;
           let scaledDataRates = response.data.map((dataRate: DataRate) => {
             return {
               data_rate: dataRate.rate * relayVolumeScale,

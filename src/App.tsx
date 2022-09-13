@@ -63,14 +63,12 @@ const App: FC = () => {
 
   useEffect(() => {
     if (filtersInitialized && tabs.length === 0) {
-      console.log("DEFAULT TABS")
       setTabs(constants.DEFAULT_TABS);
     }
   }, [filtersInitialized, setTabs, tabs]);
 
   useEffect(() => {
     if (filtersInitialized && filterList.length === 0) {
-      console.log("DEFAULT FILTERS")
       setFilterList(constants.FILTERS.map((filter, i) => ({ ...filter, id: i })));
     }
   }, [filtersInitialized, filterList, setFilterList]);

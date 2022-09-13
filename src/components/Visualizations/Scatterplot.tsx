@@ -84,14 +84,17 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnit
       let fields = [[xField, xUnits], [yField, yUnits], [colorField, colorUnits]].filter(([field]) => !!field).map(([field, units]) => ([field, units?.replace(/\^[0-9]/g, digitToSuperScript)]));
       let otherFields: [string, string][] = [];
       if (payload && payload[0]?.payload) {
-        otherFields = Object.entries(payload[0].payload || {}).filter(([field, value]) => ![xField, yField, colorField].includes(field) && typeof value !== "object").map(([field]) => ([field, ""]))
+        otherFields = Object.entries(payload[0].payload || {}).filter(([field, value]) => ![xField, yField, colorField].includes(field) && typeof value !== "object").map(([field]) => ([field, ""]));
       }
 
       return (
         <div className="chart-tooltip">
           {fields.map(([field, units], i) => {
             let value: number = field && payload[0].payload && payload[0].payload[field] !== undefined ? payload[0].payload[field] : null;
-            let displayValue: string = value !== null ? math.round(value, 3).toString() : "";
+
+            // math.
+            // math.format(2000, { lowerExp: -2, upperExp: 2 })  
+            let displayValue: string = value !== null ? math.format(value, { lowerExp: -3, upperExp: 8 }).toString() : "";
             return (
               <p key={`chart-tooltip-${field}-${i}`} className="label">
                 {field}: <b>{displayValue}{units ? ` ${units}` : ""}</b>
@@ -101,7 +104,7 @@ const Scatterplot: FC<ScatterplotProps> = ({ data, xField, xUnits, yField, yUnit
           <div className="tooltip-split"></div>
           {otherFields.map(([field, units], i) => {
             let value: number = field && payload[0].payload && payload[0].payload[field] !== undefined ? payload[0].payload[field] : null;
-            let displayValue: string = value !== null && typeof value === "number" ? math.round(value, 3).toString() : "";
+            let displayValue: string = value !== null && typeof value === "number" ? math.round(value, 3).toString() : `${value}`;
             return (
               <p key={`chart-tooltip-other-${field}-${i}`} className="label">
                 {field}: <b>{displayValue}{units ? ` ${units}` : ""}</b>

@@ -329,7 +329,11 @@ const SettingsView: FC = () => {
               type="number"
               value={relayVolumeScale}
               onChange={(evt: any) => {
-                setRelayVolumeScale(evt.target.value);
+                if (isNaN(evt.target.value)) {
+                  setRelayVolumeScale(evt.target.value);
+                } else {
+                  setRelayVolumeScale(Number(evt.target.value));
+                }
               }}
             />
           </div>
