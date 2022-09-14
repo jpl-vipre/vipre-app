@@ -196,11 +196,7 @@ const SettingsView: FC = () => {
                     });
                   } else {
                     setActiveDatabase(evt.target.value);
-                    setDatabaseHistory(Array.from(new Set([...databaseHistory, evt.target.value])))
-                    ipcRenderer.send("import-database", {
-                      path: evt.target.value,
-                      chooseFile: false
-                    });
+                    setDatabaseHistory(Array.from(new Set([...databaseHistory, evt.target.value])));
                   }
                 }}
               >

@@ -690,7 +690,18 @@ const useStore = create<Store>(
         set({ trajectories: [], selectedTrajectory: null, confirmedSelectedTrajectory: false, entries: [], selectedEntries: [], arcs: [], dataRates: [], flybys: [], occultations: [] });
       },
       activeDatabase: "",
-      setActiveDatabase: (activeDatabase) => set({ activeDatabase }),
+      setActiveDatabase: (activeDatabase) => {
+        axios.post(`${constants.API}/database/connection`, `sqlite:///${activeDatabase}`).then((response) => {
+          set({ activeDatabase: response.data?.replace("sqlite:///", "") });
+          get().fetchAPIVersion(2, () => {
+            get().fetchFilterFields();
+            get().fetchSchemas();
+            get().fetchFields();
+            get().fetchBodies();
+            get().searchTrajectories();
+          });
+        });
+      },
       databaseHistory: [],
       setDatabaseHistory: (databaseHistory) => set({ databaseHistory }),
       dataRates: [],

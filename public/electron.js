@@ -22,6 +22,7 @@ emitter.setMaxListeners(100);
 
 let window;
 let api;
+let apiPath;
 let database = null;
 let apiName = process.platform === "win32" ? "vipre-data.exe" : "vipre-data";
 let defaultDatabase = "E_S_test_big12.db";
@@ -66,7 +67,6 @@ const setupLocalFilesNormalizerProxy = () => {
 };
 
 const launchAPI = async () => {
-  let apiPath = "";
   if (process.platform === "win32") {
     apiPath = app.isPackaged
       ? path.join(process.resourcesPath, "vipre-data", "winbuild", apiName)
@@ -103,7 +103,11 @@ const launchAPI = async () => {
       killAPI();
     }
 
-    let apiCommand = `SQLALCHEMY_DATABASE_URI=sqlite:///${database} "${apiPath}"`;
+    let apiCommand =
+      process.platform === "win32"
+        ? `"${apiPath}"`
+        : `SQLALCHEMY_DATABASE_URI=sqlite:///${database} "${apiPath}"`;
+
     console.log(`SPAWNING ${apiCommand}`);
 
     setTimeout(() => {
@@ -225,17 +229,14 @@ app.whenReady().then(async () => {
         })
         .then((response) => {
           if (!response.canceled) {
-            if (api) {
-              if (database !== response.filePaths[0]) {
-                database = response.filePaths[0];
-                killAPI();
-                setTimeout(() => {
-                  launchAPI();
-                }, 2000);
-              }
-            } else {
-              database = response.filePaths[0];
+            database = response.filePaths[0];
+            if (!api && !process.env.REACT_APP_STOP_API) {
               launchAPI();
+            } else {
+              window.webContents.send("database-imported", {
+                path: database,
+                apiPath,
+              });
             }
           }
         });
