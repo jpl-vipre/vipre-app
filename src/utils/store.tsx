@@ -578,7 +578,7 @@ const useStore = create<Store>(
                 Object.entries(response.data).forEach(([pointType, data]: [string, any]) => {
                   data.forEach((point: any) => {
                     // @ts-ignore
-                    let altitude = (point.height / selectedEntry.target_body.radius) - 1;
+                    let altitude = (point.height / (get().targetBodies[get().targetBody]?.radius || 1)) - 1;
 
                     pointData.push({
                       ...point,

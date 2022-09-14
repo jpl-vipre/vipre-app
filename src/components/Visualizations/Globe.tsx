@@ -29,7 +29,6 @@ const Globe: FC<GlobeProps> = ({ globeType, data, colorField, id, colorUnits }) 
 
   const selectedTrajectory = useStore(state => state.selectedTrajectory)
   const [selectedEntries, setSelectedEntries] = useStore(state => [state.selectedEntries, state.setSelectedEntries]);
-
   const [hoverID, setHoverID] = useState(-1);
   const [initRotate, setInitRotate] = useState(false);
 
@@ -61,7 +60,7 @@ const Globe: FC<GlobeProps> = ({ globeType, data, colorField, id, colorUnits }) 
       globeObjectsData = arcs.map(obj => ({ ...obj }));
     } else {
       globeObjectsData = data.filter(entry => entry.pos_entry_mag !== null && entry.pos_entry_lat !== null && entry.pos_entry_lon !== null).map((entry) => {
-        let altitude = (entry.pos_entry_mag / entry.target_body.radius) - 1;
+        let altitude = (entry.pos_entry_mag / (targetBody?.radius || 1)) - 1;
         let latitude = entry.pos_entry_lat;
         let longitude = entry.pos_entry_lon;
         let color = colorField ? colors(normalizeValue(entry[colorField])) : "#fff";
