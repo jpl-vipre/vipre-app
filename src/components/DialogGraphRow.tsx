@@ -19,7 +19,7 @@ const DialogGraphItem: FC<DialogGraphItemProps> = ({ modifiedTab, setModifiedTab
   const sources = useMemo(() => {
     let graphSources = constants.GRAPH_SOURCES;
     if (graphConfig.type === "table") {
-      graphSources = [...graphSources, "targetedBodies", "maneuvers", "flybys", "occultations"];
+      graphSources = [...graphSources, "targetedBodies", "flybys", "occultations"];
     }
     return graphSources;
   }, [graphConfig]);

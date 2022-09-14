@@ -44,6 +44,7 @@ export type FilterItem = {
   min?: number;
   max?: number;
   hidden?: boolean;
+  initial?: boolean;
 };
 
 export type FilterField = {
@@ -121,6 +122,20 @@ export type Entry = {
   pos_entry_lat: number;
   pos_entry_lon: number;
   flight_path_angle: number;
+}
+
+export type Flybys = {
+  id: number | string;
+  flyby_body: TargetBodyInfo;
+  order: number;
+  t_flyby: number;
+}
+
+export type Occultations = {
+  id: number | string;
+  trajectory_id: number | string;
+  t_occ_in: number;
+  t_occ_out: number;
 }
 
 const TARGET_BODIES = Object.keys(constants.TARGET_BODIES);
@@ -227,6 +242,8 @@ export type Store = {
   setSelectedTrajectory: (trajectory: Trajectory | null, refetch?: boolean) => void;
   confirmedSelectedTrajectory: boolean;
   setConfirmedSelectedTrajectory: (confirmedSelectedTrajectory: boolean) => void;
+  flybys: Flybys[];
+  occultations: Occultations[];
   searchTrajectories: () => void;
   fetchSelectedTrajectory: () => void;
   targetedBodies: TargetBodyInfo[];
@@ -320,7 +337,7 @@ const useStore = create<Store>(
         })
       },
       targetBody: constants.DEFAULT_TARGET_BODY as TargetBodyName,
-      setTargetBody: (targetBody) => set({ targetBody, trajectories: [], entries: [], arcs: [], selectedTrajectory: null, selectedEntries: [], confirmedSelectedTrajectory: false, dataRates: [] }),
+      setTargetBody: (targetBody) => set({ targetBody, trajectories: [], entries: [], arcs: [], selectedTrajectory: null, selectedEntries: [], confirmedSelectedTrajectory: false, dataRates: [], flybys: [], occultations: [] }),
       setFilter: (filter: FilterItem) => {
         let filterList = get().filterList;
         let filterIndex = filterList.findIndex((existingFilter) => existingFilter.id === filter.id);
@@ -386,7 +403,7 @@ const useStore = create<Store>(
       },
       selectedTrajectory: null,
       setSelectedTrajectory: (selectedTrajectory, refetch = false) => {
-        set({ selectedTrajectory, entries: [], selectedEntries: [], dataRates: [], arcs: [] })
+        set({ selectedTrajectory, entries: [], selectedEntries: [], dataRates: [], arcs: [], flybys: [], occultations: [] })
         if (refetch) {
           get().fetchSelectedTrajectory();
         }
@@ -394,6 +411,8 @@ const useStore = create<Store>(
       confirmedSelectedTrajectory: false,
       setConfirmedSelectedTrajectory: (confirmedSelectedTrajectory) => set({ confirmedSelectedTrajectory, entries: [], selectedEntries: [], arcs: [], dataRates: [] }),
       trajectories: [],
+      flybys: [],
+      occultations: [],
       setTrajectories: (trajectories) => set({ trajectories }),
       searchTrajectories: () => {
         if (!get().filtersInitialized) {
@@ -475,7 +494,7 @@ const useStore = create<Store>(
         axios
           .get(`${constants.API}/trajectories/${selectedTrajectory.id}`)
           .then((response) => {
-            set({ selectedTrajectory: response.data })
+            set({ selectedTrajectory: response.data, flybys: response.data?.flybys || [], occultations: response.data?.occultations || [] })
           })
           .catch((err) => {
             console.error(err);
@@ -668,7 +687,7 @@ const useStore = create<Store>(
         });
       },
       resetData: () => {
-        set({ trajectories: [], selectedTrajectory: null, confirmedSelectedTrajectory: false, entries: [], selectedEntries: [], arcs: [], dataRates: [] });
+        set({ trajectories: [], selectedTrajectory: null, confirmedSelectedTrajectory: false, entries: [], selectedEntries: [], arcs: [], dataRates: [], flybys: [], occultations: [] });
       },
       activeDatabase: "",
       setActiveDatabase: (activeDatabase) => set({ activeDatabase }),
@@ -686,6 +705,7 @@ const useStore = create<Store>(
           let scaledDataRates = response.data.map((dataRate: DataRate) => {
             return {
               data_rate: dataRate.rate * relayVolumeScale,
+              raw_data_rate: dataRate.rate,
               time: dataRate.time,
               id: dataRate.id,
               entry_id: dataRate.entry_id,

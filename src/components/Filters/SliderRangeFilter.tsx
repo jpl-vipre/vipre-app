@@ -1,4 +1,4 @@
-import { FC, useMemo } from "react";
+import { FC, useEffect, useMemo } from "react";
 import { FormControl, FormLabel, Slider, Input } from "@mui/material";
 
 import useStore, { FilterItem } from "../../utils/store";
@@ -13,8 +13,13 @@ const SliderRangeFilter: FC<SliderRangeFilterProps> = ({ filter }) => {
   const setFilter = useStore((state) => state.setFilter);
   const relayVolumeScale = useStore(state => state.relayVolumeScale);
 
-  const scaleByRelayVolume = useMemo(() => filter.dataField === "entry.relay_volume", [filter]);
+  useEffect(() => {
+    if (filter.initial) {
+      setFilter({ ...filter, value: filter.value.map((val: number) => val / relayVolumeScale), initial: false });
+    }
+  }, [filter, setFilter, relayVolumeScale])
 
+  const scaleByRelayVolume = useMemo(() => filter.dataField === "entry.relay_volume", [filter]);
   const sliderValues = useMemo(() => {
     if (filter.value && filter.value.length > 0) {
       if (scaleByRelayVolume) {
@@ -49,7 +54,7 @@ const SliderRangeFilter: FC<SliderRangeFilterProps> = ({ filter }) => {
             valueLabelDisplay="auto"
             min={filter.min}
             max={filter.max}
-            step={filter.step || 1}
+            step={filter.step || 0.1}
             disableSwap
           />
         </FormControl>

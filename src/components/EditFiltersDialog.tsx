@@ -1,4 +1,4 @@
-import { FC, useState, useEffect } from "react";
+import { FC, useState, useEffect, useMemo } from "react";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
@@ -68,7 +68,7 @@ const EditFilter: FC<{ filter: FilterItem; setFilter: (filter: FilterItem) => vo
               newValue = [filter.min || 0, filter.max || 0];
             }
 
-            setFilter({ ...filter, type: evt.target.value, value: newValue });
+            setFilter({ ...filter, type: evt.target.value, value: newValue, initial: true });
           }}
         >
           {Object.entries(constants.FILTER_TYPES).map(([filterType, options], i) => {
@@ -128,7 +128,7 @@ const EditFilter: FC<{ filter: FilterItem; setFilter: (filter: FilterItem) => vo
             onChange={(evt) => {
               let value = isNaN(parseFloat(evt.target.value)) ? evt.target.value : parseFloat(evt.target.value);
               // @ts-ignore
-              setFilter({ ...filter, min: value, value: [value, filter.max || 0] });
+              setFilter({ ...filter, min: value, value: [value, filter.max || 0], initial: true });
             }}
           />
         )}
@@ -145,7 +145,7 @@ const EditFilter: FC<{ filter: FilterItem; setFilter: (filter: FilterItem) => vo
             onChange={(evt) => {
               let value = isNaN(parseFloat(evt.target.value)) ? evt.target.value : parseFloat(evt.target.value);
               // @ts-ignore
-              setFilter({ ...filter, max: value, value: [filter.min || 0, value] });
+              setFilter({ ...filter, max: value, value: [filter.min || 0, value], initial: true });
             }}
           />
         )}
