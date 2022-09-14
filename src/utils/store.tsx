@@ -54,14 +54,15 @@ export type FilterField = {
 };
 
 export type TargetBodyInfo = {
-  "id": number;
-  "name": string;
-  "radius": number;
-  "mu": number;
-  "period": number;
-  "pole_vec_x": number;
-  "pole_vec_y": number;
-  "pole_vec_z": number;
+  id: number;
+  name: string;
+  radius: number;
+  mu: number;
+  period: number;
+  pole_vec_x: number;
+  pole_vec_y: number;
+  pole_vec_z: number;
+  targeted?: boolean;
 }
 
 export type Trajectory = {
@@ -126,7 +127,7 @@ const TARGET_BODIES = Object.keys(constants.TARGET_BODIES);
 export type TargetBodyName = typeof TARGET_BODIES[number];
 
 export type TargetBody = {
-  id?: number;
+  id?: string | number;
   name?: string;
   radius?: number;
   ringInnerRadius?: number;
@@ -139,7 +140,6 @@ export type TargetBody = {
   icon?: string;
   map?: string;
   ringTexture?: string;
-  value: string | number;
 }
 
 export type TargetBodies = Record<TargetBodyName, TargetBody>;
@@ -229,6 +229,7 @@ export type Store = {
   setConfirmedSelectedTrajectory: (confirmedSelectedTrajectory: boolean) => void;
   searchTrajectories: () => void;
   fetchSelectedTrajectory: () => void;
+  targetedBodies: TargetBodyInfo[];
   arcs: Coordinate[];
   fetchArcs: () => void;
   schemas: Record<string, SchemaField>;
@@ -288,6 +289,7 @@ const useStore = create<Store>(
       filterList: [],
       setFilterList: (filterList: FilterItem[]) => set({ filterList }),
       targetBodies: constants.TARGET_BODIES,
+      targetedBodies: [],
       fetchBodies: () => {
         let targetBodies = get().targetBodies;
         axios.get(`${constants.API}/bodies`).then((response) => {
@@ -296,7 +298,21 @@ const useStore = create<Store>(
             let existingBody: TargetBody = constants.TARGET_BODIES[body.name] as any || {};
             // @ts-ignore
             targetBodies[body.name] = { ...existingBody, ...body };
-          })
+          });
+
+          axios.get(`${constants.API}/bodies/targeted`).then((targetResponse) => {
+            let targetedBodies = response.data.map((bodyInfo: TargetBodyInfo) => ({
+              ...bodyInfo,
+              targeted: targetResponse.data.findIndex((body: { id: string | number; name: string; }) => body.id === bodyInfo.id) > -1
+            }));
+
+            let bodiesInDB: TargetBodyInfo[] = targetedBodies.filter((body: TargetBodyInfo) => body.targeted);
+            if (bodiesInDB.findIndex((body) => body.name === get().targetBody) === -1 && bodiesInDB.length > 0) {
+              set({ targetBody: bodiesInDB[0].name });
+            }
+
+            set({ targetedBodies });
+          });
 
           set({ targetBodies });
         }).catch((err) => {
@@ -404,7 +420,7 @@ const useStore = create<Store>(
           "limit": 1000
         };
 
-        let targetID = get().targetBodies[get().targetBody].value;
+        let targetID = get().targetBodies[get().targetBody].id;
 
         axios
           .post(`${constants.API}/visualizations/trajectory_selection/${targetID}`, query)

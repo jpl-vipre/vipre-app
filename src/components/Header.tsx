@@ -15,12 +15,13 @@ const { ipcRenderer } = window.require("electron");
 const Header: FC<{ view: number; setView: (view: number) => void }> = ({ view, setView }) => {
   const [windowMaximized, setWindowMaximized] = useState(false);
   const targetBodies = useStore((state) => state.targetBodies);
+  const targetedBodies = useStore((state) => state.targetedBodies);
   const searchTrajectories = useStore((state) => state.searchTrajectories);
 
   const [targetBody, setTargetBody] = useStore(state => [state.targetBody, state.setTargetBody])
 
   const targetBodyProps = useMemo(() => {
-    if (!targetBody) return { icon: "", map: "", value: "" };
+    if (!targetBody) return { icon: "", map: "", id: "" };
     return targetBodies[targetBody];
   }, [targetBody, targetBodies]);
 
@@ -28,7 +29,7 @@ const Header: FC<{ view: number; setView: (view: number) => void }> = ({ view, s
     <header>
       <span className="target-select">
         {targetBodyProps && targetBodyProps.icon ? (
-          <img src={targetBodyProps.icon} alt={`${targetBodyProps.value} target`} />
+          <img src={targetBodyProps.icon} alt={`${targetBodyProps.id} target`} />
         ) : (
           <span className="img-placeholder" />
         )}
@@ -47,9 +48,9 @@ const Header: FC<{ view: number; setView: (view: number) => void }> = ({ view, s
                 searchTrajectories();
               }}
             >
-              {Object.entries(targetBodies).map(([targetBodyName, targetBody]) => (
-                <MenuItem value={targetBodyName} key={`filter-${targetBodyName}-${targetBody.value}`}>
-                  {targetBodyName}
+              {targetedBodies.filter((body) => body.targeted).map((body) => (
+                <MenuItem value={body.name} key={`filter-${body.name}-${body.id}`}>
+                  {body.name}
                 </MenuItem>
               ))}
             </Select>

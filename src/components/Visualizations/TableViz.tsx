@@ -56,7 +56,7 @@ const TooltipFormatter = (row: any) => {
     return (
         <Tooltip title={`${row.column.title}: ${row.value}`} style={{ zIndex: 999 }}>
             <span>
-                {typeof row.value === "number" ? math.round(row.value, 3) : row.value}
+                {typeof row.value === "number" ? math.round(row.value, 3) : typeof row.value === "boolean" ? row.value ? "true" : "false" : row.value}
             </span>
         </Tooltip>
     );
@@ -124,7 +124,9 @@ const TableViz: FC<TableVizProps> = ({ id, data, dataSource }) => {
     }, [selectedTrajectory, selectedEntries, dataSource]);
 
     const [rows, columns] = useMemo(() => {
-        let flattenedRows = data.map((row) => {
+        let listData = Array.isArray(data) ? data : Object.entries(data).map(([title, body]: [string, any]) => ({ title, ...body }));
+
+        let flattenedRows = listData.map((row: any) => {
             let flattenedRow: Record<string, string | number | null> = {};
             Object.entries(row).forEach(([column, value]: [string, any]) => {
                 if (value && typeof value === "object" && Object.keys(value).length > 0) {
@@ -141,7 +143,14 @@ const TableViz: FC<TableVizProps> = ({ id, data, dataSource }) => {
 
         let flattendColumns: Column[] = [];
         if (flattenedRows.length > 0) {
-            flattendColumns = Object.keys(flattenedRows[0]).map((column) => ({ name: column, title: column, wordWrapEnabled: true }));
+            let longestColumnIndex = 0;
+            flattenedRows.forEach((row, i) => {
+                if (Object.keys(row).length > Object.keys(flattenedRows[longestColumnIndex]).length) {
+                    longestColumnIndex = i;
+                }
+            })
+
+            flattendColumns = Object.keys(flattenedRows[longestColumnIndex]).map((column) => ({ name: column, title: column, wordWrapEnabled: true }));
         }
 
         return [flattenedRows, flattendColumns];

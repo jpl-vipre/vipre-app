@@ -30,14 +30,14 @@ export const SCHEMA_NAMES = [
 ];
 
 export const DEFAULT_TARGET_BODY = "Saturn";
-export const TARGET_BODIES: Record<string, { icon: string; map: string; value: string | number; ringInnerRadius?: number; ringOuterRadius?: number; ringTexture?: string; radius?: number; }> = {
-  "Venus": { icon: "", map: VenusMap, value: "299" },
-  "Saturn": { icon: SaturnIcon, map: SaturnMap, value: "699", ringInnerRadius: 66970, ringOuterRadius: 139970, radius: 60330, ringTexture: SaturnRings },
-  "Neptune": { icon: NeptuneIcon, map: NeptuneMap, value: "899" },
-  "Uranus": { icon: UranusIcon, map: UranusMap, value: "799" },
-  "Jupiter": { icon: "", map: JupiterMap, value: "599" },
-  "Titan": { icon: "", map: TitanMap, value: "606" },
-  "Mars": { icon: "", map: MarsMap, value: "499" },
+export const TARGET_BODIES: Record<string, { icon: string; map: string; id: string | number; ringInnerRadius?: number; ringOuterRadius?: number; ringTexture?: string; radius?: number; }> = {
+  "Venus": { icon: "", map: VenusMap, id: "299" },
+  "Saturn": { icon: SaturnIcon, map: SaturnMap, id: "699", ringInnerRadius: 66970, ringOuterRadius: 139970, radius: 60330, ringTexture: SaturnRings },
+  "Neptune": { icon: NeptuneIcon, map: NeptuneMap, id: "899" },
+  "Uranus": { icon: UranusIcon, map: UranusMap, id: "799" },
+  "Jupiter": { icon: "", map: JupiterMap, id: "599" },
+  "Titan": { icon: "", map: TitanMap, id: "606" },
+  "Mars": { icon: "", map: MarsMap, id: "499" },
 }
 
 export const LAUNCH_VEHICLES: Record<string, { name: string; polynomial: (c3: number) => number; }> = {
@@ -129,86 +129,7 @@ export const FILTER_TYPES = {
   },
 };
 
-export const FILTERS = [
-  {
-    label: "Entry Altitude",
-    dataField: "entryAltitude",
-    type: "select",
-    options: [700, 750, 800],
-    defaultValue: 700,
-    units: "km",
-  },
-  {
-    label: "Entry Latitude",
-    dataField: "entryLatitude",
-    type: "select",
-    options: [60, 70, 80],
-    defaultValue: 60,
-    units: "deg",
-  },
-  {
-    label: "Flyby Architecture",
-    dataField: "flybyArchitecture",
-    type: "multi-select",
-    options: ["A", "B", "C"],
-  },
-  {
-    label: "Launch Date Range",
-    dataField: "launchDateRnage",
-    type: "date-range",
-    defaultValue: [new Date(), new Date(new Date().setFullYear(new Date().getFullYear() + 1))],
-  },
-  {
-    label: "Flight Path Angle",
-    dataField: "flightPathAngle",
-    type: "slider-range",
-    min: 0,
-    max: 360,
-    step: 1,
-    defaultValue: [0, 360],
-    units: "deg",
-  },
-  {
-    label: "Entry Speed",
-    dataField: "entrySpeed",
-    type: "slider-range",
-    min: 0,
-    max: 10000,
-    step: 1,
-    defaultValue: [0, 10000],
-    units: "km/s",
-  },
-  {
-    label: "Time visible from Earth",
-    dataField: "timeVisibleFromEarth",
-    type: "slider-range",
-    min: 0,
-    max: 10000,
-    step: 1,
-    defaultValue: [0, 10000],
-    units: "mins",
-  },
-  {
-    label: "Data Volume Returned",
-    dataField: "dataVolumeReturned",
-    type: "slider-range",
-    min: 0,
-    max: 10000,
-    step: 1,
-    defaultValue: [0, 10000],
-    units: "MB",
-  },
-  {
-    label: "Solar Phase",
-    dataField: "solarPhase",
-    type: "slider-range",
-    min: 0,
-    max: 11,
-    step: 1,
-    defaultValue: [0, 11],
-    units: "cycle",
-  },
-];
+export const FILTERS = [];
 
 export const TRAJECTORY_COLORS = [
   "#f7d300",

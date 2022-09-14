@@ -69,9 +69,9 @@ const App: FC = () => {
 
   useEffect(() => {
     if (filtersInitialized && filterList.length === 0) {
-      setFilterList(constants.FILTERS.map((filter, i) => ({ ...filter, id: i })));
+      searchTrajectories();
     }
-  }, [filtersInitialized, filterList, setFilterList]);
+  }, [filtersInitialized, filterList, setFilterList, searchTrajectories]);
 
   useEffectOnce(() => {
     if (STOP_API) {
