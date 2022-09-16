@@ -78,6 +78,9 @@ const App: FC = () => {
       setAPIStarted(true);
       setTimeout(() => {
         fetchAPIVersion(5, () => {
+          if (activeDatabase) {
+            setActiveDatabase(activeDatabase);
+          }
           fetchFilterFields();
           fetchSchemas();
           fetchFields();

@@ -167,6 +167,8 @@ export type Coordinate = {
   height?: number;
   size?: number;
   color?: string;
+  altitude?: number;
+  label?: string;
 }
 
 export type SchemaField = {
@@ -619,6 +621,37 @@ const useStore = create<Store>(
                     });
                   });
                 });
+
+                // axios.get(`${constants.API}/entries/${selectedEntry.id}/datarates`).then((response) => {
+                //   let selectedEntrySurfacePoints: Coordinate[] = [];
+                //   response.data.forEach((dataRate: { time: number; }) => {
+                //     let latitude = selectedEntry.pos_entry_lat;
+                //     let longitude = selectedEntry.pos_entry_lon + 360 / dataRate.time / ((get().targetBodies[get().targetBody]?.period || 1) * 24 * 60 * 60);
+                //     selectedEntrySurfacePoints.push({
+                //       latitude,
+                //       longitude,
+                //       altitude: 0,
+                //       height: get().targetBodies[get().targetBody]?.radius || 1,
+                //       entryID: selectedEntry.id,
+                //       color: constants.TRAJECTORY_COLORS[i % constants.TRAJECTORY_COLORS.length],
+                //       pointType: "probe",
+                //       label: `<div class="globe-tooltip">
+                //         <div>
+                //           <span>Entry ID: </span><b>${selectedEntry.id}</b>
+                //         </div>
+                //         <div>
+                //           <span>Type: </span><b>probe on surface</b>
+                //         </div>
+                //       </div>`
+                //     });
+                //   });
+
+                //   set({ arcs: [...get().arcs, ...selectedEntrySurfacePoints] });
+                // }).catch((err) => {
+                //   console.error(`Error fetching data rates for Entry ${selectedEntry.id}: ${err}`);
+                //   set({ dataRates: [] });
+                // });
+
                 set({ arcs: [...arcs, ...pointData] });
               })
               .catch((err) => {
@@ -723,12 +756,13 @@ const useStore = create<Store>(
               order: dataRate.order,
               scale: relayVolumeScale
             };
-          })
+          });
+
           set({ dataRates: scaledDataRates });
         }).catch((err) => {
           console.error(`Error fetching data rates for Entry ${entryID}: ${err}`);
           set({ dataRates: [] });
-        })
+        });
       }
     })
   )

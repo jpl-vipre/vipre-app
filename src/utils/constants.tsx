@@ -103,18 +103,18 @@ export const DEFAULT_TABS = [
 ];
 
 export const FILTER_TYPES = {
-  select: {
-    label: "Select",
-    units: true,
-    range: false,
-    step: false,
-  },
-  "multi-select": {
-    label: "Multi Select",
-    units: false,
-    range: false,
-    step: false,
-  },
+  // select: {
+  //   label: "Select",
+  //   units: true,
+  //   range: false,
+  //   step: false,
+  // },
+  // "multi-select": {
+  //   label: "Multi Select",
+  //   units: false,
+  //   range: false,
+  //   step: false,
+  // },
   "date-range": {
     label: "Date Range",
     units: false,
