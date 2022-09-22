@@ -184,7 +184,7 @@ const SettingsView: FC = () => {
                 autoWidth
                 id="config-select"
                 open={databaseSelectOpen}
-                value={activeDatabase}
+                value={databaseMetadata.database}
                 placeholder="Import Database File"
                 label="Import Database File"
                 labelId="config-select-label"

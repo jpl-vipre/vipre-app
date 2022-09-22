@@ -426,7 +426,7 @@ const useStore = create<Store>(
           filters: filterList
             .filter(
               (filterItem) =>
-                (!Array.isArray(filterItem.value) && filterItem.value !== undefined) ||
+                (!Array.isArray(filterItem.value) && filterItem.value !== undefined && filterItem.value !== "") ||
                 (Array.isArray(filterItem.value) && filterItem.value.length > 0 && filterItem.dataField.includes("trajectory."))
             )
             .map((filter) => {
@@ -453,13 +453,21 @@ const useStore = create<Store>(
             let filteredData = response.data.filter((trajectory: any) => {
               let isInRange = true;
               filterList.forEach((filterItem) => {
+                if (filterItem.value === null || filterItem.value === "") {
+                  return;
+                }
+
                 if (filterItem.dataField.includes("trajectory.")) {
                   let dataField = filterItem.dataField.replace(/^trajectory./, "");
                   if (Array.isArray(filterItem.value)) {
                     const [lower, upper] = filterItem.value;
                     isInRange = isInRange && lower <= trajectory[dataField] && trajectory[dataField] <= upper;
                   } else {
-                    isInRange = isInRange && trajectory[dataField] === filterItem.value;
+                    let filterMatches = trajectory[dataField] === filterItem.value;
+                    if (!filterMatches && typeof trajectory[dataField] === "boolean") {
+                      filterMatches = trajectory[dataField] === ["true", "True", true, 1, "1"].includes(filterItem.value);
+                    }
+                    isInRange = isInRange && filterMatches;
                   }
                 }
               });
@@ -528,13 +536,21 @@ const useStore = create<Store>(
             let filteredData = response.data.filter((entry: any) => {
               let isInRange = true;
               filterList.forEach((filterItem) => {
+                if (filterItem.value === null || filterItem.value === "") {
+                  return;
+                }
+
                 if (filterItem.dataField.includes("entry.")) {
                   let dataField = filterItem.dataField.replace(/^entry./, "");
                   if (Array.isArray(filterItem.value)) {
                     const [lower, upper] = filterItem.value;
                     isInRange = isInRange && lower <= entry[dataField] && entry[dataField] <= upper;
                   } else {
-                    isInRange = isInRange && entry[dataField] === filterItem.value;
+                    let filterMatches = entry[dataField] === filterItem.value;
+                    if (!filterMatches && typeof entry[dataField] === "boolean") {
+                      filterMatches = entry[dataField] === ["true", "True", true, 1, "1"].includes(filterItem.value);
+                    }
+                    isInRange = isInRange && filterMatches;
                   }
                 }
               })

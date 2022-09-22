@@ -25,7 +25,7 @@ let api;
 let apiPath;
 let database = null;
 let apiName = process.platform === "win32" ? "vipre-data.exe" : "vipre-data";
-let defaultDatabase = "E_S_test_big12.db";
+let defaultDatabase = "E_S_test_big13.db";
 
 const createWindow = () => {
   window = new BrowserWindow({

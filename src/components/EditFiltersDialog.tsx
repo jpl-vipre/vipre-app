@@ -7,6 +7,9 @@ import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import { FormControl, InputLabel, MenuItem, Select, IconButton } from "@mui/material";
 
+import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
+
+import ClearIcon from "@mui/icons-material/Clear";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 
@@ -16,6 +19,82 @@ import OutlinedContainer from "./OutlinedContainer";
 import AllFieldsSelect from "./AllFieldsSelect";
 
 import "../scss/EditFiltersDialog.scss";
+
+interface SearchSelectProps {
+  onDeleteOption: (item: string) => void;
+  value: string;
+  options: any[];
+  onChange: (newValue: string) => void;
+  itemName?: string;
+  label?: string;
+  className?: string;
+  style?: any;
+}
+
+const SearchSelect: FC<SearchSelectProps> = ({
+  onDeleteOption,
+  value,
+  options,
+  onChange,
+  itemName = "index",
+  label = "ElasticSearch Index",
+  className = "",
+  style = {},
+}) => {
+  const filter = createFilterOptions();
+
+  return (
+    <Autocomplete
+      className={className}
+      style={{ width: "100%", ...style }}
+      freeSolo
+      // @ts-ignore
+      filterOptions={(options, params) => {
+        // @ts-ignore
+        const filtered = filter(options, params);
+
+        const { inputValue } = params;
+        const isExisting = options.some((option) => inputValue === option.title);
+        if (inputValue !== "" && !isExisting) {
+          filtered.push({
+            inputValue,
+            title: `Add "${inputValue}" ${itemName}`,
+          });
+        }
+
+        return filtered;
+      }}
+      getOptionLabel={(option) => {
+        if (typeof option === "string") {
+          return option;
+        }
+        if (option.inputValue !== undefined && option.inputValue !== null) {
+          return option.inputValue;
+        }
+        return option.title;
+      }}
+      renderOption={(props, option) => (
+        <span style={{ display: "flex", alignItems: "center", position: "relative" }}>
+          <li {...props} style={{ flex: 1 }}>
+            {option.title}
+          </li>
+          <span className="delete-index-btn" style={{ position: "absolute", right: "5px" }}>
+            <ClearIcon onClick={() => onDeleteOption(option.inputValue)} />
+          </span>
+        </span>
+      )}
+      value={value}
+      options={options}
+      renderInput={(params) => <TextField {...params} variant="outlined" label={label} />}
+      onChange={(evt, newValue) => {
+        if (newValue && (newValue as any)["inputValue"]) {
+          let validNewValue = (newValue as any)["inputValue"];
+          onChange(validNewValue);
+        }
+      }}
+    />
+  );
+};
 
 const EditFilter: FC<{ filter: FilterItem; setFilter: (filter: FilterItem) => void; deleteFilter: () => void }> = ({
   filter,
@@ -67,7 +146,7 @@ const EditFilter: FC<{ filter: FilterItem; setFilter: (filter: FilterItem) => vo
             if (evt.target.value === "slider-range" && filter.type !== "slider-range") {
               newValue = [filter.min || 0, filter.max || 0];
             }
-
+            console.log(filter.type)
             setFilter({ ...filter, type: evt.target.value, value: newValue, initial: true });
           }}
         >
@@ -110,6 +189,25 @@ const EditFilter: FC<{ filter: FilterItem; setFilter: (filter: FilterItem) => vo
               let value = isNaN(parseFloat(evt.target.value)) ? evt.target.value : parseFloat(evt.target.value);
               // @ts-ignore
               setFilter({ ...filter, step: value });
+            }}
+          />
+        )}
+      </div>
+      <div style={{ display: "flex", margin: "5px" }}>
+        {["select"].includes(filter.type) && (
+          <SearchSelect
+            label="Options"
+            itemName="Option"
+            value={""}
+            options={(filter?.options || []).map((option: string | number | boolean) => ({ inputValue: option, title: option }))}
+            onDeleteOption={(option) => {
+              // @ts-ignore
+              let newOptions = (filter?.options || []).filter((filterOption: any) => filterOption !== option)
+              setFilter({ ...filter, options: newOptions });
+            }}
+            onChange={(option) => {
+              let value = isNaN(parseFloat(option)) ? option : parseFloat(option);
+              setFilter({ ...filter, options: Array.from(new Set([...(filter?.options || []), value])) });
             }}
           />
         )}

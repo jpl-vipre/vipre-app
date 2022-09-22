@@ -66,7 +66,7 @@ const Overview: FC = () => {
       let pos_target_earth_pow: math.Matrix = math.dotPow(pos_target_earth, 2) as math.Matrix;
 
       // @ts-ignore
-      distanceToEarth = math.round(math.divide(math.sqrt(math.sum(pos_target_earth_pow)), 1.496e+8), 2).toString();
+      distanceToEarth = math.round(math.sqrt(math.sum(pos_target_earth_pow)), 2).toString();
 
       // @ts-ignore
       sunEarthBodyAngle = math.round(math.multiply(math.acos(math.dot(math.multiply(pos_earth_arr, -1), pos_target_earth) / pos_earth_mag / pos_target_earth_mag), (180 / Math.PI)), 2).toString();

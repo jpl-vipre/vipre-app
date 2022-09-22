@@ -11,7 +11,7 @@ interface SelectFilterProps {
 const SelectFilter: FC<SelectFilterProps> = ({ filter, style, className }) => {
   const setFilter = useStore((state) => state.setFilter);
   return (
-    <FormControl fullWidth style={{ marginBottom: "15px", ...style }} className={className}>
+    <FormControl fullWidth style={{ marginBottom: "15px", marginTop: "5px", ...style }} className={className}>
       <InputLabel id={`${filter.label.replace(/ /g, "-").toLowerCase()}-select-label`}>{filter.label}</InputLabel>
       <Select
         variant="standard"
