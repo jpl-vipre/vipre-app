@@ -152,7 +152,8 @@ const Globe: FC<GlobeProps> = ({ globeType, data, colorField, id, colorUnits }) 
     }
 
     return points;
-  }, [selectedTrajectory, globeType])
+  }, [selectedTrajectory, globeType]);
+
   return (
     <div
       style={{ display: "flex", width: "100%", height: "100%", alignItems: "center", background: "black", position: "relative" }}

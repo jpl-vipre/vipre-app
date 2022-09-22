@@ -166,7 +166,7 @@ const SettingsView: FC = () => {
                 {selectedConfig &&
                   selectedConfig.length > 0 &&
                   !configPathHistory.includes(selectedConfig) &&
-                  <MenuItem value={selectedConfig}>{selectedConfig}</MenuItem>}
+                  <MenuItem value={selectedConfig || ""}>{selectedConfig}</MenuItem>}
                 {configPathHistory.map((fileName: string) => (
                   <MenuItem key={`recent-${fileName}`} value={fileName}>
                     {fileName}
@@ -184,7 +184,7 @@ const SettingsView: FC = () => {
                 autoWidth
                 id="config-select"
                 open={databaseSelectOpen}
-                value={databaseMetadata.database}
+                value={databaseMetadata.database || ""}
                 placeholder="Import Database File"
                 label="Import Database File"
                 labelId="config-select-label"
@@ -212,7 +212,7 @@ const SettingsView: FC = () => {
                 {activeDatabase &&
                   activeDatabase.length > 0 &&
                   !databaseHistory.includes(activeDatabase) &&
-                  <MenuItem value={activeDatabase}>{!databaseSelectOpen ? activeDatabase : activeDatabase.slice(activeDatabase.lastIndexOf(path.sep) + 1)}</MenuItem>}
+                  <MenuItem value={activeDatabase || ""}>{!databaseSelectOpen ? activeDatabase : activeDatabase.slice(activeDatabase.lastIndexOf(path.sep) + 1)}</MenuItem>}
                 {databaseHistory.map((fileName: string) => (
                   <MenuItem key={`recent-${fileName}`} value={fileName}>
                     {!databaseSelectOpen ? fileName.slice(fileName.lastIndexOf(path.sep) + 1) : fileName}
@@ -304,7 +304,7 @@ const SettingsView: FC = () => {
               <InputLabel id="launch-vehicle-label">Launch Vehicle</InputLabel>
               <Select
                 id="launch-vehicle"
-                value={launchVehicleName}
+                value={launchVehicleName || ""}
                 placeholder="Launch Vehicle"
                 label="Launch Vehicle"
                 labelId="launch-vehicle-label"

@@ -63,6 +63,7 @@ const TooltipFormatter = (row: any) => {
 };
 
 const CellTooltip = ({ columns, ...props }: any) => (
+    // @ts-ignore 
     <DataTypeProvider
         for={columns.map(({ name }: { name: string }) => name)}
         formatterComponent={TooltipFormatter}
@@ -76,6 +77,7 @@ const ToolbarComponentBase = ({ classes, dataSource, ...restProps }: any) => {
         title = `${dataSource[0].toUpperCase()}${dataSource.slice(1)}`
     }
     return (
+        // @ts-ignore
         <Toolbar.Root {...restProps} className={classes.toolbar}>
             <h4>{title}</h4>
             {restProps.children}
@@ -166,36 +168,48 @@ const TableViz: FC<TableVizProps> = ({ id, data, dataSource }) => {
     };
 
     return <div className="table-container" id={id}>
+        {/* @ts-ignore */}
         <Grid
             rows={rows}
             columns={columns}
             getRowId={(row) => row.id}
         >
+            {/* @ts-ignore */}
             <SearchState
                 value={searchValue}
                 onValueChange={setSearchValue}
             />
+            {/* @ts-ignore */}
             <SelectionState
                 selection={selection}
                 onSelectionChange={setSelection}
             />
+            {/* @ts-ignore */}
             <IntegratedFiltering />
+            {/* @ts-ignore */}
             <SortingState
                 defaultSorting={[{ columnName: 'id', direction: 'asc' }]}
             />
+            {/* @ts-ignore */}
             <IntegratedSorting />
             <CellTooltip columns={columns} />
+            {/* @ts-ignore */}
             <VirtualTable />
             {/* @ts-ignore */}
             <TableHeaderRow showSortingControls sortLabelComponent={SortLabel} />
+            {/* @ts-ignore */}
             <TableColumnVisibility />
+            {/* @ts-ignore */}
             <TableSelection
                 selectByRowClick
                 highlightRow
                 showSelectionColumn={false}
             />
+            {/* @ts-ignore */}
             <Toolbar rootComponent={(props) => <ToolbarComponent {...props} dataSource={dataSource} />} />
+            {/* @ts-ignore */}
             <SearchPanel inputComponent={SearchPanelInput} />
+            {/* @ts-ignore */}
             <ColumnChooser />
         </Grid>
     </div>;

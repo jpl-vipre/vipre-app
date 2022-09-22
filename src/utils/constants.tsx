@@ -11,6 +11,7 @@ import NeptuneIcon from "../assets/icons/neptune.png";
 import UranusIcon from "../assets/icons/uranus.png";
 
 import SaturnRings from "../assets/maps/saturn_ring_image.png";
+import UranusRings from "../assets/maps/uranus_ring_image.png";
 
 import package_json from "../../package.json";
 
@@ -34,7 +35,7 @@ export const TARGET_BODIES: Record<string, { icon: string; map: string; id: stri
   "Venus": { icon: "", map: VenusMap, id: "299" },
   "Saturn": { icon: SaturnIcon, map: SaturnMap, id: "699", ringInnerRadius: 66970, ringOuterRadius: 139970, radius: 60330, ringTexture: SaturnRings },
   "Neptune": { icon: NeptuneIcon, map: NeptuneMap, id: "899" },
-  "Uranus": { icon: UranusIcon, map: UranusMap, id: "799" },
+  "Uranus": { icon: UranusIcon, map: UranusMap, id: "799", ringInnerRadius: 37900, ringOuterRadius: 51200, radius: 25559, ringTexture: UranusRings },
   "Jupiter": { icon: "", map: JupiterMap, id: "599" },
   "Titan": { icon: "", map: TitanMap, id: "606" },
   "Mars": { icon: "", map: MarsMap, id: "499" },
@@ -109,12 +110,6 @@ export const FILTER_TYPES = {
     range: false,
     step: false,
   },
-  // "multi-select": {
-  //   label: "Multi Select",
-  //   units: false,
-  //   range: false,
-  //   step: false,
-  // },
   "date-range": {
     label: "Date Range",
     units: false,
