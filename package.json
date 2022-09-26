@@ -7,7 +7,7 @@
   "homepage": "./",
   "main": "./public/electron.js",
   "build": {
-    "appId": "com.electron.vapre",
+    "appId": "com.electron.vipre",
     "productName": "VIPRE",
     "mac": {
       "category": "public.app-category.business",
