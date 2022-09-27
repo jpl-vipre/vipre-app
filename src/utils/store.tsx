@@ -285,7 +285,7 @@ const useStore = create<Store>(
       tabs: [],
       setTabs: (tabs: VizTab[]) => set({ tabs }),
       setTab: (tab: VizTab) => {
-        let tabs = get().tabs;
+        let tabs = get().tabs || [];
         let tabIndex = tabs.findIndex((existingTab) => existingTab.id === tab.id);
         if (tabIndex === -1) {
           set({ tabs: [...tabs, tab] });
@@ -341,7 +341,7 @@ const useStore = create<Store>(
       targetBody: constants.DEFAULT_TARGET_BODY as TargetBodyName,
       setTargetBody: (targetBody) => set({ targetBody, trajectories: [], entries: [], arcs: [], selectedTrajectory: null, selectedEntries: [], confirmedSelectedTrajectory: false, dataRates: [], flybys: [], occultations: [] }),
       setFilter: (filter: FilterItem) => {
-        let filterList = get().filterList;
+        let filterList = get().filterList || [];
         let filterIndex = filterList.findIndex((existingFilter) => existingFilter.id === filter.id);
         if (filterIndex === -1) {
           set({ filterList: [...filterList, filter] });

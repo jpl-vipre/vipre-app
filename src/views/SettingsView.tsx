@@ -203,8 +203,11 @@ const SettingsView: FC = () => {
                 <ListSubheader>
                   Recent
                   <Button disabled={databaseHistory.length === 0} onClick={() => {
-                    setDatabaseHistory([]);
-                    setActiveDatabase("");
+                    if (activeDatabase) {
+                      setDatabaseHistory([activeDatabase]);
+                    } else {
+                      setDatabaseHistory([]);
+                    }
                   }}>
                     Clear
                   </Button>
@@ -212,8 +215,8 @@ const SettingsView: FC = () => {
                 {activeDatabase &&
                   activeDatabase.length > 0 &&
                   !databaseHistory.includes(activeDatabase) &&
-                  <MenuItem value={activeDatabase || ""}>{!databaseSelectOpen ? activeDatabase : activeDatabase.slice(activeDatabase.lastIndexOf(path.sep) + 1)}</MenuItem>}
-                {databaseHistory.map((fileName: string) => (
+                  <MenuItem value={activeDatabase}>{!databaseSelectOpen ? activeDatabase : activeDatabase.slice(activeDatabase.lastIndexOf(path.sep) + 1)}</MenuItem>}
+                {databaseHistory.filter((fileName: string) => fileName && fileName.length > 0).map((fileName: string) => (
                   <MenuItem key={`recent-${fileName}`} value={fileName}>
                     {!databaseSelectOpen ? fileName.slice(fileName.lastIndexOf(path.sep) + 1) : fileName}
                   </MenuItem>
