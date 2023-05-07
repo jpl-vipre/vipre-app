@@ -105,7 +105,7 @@ VIPRE is designed around an adaptable SQL database whose structure enables missi
 
 In the following section the contents of a single record for each table type is described. The field name for each field provides the tag used in the VIPRE GUI and the column labels for database generation. If a field can be filtered in the GUI, the filtering type is described by the filtering demarcation. In the case that a field is marked as nullable, it does not need to be provided in the database. The units of a field are the expected units to for the value provided in database generation and for labeling in the GUI.
 
-## Trajectory Table ([https://github.jpl.nasa.gov/VIPRE/vipre-schemas/blob/main/models/vipre\_schema-trajectory.json](https://github.jpl.nasa.gov/VIPRE/vipre-schemas/blob/main/models/vipre_schema-trajectory.json))
+## Trajectory Table ([https://github.com/jpl-vipre/vipre-schemas/blob/main/models/vipre\_schema-trajectory.json](https://github.com/jpl-vipre/vipre-schemas/blob/main/models/vipre_schema-trajectory.json))
 
 | Field Label                                       | Field Name        | Filtering | Nullable | Units                                          | Description                                                                                                                                 |
 | ------------------------------------------------- | ----------------- | --------- | -------- | ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -140,14 +140,14 @@ In the following section the contents of a single record for each table type is 
 | Sun Point Longitude at Arrival                    | pos_sun_arr_lon   | slider    | no       | AU                                             | Longitude of the Target body-Sun line in the target body frame at the time of arrival                                                       |
 |                                                   |                   |           |          |                                                |                                                                                                                                             |
 
-## Architecture Table ([https://github.jpl.nasa.gov/VIPRE/vipre-schemas/blob/main/models/vipre\_schema-architecture.json](https://github.jpl.nasa.gov/VIPRE/vipre-schemas/blob/main/models/vipre_schema-architecture.json))
+## Architecture Table ([https://github.com/jpl-vipre/vipre-schemas/blob/main/models/vipre\_schema-architecture.json](https://github.com/jpl-vipre/vipre-schemas/blob/main/models/vipre_schema-architecture.json))
 
 | Field Label | Field Name | Filtering | Nullable | Units | Description                                                                                                                             |
 | ----------- | ---------- | --------- | -------- | ----- | --------------------------------------------------------------------------------------------------------------------------------------- |
 | ID          | id         | checkbox  | no       | n/a   | Numeric id to identify each entry in the table.                                                                                         |
 | Sequence    | sequence   | checkbox  | no       | n/a   | String of Horizons id's for flyby bodies, begins with Earth as launch body and ends with target body. EX) "399 - 299 - 299 - 399 - 699" |
 
-## Body Table ([https://github.jpl.nasa.gov/VIPRE/vipre-schemas/blob/main/models/vipre\_schema-body.json](https://github.jpl.nasa.gov/VIPRE/vipre-schemas/blob/main/models/vipre_schema-body.json))
+## Body Table ([https://github.com/jpl-vipre/vipre-schemas/blob/main/models/vipre\_schema-body.json](https://github.com/jpl-vipre/vipre-schemas/blob/main/models/vipre_schema-body.json))
 
 | Field Label                       | Field Name | Filtering | Nullable | Units    | Description                                                                                                                                    |
 | --------------------------------- | ---------- | --------- | -------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -160,7 +160,7 @@ In the following section the contents of a single record for each table type is 
 | Spin Pole Unit Vector Y-Component | pole_vec_y | n/a       | no       | unit     | Y-component of the body spin pole unit vector, if spinning left-handed the pole should still point in the right hand direction (JPL Horizons   |
 | Spin Pole Unit Vector Z-Component | pole_vec_z | n/a       | no       | unit     | Z-component of the body spin pole unit vector, if spinning left-handed the pole should still point in the right-handed direction (JPL Horizons |
 
-## Flyby Table ([https://github.jpl.nasa.gov/VIPRE/vipre-schemas/blob/main/models/vipre\_schema-flyby.json](https://github.jpl.nasa.gov/VIPRE/vipre-schemas/blob/main/models/vipre_schema-flyby.json))
+## Flyby Table ([https://github.com/jpl-vipre/vipre-schemas/blob/main/models/vipre\_schema-flyby.json](https://github.com/jpl-vipre/vipre-schemas/blob/main/models/vipre_schema-flyby.json))
 
 | Field Label                            | Field Name      | Filtering | Nullable | Units              | Description                                           |
 | -------------------------------------- | --------------- | --------- | -------- | ------------------ | ----------------------------------------------------- |
@@ -179,7 +179,7 @@ In the following section the contents of a single record for each table type is 
 | Outgoing V_infinity Vector Z-Component | v_inf_ out _z   | n/a       | no       | km/s               | Z-component of the departing V_infinity for the flyby |
 | Outgoing V_infinity Vector Magnitude   | v_inf_ out _mag | n/a       | no       | km/s               | Magnitude of the departing V_infinity for the flyby   |
 
-## Occultation Table ([https://github.jpl.nasa.gov/VIPRE/vipre-schemas/blob/main/models/vipre\_schema-occultation.json](https://github.jpl.nasa.gov/VIPRE/vipre-schemas/blob/main/models/vipre_schema-occultation.json))
+## Occultation Table ([https://github.com/jpl-vipre/vipre-schemas/blob/main/models/vipre\_schema-occultation.json](https://github.com/jpl-vipre/vipre-schemas/blob/main/models/vipre_schema-occultation.json))
 
 | Field Label               | Field Name    | Filtering | Nullable | Units              | Description                                         |
 | ------------------------- | ------------- | --------- | -------- | ------------------ | --------------------------------------------------- |
@@ -188,7 +188,7 @@ In the following section the contents of a single record for each table type is 
 | Time Entering Occultation | t_occ_in      | n/a       | yes      | seconds past J2000 | Time that the spacecraft enters occultation         |
 | Time Exiting Occultation  | t_occ_out     | n/a       | yes      | seconds past J2000 | Time that the spacecraft exits occultation          |
 
-## Entry Table ([https://github.jpl.nasa.gov/VIPRE/vipre-schemas/blob/main/models/vipre\_schema-entry.json](https://github.jpl.nasa.gov/VIPRE/vipre-schemas/blob/main/models/vipre_schema-entry.json))
+## Entry Table ([https://github.com/jpl-vipre/vipre-schemas/blob/main/models/vipre\_schema-entry.json](https://github.com/jpl-vipre/vipre-schemas/blob/main/models/vipre_schema-entry.json))
 
 | Field Label                                          | Field Name            | Filtering                                                                     | Nullable | Units                                          | Description                                                                                                                                      |
 | ---------------------------------------------------- | --------------------- | ----------------------------------------------------------------------------- | -------- | ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -234,7 +234,7 @@ In the following section the contents of a single record for each table type is 
 | Ring Shadow Flag                                     | ring\_shadow          | checkbox                                                                      | yes      | n/a                                            | Flag indicating that the entry is in shadow of the rings if set to 1 and out of the shadow when set to 0. Do not add to the database or set to 0 |
 | Carrier Orbit Type                                   | carrier\_orbit        | checkbox                                                                      | yes      | n/a                                            | String indicating if the carrier releases the probe from a flyby or elliptical orbit. Set as 'flyby' for a flyby and 'orbit' for an elliptical   |
 
-## Maneuver Table ([https://github.jpl.nasa.gov/VIPRE/vipre-schemas/blob/main/models/vipre\_schema-maneuver.json](https://github.jpl.nasa.gov/VIPRE/vipre-schemas/blob/main/models/vipre_schema-maneuver.json))
+## Maneuver Table ([https://github.com/jpl-vipre/vipre-schemas/blob/main/models/vipre\_schema-maneuver.json](https://github.com/jpl-vipre/vipre-schemas/blob/main/models/vipre_schema-maneuver.json))
 
 | Field Label                         | Field Name        | Filtering | Nullable | Units                                          | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | ----------------------------------- | ----------------- | --------- | -------- | ---------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -253,7 +253,7 @@ In the following section the contents of a single record for each table type is 
 | Initial Velocity Vector Y-Component | vel\_man\_y       | n/a       | yes      | km                                             | Y-component of the velocity of the maneuver before the deltaV is applied in the target body pole-aligned inertial frame                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | Initial Velocity Vector Z-Component | vel\_man\_z       | n/a       | yes      | km                                             | Z-component of the velocity of the maneuver before the deltaV is applied in the target body pole-aligned inertial frame                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 
-## Datarate Table ([https://github.jpl.nasa.gov/VIPRE/vipre-schemas/blob/main/models/vipre\_schema-datarate.json](https://github.jpl.nasa.gov/VIPRE/vipre-schemas/blob/main/models/vipre_schema-datarate.json))
+## Datarate Table ([https://github.com/jpl-vipre/vipre-schemas/blob/main/models/vipre\_schema-datarate.json](https://github.com/jpl-vipre/vipre-schemas/blob/main/models/vipre_schema-datarate.json))
 
 | Field Label | Field Name | Filtering | Nullable | Units                                                                                      | Description                                                                                                |
 | ----------- | ---------- | --------- | -------- | ------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------- |
