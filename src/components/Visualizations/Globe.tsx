@@ -105,7 +105,8 @@ const Globe: FC<GlobeProps> = ({ globeType, data, colorField, id, colorUnits }) 
         longitude: 0,
         innerRadius: targetBody.ringInnerRadius / targetBody.radius * GLOBE_RADIUS,
         outerRadius: targetBody.ringOuterRadius / targetBody.radius * GLOBE_RADIUS,
-        ringTexture: targetBody.ringTexture
+        ringTexture: targetBody.ringTexture,
+        angleOffset: targetBody?.angleOffset || [0, 0, 0]
       };
       extraObjects.push(ringLayer);
     }
@@ -196,6 +197,13 @@ const Globe: FC<GlobeProps> = ({ globeType, data, colorField, id, colorUnits }) 
 
               let ringMesh = new THREE.Mesh(geometry, material);
               ringMesh.rotation.x = Math.PI / 2;
+              if (point.angleOffset) {
+                let [xOffset, yOffset, zOffset] = point.angleOffset;
+                ringMesh.rotation.x += (xOffset || 0);
+                ringMesh.rotation.y += (yOffset || 0);
+                ringMesh.rotation.z += (zOffset || 0);
+              }
+
               return ringMesh;
             }
             // Carrier Arc

@@ -31,11 +31,11 @@ export const SCHEMA_NAMES = [
 ];
 
 export const DEFAULT_TARGET_BODY = "Saturn";
-export const TARGET_BODIES: Record<string, { icon: string; map: string; id: string | number; ringInnerRadius?: number; ringOuterRadius?: number; ringTexture?: string; radius?: number; }> = {
+export const TARGET_BODIES: Record<string, { icon: string; map: string; id: string | number; ringInnerRadius?: number; ringOuterRadius?: number; ringTexture?: string; radius?: number; angleOffset?: number[]; }> = {
   "Venus": { icon: "", map: VenusMap, id: "299" },
   "Saturn": { icon: SaturnIcon, map: SaturnMap, id: "699", ringInnerRadius: 66970, ringOuterRadius: 139970, radius: 60330, ringTexture: SaturnRings },
   "Neptune": { icon: NeptuneIcon, map: NeptuneMap, id: "899" },
-  "Uranus": { icon: UranusIcon, map: UranusMap, id: "799", ringInnerRadius: 37900, ringOuterRadius: 51200, radius: 25559, ringTexture: UranusRings },
+  "Uranus": { icon: UranusIcon, map: UranusMap, id: "799", ringInnerRadius: 37900, ringOuterRadius: 51200, radius: 25559, ringTexture: UranusRings, angleOffset: [0, 0, 0] },
   "Jupiter": { icon: "", map: JupiterMap, id: "599" },
   "Titan": { icon: "", map: TitanMap, id: "606" },
   "Mars": { icon: "", map: MarsMap, id: "499" },

@@ -155,6 +155,7 @@ export type TargetBody = {
   icon?: string;
   map?: string;
   ringTexture?: string;
+  angleOffset?: number[];
 }
 
 export type TargetBodies = Record<TargetBodyName, TargetBody>;
