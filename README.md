@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/637467519.svg)](https://zenodo.org/badge/latestdoi/637467519)
+
 # VIPRE VISUALIZATION APPLICATION
 
 Electron application for the Visualization of the Impact of PRobe Entry conditions on the science, mission and spacecraft design
